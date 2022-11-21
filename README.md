@@ -213,6 +213,36 @@ It will then check if you are already connected to a broker.  If not, it will is
     >
     Event: MQTT broker connected
 
+Finally, the script subscribes to the DPS MQTT notification topic, and publishes to a topic that registers the device.  The initial publish to the registration topic includes the model ID as the payload.  The result of this publication will be a a JSON message with an operationID field, and the status "assigning".  The code then delays, and issues a polling request to a second topic to determine if the registration is compilete.
+
+    Start DPS registration...
+    
+    subscribe to topics
+    AT+MQTTSUB="$dps/registrations/res/#",0
+    OK
+    >
+    +MQTTSUB:0
+    >
+    
+    Event: Subscribed to DPS topics, publish registration request....
+    
+    AT+MQTTPUB=0,0,0,"$dps/registrations/PUT/iotdps-register/?rid=1","{\"payload\" : {\"modelId\" : \"dtmi:com:Microchip:SAM_IoT_WM;2\"}}"
+    OK
+    >
+    +MQTTPUB:47,"$dps/registrations/res/202/?$rid=&retry-after=3",94,"{"operationId":"4.65f62b2644c85bb1.7e3cc6bc-896f-4c01-9007-75e32b6cebe8","status":"assigning"}"
+    >
+    Event: DPS subscription recieved notification
+    topic: "$dps/registrations/res/202/?$rid=&retry-after=3"
+    {
+        "operationId": "4.65f62b2644c85bb1.7e3cc6bc-896f-4c01-9007-75e32b6cebe8",
+        "status": "assigning"
+    }
+    AT+MQTTPUB=0,0,0,"$dps/registrations/GET/iotdps-get-operationstatus/?rid=2&operationId=4.65f62b2644c85bb1.7e3cc6bc-896f-4c01-9007-75e32b6cebe8",""
+    OK
+    >
+
+**Note:** AnyCloud currently has issues receiving large responses from the last publication shown above.  Project to be continued....
+
 
 
 
