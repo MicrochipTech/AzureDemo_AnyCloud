@@ -1,45 +1,59 @@
-# Azure IoT Central AnyCloud Python Demo
+# Connecting to Azure IoT Central using Microchip's UART to AnyCloud™ Solution
 
 ## Introduction
-Anycloud is firmware package for Microchips WFI32 module that runs on the [WFI32 Curiosity](https://www.microchip.com/en-us/development-tool/EV12F11A) board or the [WFI32-IoT](https://www.microchip.com/en-us/development-tool/ev36w50a) board.  The AnyCloud project includes firmware to enable modifications, or a binary image that can be programmed directly.  It is available on Microchip's corporate github account.  To review software or download as a zip file, visit the [AnyCloud](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) project.
+[AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) is a Cloud connectivity solution package for Microchip's [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) IoT module that runs on the [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A) or the [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a). The [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) solution includes a full set of firmware to enable custom modifications and the default binary image that can be used as well. The solution is publicly available on [Microchip Technology's GitHub account](https://github.com/MicrochipTech). To review the software, clone the repository, or simply download a ZIP file, access the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) repository on [GitHub](https://github.com).
 
-## Prerequisite Software / Tools Installation
-For those using pre-built binary file for the WFI32 board, install
+## Software Prerequisites / Tools Installation
 
-* git
-* Python 3
-* Pyserial
-* OpenSSL (or similar tool to parse the device certificate file)
-
-
+* [Git](https://git-scm.com/)
+* [Python 3.0](https://www.python.org/download/releases/3.0/)
+* [Python Serial Port Extension](https://pypi.org/project/pyserial/)
+* [OpenSSL](https://www.openssl.org) (or similar tool to parse the device certificate file)
 
 ## Getting Started
 
-### Step 1 - Install AnyCloud on your WFI32-IoT or WFI32 Curiosity Board
-Instructions are available in the [AnyCloud README](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud/blob/main/README.md) file.
+### Step 1 - Install AnyCloud™ Firmware onto the Development Board
+
+Follow all of the existing instructions found in the [AnyCloud™ Getting Started Guide](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud/blob/main/README.md). During the setup process, you will discover the Virtual COM port number that is associated with your board's USB connection. For example, with the help of the Windows Device Manager, the Virtual COM port may show up as a "USB Serial Device" under the category `Ports (COM & LPT)`:
+
+<img src="./media/WindowsDeviceManager.png" alt="A screenshot of a new Device button" width = 300/>
+
+Using the text editor of your choice, open the `AzureAnyCloud.py` script and locate the following line:
+
+```bash
+ac = AnyCloud("your_COM_Port", 230400, False)
+```
+For example, if the USB Serial Device is associated with COM4, then the line would need to look like the following:
+
+```bash
+ac = AnyCloud("com4", 230400, False)
+```
+
+Edit this line to reflect the Virtual COM port associated with your board's USB serial connection and save your changes to the script.
+
+**Note** After the MPLAB X IPE has completed the programming of the FW image (HEX file), the IPE holds the WFI32 module in reset, so the board should be disconnected from the USB cable and then reconnected in order for the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) firmware to run after it has been programmed.
 
 Recommendations:
 
-Clone the project to your local machine, even if you are not planning to build it initially.  This provides a local copy of the README file, you can review project source code to self-support, and it includes the pre-built hex file that can be programmed without re-building if that is your wish. 
+Clone the repository to your local machine, even if you are not planning to rebuild the project initially.  This provides a local copy of the README file, you can review project source code to self-support, and it includes the pre-built HEX file that can be programmed without rebuilding if that is your wish. 
 
     git clone https://github.com/MicrochipTech/PIC32MZW1_AnyCloud
 
-**Note** To execute AT commands from a terminal to learn the AnyCloud software, make sure the terminal application has the capability to append '\r\n' (Carriage Return + Line Feed) to the commands you are executing.  The AT commands are not executed without the '\r\n' terminating characters.  
+**Note** To execute AT commands from a terminal to learn the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) software, make sure the terminal application has the capability to append `\r\n` (Carriage Return + Line Feed) to the commands you are executing.  The AT commands are not executed without the `\r\n` terminating characters.  
 
-### Step 2 - Read the device certificate from the module
+### Step 2 - Read the Device Certificate from the Module
 
-This certificate file will be needed when we create the device in Azure IoT Central
+The device certificate file will be needed when we create the device in Azure IoT Central using the individual enrollment method.
 
-#### 2.1 The device certificate is read using the the following AT command:
+#### 2.1 The **Device** certificate can be read out of the WFI32 module using the AT command `READCERT[={TYPE}]` (1 = Device, 2 = Root):
 
     AT+READCERT=1
 
-#### 2.2 Copy AT-READCERT output to a text editor, and save the certificate as a PEM file
-Example output from the AT+READCERT=1 command is below.
+#### 2.2 Copy the resulting output of the `AT+READCERT=1` command into a text editor, and save the certificate as a *.PEM file (an example output from the `AT+READCERT=1` command is shown here for your reference)
 
     +READCERT:1, 794,"-----BEGIN CERTIFICATE-----\nMIICHjCCAcWgAwIBAgIQWOZgk1Ppe0V5JRXGfs9JQTAKBggqhkjOPQQDAjBPMSEw\nHwYDVQQKDBhNaWNyb2NoaXAgVGVjaG5vbG9neSBJbmMxKjAoBgNVBAMMIUNyeXB0\nbyBBdXRoZW50aWNhdGlvbiBTaWduZXIgMkM2MDAgFw0yMDExMTEwNzAwMDBaGA8y\nMDQ4MTExMTA3MDAwMFowQjEhMB8GA1UECgwYTWljcm9jaGlwIFRlY2hub2xvZ3kg\nSW5jMR0wGwYDVQQDDBRzbjAxMjNGRTBDRjk2MDQzMkQwMTBZMBMGByqGSM49AgEG\nCCqGSM49AwEHA0IABFitivHZncd/TZI9DehJi0zo6mCBzuAOpqdoP+DeljIDHLZk\nNsJ8KkGE/LpT9LRf8S9uni2yh063As5UffoIeOWjgY0wgYowKgYDVR0RBCMwIaQf\nMB0xGzAZBgNVBAUTEmV1aTQ4X0U4RUIxQjIwNDVEMjAMBgNVHRMBAf8EAjAAMA4G\nA1UdDwEB/wQEAwIDiDAdBgNVHQ4EFgQUnNLVE1hJtf3x5HdI10xzvQQ6Z9YwHwYD\nVR0jBBgwFoAUy/wEPA2LnSAv7coGgreLjBgnVTQwCgYIKoZIzj0EAwIDRwAwRAIg\nfnI7XNwp9/BE2sqHwFuTGrdQzggqyqV1H9mubBJM1pQCIE4r+I3kq/o5uJ4O1nO8\naE8QzYQ/jXDo2aJXjTdvmc9d\n-----END CERTIFICATE-----\n"
 
-The output includes the AT command's formatting as well as line feeds '\n' that need to be removed.  Copy the output to a text editor, and modify the output so it is a properly formatted PEM file.  Save the file with a name of your choosing, with a PEM extenstion.  For example, you could use the filename *AnyCloud.PEM*.
+The output includes the AT command's formatting as well as line feeds `\n` that need to be removed.  Copy the output to a text editor, and modify the output so it is a properly-formatted PEM file.  Save the file with a name of your choosing, with a PEM file extension (e.g. *`AnyCloud_Device.PEM`*).
 
     -----BEGIN CERTIFICATE-----
     MIICHjCCAcWgAwIBAgIQWOZgk1Ppe0V5JRXGfs9JQTAKBggqhkjOPQQDAjBPMSEw
@@ -57,10 +71,11 @@ The output includes the AT command's formatting as well as line feeds '\n' that 
     -----END CERTIFICATE-----
 
 #### 2.3 Use OpenSSL to retrieve the common name used in the certificate
-The following OpenSSL command will list certificate details in a easy to read format
+The following command will list certificate details in an easy to read format
     
-    openssl x509 -in AnyCloud.PEM -text
-The output of the command will show all fields, but the common name is what is required to add a deivce into IoT Central.  That is shown in the *CN* field below. 
+    openssl x509 -in AnyCloud_Device.PEM -text
+
+The output of the command will show all fields, but the common name is what is required to register a device into an IoT Central application.  This common name (a.k.a. device ID) is shown in the Subject's *CN* field below. 
 
 
     Certificate:
@@ -82,9 +97,11 @@ The output of the command will show all fields, but the common name is what is r
                     8b:4c:e8:ea:60:81:ce:e0:0e:a6:a7:68:3f:e0:de:
                     ....
 
-Example: CN = sn0123FE0CF960432D01
+In this example, the Subject's CN = sn0123FE0CF960432D01
+
 ### Step 3 - Create an Azure IoT Central Application
-If you already have an existing IoT Central Application Created, skip to Step 4.
+
+If you already have an existing IoT Central Application created, skip to Step 4.
 
 #### 3.1 Create an Azure Account and Subscription
 
@@ -94,7 +111,7 @@ Microsoft has excellent instructions to create an new Azure account and subscrip
 
 Refer to the linked instructions to [create an Azure IoT Central Application](CreateAnAzureIoTCentralApplication.md).
 
-### Step 4 - Create a new device in your Azure IoT Central Application
+### Step 4 - Create a New Device in your Azure IoT Central Application
 
 #### 4.1 Select the Devices menu, and click the "+ New" button
 <img src="./media/CreateNewDeviceButton.png" alt="A screenshot of a new Device button" />
@@ -104,40 +121,42 @@ Refer to the linked instructions to [create an Azure IoT Central Application](Cr
 
 <img src="./media/CreateNewDevice.png" alt="A screenshot of a new Device Dialog" width = 550/>
 
-#### 4.2 Select the device, and then click Connect to configure the device authentication method
+#### 4.3 Select the device, and then click Connect to configure the device authentication method
 <img src="./media/SelectDevice.png" alt="A screenshot device selection" width = 700/>
 <img src="./media/ConnectButton.png" alt="A screenshot Connect Button" width = 600/>
 
-#### 4.3 Configure an x509 Individual Enrollment
-The connect button will open the device connection dialog.  Several items are accomplished here.
+#### 4.4 Configure an X.509 Individual Enrollment
+The Connect button will open the device connection dialog.  Several items are accomplished here.
 
 <img src="./media/DeviceConnectionDialog.png" alt="A screenshot Connect Button" width = 600/>
 
 1. Select the *Authentication type* as "Individual enrollment"
-2. Select the *Authentication method* as "Certifcates (X.509)"
-3. Select the file folder icon for the primary certificate, upload your device PEM file.  e.g. *AnyCloud.PEM*
-4. Select the file folder icon for the secondary certificate, upload your device PEM file.  e.g. *AnyCloud.PEM*  Both the primary and secondary certificate have to be selected to save the setting.
-5. Note the *ID scope* at the top of the dialog.  This is used when we configure the device to connect to Azure.
-6. Click the blue *Save* button, then click the *Close* button
+2. Select the *Authentication method* as "Certificates (X.509)"
+3. Select the file folder icon for the Primary certificate, upload your device PEM file (e.g. *`AnyCloud_Device.PEM`*).
+4. Select the file folder icon for the Secondary certificate, upload your device PEM file (e.g. *`AnyCloud_Device.PEM`*). Both the primary and secondary certificate have to be selected to save the setting.
+5. Note the *`ID scope`* at the top of the dialog.  This is used when we configure the device to connect to Azure.
+6. Click the blue *`Save`* button, then click the *`Close`* button
 
 Once the device has been configured for the X.509 individual enrollment, it is time to configure the Azure IoT Central Script for your application and device.
 
-### Step 5 - Configuring the AzureAnyCloud.py script
+### Step 5 - Configuring the AzureAnyCloud Script
 
-1. Open the AzureAnyCloud.py script in a text editor
+1. Open the `AzureAnyCloud.py` script in a text editor of your choice
 
-<img src="./media/ScriptConfiguration.png" alt="Script Configuration" width = 400/>
+    <img src="./media/ScriptConfiguration.png" alt="Script Configuration" width = 400/>
 
 2. Enter your WiFi network's SSID and passphrase as the *WiFi Credentials*
-3. Enter your Id Scope, and Device ID from the connect dialog (Step 4.2) into the *"*Azure Application/Device Information* settings.
+3. Enter your Id scope and Device ID from the Connect dialog (from Step 4.4) into the *Azure Application/Device Information* settings.
 4. Enter the model ID of the device template you wish to interact with in IoT Central.  Example, we can emulate the SAM-IoT Demonstration board from the script using *dtmi:com:Microchip:SAM_IoT_WM;2* as the model ID. 
 
-The model ID will be declared during the DPS registration process.  If the model is published in the Azure's public model repository, IoT Central will download the device model and use it to interact with your device based on the model characteristics.  You can create a  ustom device template in your IoT Central application, which will generate a new model ID that can declared and used with AnyCloud as well.
+The model ID will be declared during the DPS registration process.  If the model is published in the [Azure Device Model Repository](https://devicemodels.azure.com), IoT Central will automatically download the device model and use it to interact with your device based on the model's characteristics.  You can also create a custom device template in your IoT Central application, which will generate a new model ID that can declared and used with AnyCloud™ as well.
 
-### Step 6 - Run the AzureAnyCloud.py scrypt
-To run the Azure IoT Centra script type:
+### Step 6 - Run the AzureAnyCloud Script
 
-    python AzureAnyCloud
+To run the Azure IoT Central script type the following command line:
+
+    python3 AzureAnyCloud.py
+
 The script will check if you are connected to a WiFi network. If you are not connected, it will issue commands to connect with the SSID and passphrase provided.
 
     --------------------------------------------------------------------------------
@@ -182,7 +201,7 @@ The script will check if you are connected to a WiFi network. If you are not con
     >
     Event: WiFi connected
 
-It will then check if you are already connected to a broker.  If not, it will issue the commands to connect to the Azure DPS server.  Key things to note.  The DPS server uses a common host address to handle all requests.  The unique device ID entered into the top of hte script is used for the MQTT Client ID (MQTTC=3), and it is also part of the user name parameter (MQTTC=4).  The ID Scope identifies your application.  That is also part of the username field.
+It will then check if you are already connected to an MQTT broker.  If not, it will issue the commands to connect to the Azure DPS server. The DPS server uses a common host address to handle all requests. The unique device ID entered into the top of the script is used for the MQTT Client ID (MQTTC=3), and it is also part of the user name parameter (MQTTC=4). The ID Scope identifies your application which is also part of the username field.
 
     AT+MQTTCONN
     +MQTTCONN:0
@@ -213,7 +232,7 @@ It will then check if you are already connected to a broker.  If not, it will is
     >
     Event: MQTT broker connected
 
-Finally, the script subscribes to the DPS MQTT notification topic, and publishes to a topic that registers the device.  The initial publish to the registration topic includes the model ID as the payload.  The result of this publication will be a a JSON message with an operationID field, and the status "assigning".  The code then delays, and issues a polling request to a second topic to determine if the registration is compilete.
+Finally, the script subscribes to the DPS MQTT notification topic, and publishes to a topic that registers the device.  The initial publish to the registration topic includes the model ID as the payload.  The result of this publication will be a a JSON message with an operationID field, and the status "assigning".  The code then delays, and issues a polling request to a second topic to determine if the registration is complete.
 
     Start DPS registration...
     
@@ -241,7 +260,7 @@ Finally, the script subscribes to the DPS MQTT notification topic, and publishes
     OK
     >
 
-**Note:** AnyCloud currently has issues receiving large responses from the last publication shown above.  Project to be continued....
+**Note:** [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) currently has issues receiving large MQTT responses (greater than 512 bytes) from the last publication shown above.  Project to be continued....
 
 
 
