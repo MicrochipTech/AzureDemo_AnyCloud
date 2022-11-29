@@ -59,8 +59,6 @@ class Delay_Non_Blocking:
     else:
       return False
 
-
-
 class AnyCloud:
   def __init__(self, port, baud, debug):
     self.PORT = port
@@ -279,8 +277,7 @@ class AnyCloud:
       self.opId = json_payload["operationId"]
       self.sub_payload = ""
       self.sub_state = 4
-        
-    
+
   def kb_data_process(self, received):
     if received.startswith("AT"):
       self.pub_topic = None
@@ -334,8 +331,7 @@ class AnyCloud:
       else:
         print("warning: topic notification ignored, last topic still being processed") 
       ret_val = 1 #operating state    
-    
-      
+  
   def runApp(self):
     # wait for keyboard events
     if self.kb.poll_keyboard() == False:
@@ -403,17 +399,12 @@ class AnyCloud:
   
   def __del__(self):
     self.ser.close()
-  
 
-
-ac = AnyCloud("com11", 230400, False)
+ac = AnyCloud("your_COM_Port", 230400, False)
 
 while True:
   
   ac.runApp()
-   
-  
-  
-  
+
   
       
