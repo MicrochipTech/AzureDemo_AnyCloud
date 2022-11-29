@@ -33,6 +33,8 @@ Edit this line to reflect the Virtual COM port associated with your board's USB 
 
 #### 1.2 Open the `WFI32_DeviceCert.py` script and repeat the same process for setting the COM port.
 
+#### 1.3 Open the `WFI32_RootCert.py` script and repeat the same process for setting the COM port.
+
 <br>
 
 **Note** After the MPLAB X IPE has completed the programming of the FW image (HEX file), the IPE holds the WFI32 module in reset, so the board should be disconnected from the USB cable and then reconnected in order for the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) firmware to run after it has been programmed.
@@ -45,9 +47,9 @@ Clone the repository to your local machine, even if you are not planning to rebu
 
 **Note** To execute AT commands from a terminal to learn the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) software, make sure the terminal application has the capability to append `\r\n` (Carriage Return + Line Feed) to the commands you are executing.  The AT commands are not executed without the `\r\n` terminating characters.  
 
-### Step 2 - Read the Device Certificate from the Module
+### Step 2 - Read the Root and Device Certificates from the Module
 
-The device certificate file will be needed when we create the device in Azure IoT Central using the individual enrollment method.
+The device certificate file will be needed when we create the device in Azure IoT Central using the individual enrollment method. Another option is to use the group enrollment method which requires uploading the root certificate file to the Azure IoT Central application, so that any device which presents a leaf certificate that was derived from the root certificate will automatically be granted access to registration.
 
 #### 2.1 The **Device** certificate can be read out of the WFI32 module by executing the `WFI32_DeviceCert.py` script. The certificate file will be named based on the device's Common Name (i.e. `<"COMMON_NAME">.PEM`). Execute the following command in a PowerShell or Command Prompt window:
 
@@ -57,8 +59,7 @@ The device certificate file will be needed when we create the device in Azure Io
     
     openssl x509 -in <"COMMON_NAME">.PEM -text
 
-The output of the command will show all fields, but the common name is what is required to register a device into an IoT Central application.  This common name (a.k.a. device ID) is shown in the Subject's *CN* field as illustrated below. In this example, the Subject's CN = sn0123FE0CF960432D01: 
-
+The output of the command will show all fields, but the common name is what is required to register a device into an IoT Central application.  This common name (a.k.a. device ID) is shown in the Subject's *CN* field as illustrated below. In this example, the Subject's CN = sn0123FE0CF960432D01:
 
     Certificate:
     Data:
@@ -79,6 +80,10 @@ The output of the command will show all fields, but the common name is what is r
                     8b:4c:e8:ea:60:81:ce:e0:0e:a6:a7:68:3f:e0:de:
                     ....
 
+#### 2.3 The **Root** certificate can be read out of the WFI32 module by executing the `WFI32_RootCert.py` script. The certificate file will be named `RootCA.PEM`. Execute the following command in a PowerShell or Command Prompt window:
+
+    python3 WFI32_RootCert.py
+
 ### Step 3 - Create an Azure IoT Central Application
 
 If you already have an existing IoT Central Application created, skip to Step 4.
@@ -91,33 +96,9 @@ Microsoft has excellent instructions to create an new Azure account and subscrip
 
 Refer to the linked instructions to [create an Azure IoT Central Application](CreateAnAzureIoTCentralApplication.md).
 
-### Step 4 - Create a New Device in your Azure IoT Central Application
+### Step 4 - Enroll Your Device in the Azure IoT Central Application
 
-#### 4.1 Select the Devices menu, and click the "+ New" button
-<img src="./media/CreateNewDeviceButton.png" alt="A screenshot of a new Device button" />
-
-#### 4.2 Use the device certificate common name for the Device ID
-*OpenSSL* was used previously to read the certificate common name from the PEM file.  Use the common name for the *Device ID* field. This pairing is how the certificate is matched to the device during registration. The *Device name* can be changed to a friendly name, or left the same as the *Device ID*.
-
-<img src="./media/CreateNewDevice.png" alt="A screenshot of a new Device Dialog" width = 550/>
-
-#### 4.3 Select the device, and then click Connect to configure the device authentication method
-<img src="./media/SelectDevice.png" alt="A screenshot device selection" width = 700/>
-<img src="./media/ConnectButton.png" alt="A screenshot Connect Button" width = 600/>
-
-#### 4.4 Configure an X.509 Individual Enrollment
-The Connect button will open the device connection dialog.  Several items are accomplished here.
-
-<img src="./media/DeviceConnectionDialog.png" alt="A screenshot Connect Button" width = 600/>
-
-1. Select the *Authentication type* as "Individual enrollment"
-2. Select the *Authentication method* as "Certificates (X.509)"
-3. Select the file folder icon for the Primary certificate, upload your device PEM file (e.g. *`<"COMMON_NAME">.PEM`*).
-4. Select the file folder icon for the Secondary certificate, upload your device PEM file (e.g. *`<"COMMON_NAME">.PEM`*). Both the primary and secondary certificate have to be selected to save the setting, which is why the same PEM file is uploaded twice.
-5. Note the *`ID scope`* at the top of the dialog.  This is used when we configure the device to connect to Azure.
-6. Click the blue *`Save`* button, then click the *`Close`* button
-
-Once the device has been configured for the X.509 individual enrollment, it is time to configure the Azure IoT Central Script for your application and device.
+Choose either the [Group](./IoT_Central_Group_Enrollment.md) or [Individual](./IoT_Central_Individual_Enrollment.md) enrollment method to register your device with the IoT Central application. [Group enrollment](https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service#enrollment-group) allows you to create a group of allowable devices which each have a leaf certificate derived from a common root certificate so that devices do not need to be pre-enrolled on an individual basis. Enrollment groups are used to enroll multiple related devices; [Individual enrollment](https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service#individual-enrollment) is used to enroll a single device. Feel free to review both methods and be sure to complete one of them before proceeding with the next step.
 
 ### Step 5 - Configuring the AzureAnyCloud Script
 
@@ -126,7 +107,7 @@ Once the device has been configured for the X.509 individual enrollment, it is t
     <img src="./media/ScriptConfiguration.png" alt="Script Configuration" width = 400/>
 
 2. Enter your WiFi network's SSID and passphrase as the *WiFi Credentials*
-3. Enter your Id scope and Device ID from the Connect dialog (from Step 4.4) into the *Azure Application/Device Information* settings.
+3. Enter your ID scope and Device ID (Common Name) into the *Azure Application/Device Information* settings.
 4. Enter the model ID of the device template you wish to interact with in IoT Central.  Example, we can emulate the SAM-IoT Demonstration board from the script using *`dtmi:com:Microchip:SAM_IoT_WM;2`* as the model ID. 
 
 The model ID will be declared during the DPS registration process.  If the model is published in the [Azure Device Model Repository](https://devicemodels.azure.com), IoT Central will automatically download the device model and use it to interact with your device based on the model's characteristics.  You can also create a custom device template in your IoT Central application, which will generate a new model ID that can declared and used with the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) repository on [GitHub](https://github.com) as well.
