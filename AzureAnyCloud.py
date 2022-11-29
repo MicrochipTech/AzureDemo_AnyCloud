@@ -3,6 +3,9 @@ import time
 import kbhit
 import json
 
+# COM port setting
+COM_PORT = "your_COM_Port"
+
 # WiFI Credentials
 SSID = "your_SSID"
 PASSPHRASE = "your_PASSPHRASE" 
@@ -400,7 +403,7 @@ class AnyCloud:
   def __del__(self):
     self.ser.close()
 
-ac = AnyCloud("your_COM_Port", 230400, False)
+ac = AnyCloud(COM_PORT, 230400, False)
 
 while True:
   
