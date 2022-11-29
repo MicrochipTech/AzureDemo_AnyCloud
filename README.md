@@ -14,22 +14,26 @@
 
 ### Step 1 - Install AnyCloud™ Firmware onto the Development Board
 
-Follow all of the existing instructions found in the [AnyCloud™ Getting Started Guide](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud/blob/main/README.md). During the setup process, you will discover the Virtual COM port number that is associated with your board's USB connection. For example, with the help of the Windows Device Manager, the Virtual COM port may show up as a "USB Serial Device" under the category `Ports (COM & LPT)`:
+Follow all of the existing instructions found in the [AnyCloud™ Getting Started Guide](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud/blob/main/README.md). During the setup process, you will discover the Virtual COM port number that is associated with your board's USB-to-UART serial connection. For example, with the help of the Windows Device Manager, under the category `Ports (COM & LPT)`, the Virtual COM port may show up as a "USB Serial Device" as illustrated here:
 
 <img src="./media/WindowsDeviceManager.png" alt="A screenshot of a new Device button" width = 300/>
 
-Using the text editor of your choice, open the `AzureAnyCloud.py` script and locate the following line:
+#### 1.1 Using the text editor of your choice, open the `AzureAnyCloud.py` script and locate the following line towards the top of the file:
 
 ```bash
-ac = AnyCloud("your_COM_Port", 230400, False)
+COM_PORT = "your_COM_Port"
 ```
-For example, if the USB Serial Device is associated with COM4, then the line would need to look like the following:
+For example, if the USB Serial Device is associated with `COM4`, then the line would need to be changed to look like the following:
 
 ```bash
-ac = AnyCloud("com4", 230400, False)
+COM_PORT = "COM4"
 ```
 
 Edit this line to reflect the Virtual COM port associated with your board's USB serial connection and save your changes to the script.
+
+#### 1.2 Open the `WFI32_DeviceCert.py` script and repeat the same process for setting the COM port.
+
+<br>
 
 **Note** After the MPLAB X IPE has completed the programming of the FW image (HEX file), the IPE holds the WFI32 module in reset, so the board should be disconnected from the USB cable and then reconnected in order for the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) firmware to run after it has been programmed.
 
@@ -45,37 +49,15 @@ Clone the repository to your local machine, even if you are not planning to rebu
 
 The device certificate file will be needed when we create the device in Azure IoT Central using the individual enrollment method.
 
-#### 2.1 The **Device** certificate can be read out of the WFI32 module using the AT command `READCERT[={TYPE}]` (1 = Device, 2 = Root):
+#### 2.1 The **Device** certificate can be read out of the WFI32 module by executing the `WFI32_DeviceCert.py` script. The certificate file will be named based on the device's Common Name (i.e. `<"COMMON_NAME">.PEM`). Execute the following command in a PowerShell or Command Prompt window:
 
-    AT+READCERT=1
+    python3 WFI32_DeviceCert.py
 
-#### 2.2 Copy the resulting output of the `AT+READCERT=1` command into a text editor, and save the certificate as a *.PEM file (an example output from the `AT+READCERT=1` command is shown here for your reference)
-
-    +READCERT:1, 794,"-----BEGIN CERTIFICATE-----\nMIICHjCCAcWgAwIBAgIQWOZgk1Ppe0V5JRXGfs9JQTAKBggqhkjOPQQDAjBPMSEw\nHwYDVQQKDBhNaWNyb2NoaXAgVGVjaG5vbG9neSBJbmMxKjAoBgNVBAMMIUNyeXB0\nbyBBdXRoZW50aWNhdGlvbiBTaWduZXIgMkM2MDAgFw0yMDExMTEwNzAwMDBaGA8y\nMDQ4MTExMTA3MDAwMFowQjEhMB8GA1UECgwYTWljcm9jaGlwIFRlY2hub2xvZ3kg\nSW5jMR0wGwYDVQQDDBRzbjAxMjNGRTBDRjk2MDQzMkQwMTBZMBMGByqGSM49AgEG\nCCqGSM49AwEHA0IABFitivHZncd/TZI9DehJi0zo6mCBzuAOpqdoP+DeljIDHLZk\nNsJ8KkGE/LpT9LRf8S9uni2yh063As5UffoIeOWjgY0wgYowKgYDVR0RBCMwIaQf\nMB0xGzAZBgNVBAUTEmV1aTQ4X0U4RUIxQjIwNDVEMjAMBgNVHRMBAf8EAjAAMA4G\nA1UdDwEB/wQEAwIDiDAdBgNVHQ4EFgQUnNLVE1hJtf3x5HdI10xzvQQ6Z9YwHwYD\nVR0jBBgwFoAUy/wEPA2LnSAv7coGgreLjBgnVTQwCgYIKoZIzj0EAwIDRwAwRAIg\nfnI7XNwp9/BE2sqHwFuTGrdQzggqyqV1H9mubBJM1pQCIE4r+I3kq/o5uJ4O1nO8\naE8QzYQ/jXDo2aJXjTdvmc9d\n-----END CERTIFICATE-----\n"
-
-The output includes the AT command's formatting as well as line feeds `\n` that need to be removed.  Copy the output to a text editor, and modify the output so it is a properly-formatted PEM file.  Save the file with a name of your choosing, with a PEM file extension (e.g. *`AnyCloud_Device.PEM`*).
-
-    -----BEGIN CERTIFICATE-----
-    MIICHjCCAcWgAwIBAgIQWOZgk1Ppe0V5JRXGfs9JQTAKBggqhkjOPQQDAjBPMSEw
-    HwYDVQQKDBhNaWNyb2NoaXAgVGVjaG5vbG9neSBJbmMxKjAoBgNVBAMMIUNyeXB0
-    byBBdXRoZW50aWNhdGlvbiBTaWduZXIgMkM2MDAgFw0yMDExMTEwNzAwMDBaGA8y
-    MDQ4MTExMTA3MDAwMFowQjEhMB8GA1UECgwYTWljcm9jaGlwIFRlY2hub2xvZ3kg
-    SW5jMR0wGwYDVQQDDBRzbjAxMjNGRTBDRjk2MDQzMkQwMTBZMBMGByqGSM49AgEG
-    CCqGSM49AwEHA0IABFitivHZncd/TZI9DehJi0zo6mCBzuAOpqdoP+DeljIDHLZk
-    NsJ8KkGE/LpT9LRf8S9uni2yh063As5UffoIeOWjgY0wgYowKgYDVR0RBCMwIaQf
-    MB0xGzAZBgNVBAUTEmV1aTQ4X0U4RUIxQjIwNDVEMjAMBgNVHRMBAf8EAjAAMA4G
-    A1UdDwEB/wQEAwIDiDAdBgNVHQ4EFgQUnNLVE1hJtf3x5HdI10xzvQQ6Z9YwHwYD
-    VR0jBBgwFoAUy/wEPA2LnSAv7coGgreLjBgnVTQwCgYIKoZIzj0EAwIDRwAwRAIg
-    fnI7XNwp9/BE2sqHwFuTGrdQzggqyqV1H9mubBJM1pQCIE4r+I3kq/o5uJ4O1nO8
-    aE8QzYQ/jXDo2aJXjTdvmc9d
-    -----END CERTIFICATE-----
-
-#### 2.3 Use OpenSSL to retrieve the common name used in the certificate
-The following command will list certificate details in an easy to read format
+#### 2.2 Use OpenSSL to verify that the Common Name used in the device certificate matches the name of the PEM file which was auto-generated by the script. The following command will list certificate details in an easy to read format:
     
-    openssl x509 -in AnyCloud_Device.PEM -text
+    openssl x509 -in <"COMMON_NAME">.PEM -text
 
-The output of the command will show all fields, but the common name is what is required to register a device into an IoT Central application.  This common name (a.k.a. device ID) is shown in the Subject's *CN* field below. 
+The output of the command will show all fields, but the common name is what is required to register a device into an IoT Central application.  This common name (a.k.a. device ID) is shown in the Subject's *CN* field as illustrated below. In this example, the Subject's CN = sn0123FE0CF960432D01: 
 
 
     Certificate:
@@ -96,8 +78,6 @@ The output of the command will show all fields, but the common name is what is r
                     04:58:ad:8a:f1:d9:9d:c7:7f:4d:92:3d:0d:e8:49:
                     8b:4c:e8:ea:60:81:ce:e0:0e:a6:a7:68:3f:e0:de:
                     ....
-
-In this example, the Subject's CN = sn0123FE0CF960432D01
 
 ### Step 3 - Create an Azure IoT Central Application
 
@@ -132,8 +112,8 @@ The Connect button will open the device connection dialog.  Several items are ac
 
 1. Select the *Authentication type* as "Individual enrollment"
 2. Select the *Authentication method* as "Certificates (X.509)"
-3. Select the file folder icon for the Primary certificate, upload your device PEM file (e.g. *`AnyCloud_Device.PEM`*).
-4. Select the file folder icon for the Secondary certificate, upload your device PEM file (e.g. *`AnyCloud_Device.PEM`*). Both the primary and secondary certificate have to be selected to save the setting.
+3. Select the file folder icon for the Primary certificate, upload your device PEM file (e.g. *`<"COMMON_NAME">.PEM`*).
+4. Select the file folder icon for the Secondary certificate, upload your device PEM file (e.g. *`<"COMMON_NAME">.PEM`*). Both the primary and secondary certificate have to be selected to save the setting, which is why the same PEM file is uploaded twice.
 5. Note the *`ID scope`* at the top of the dialog.  This is used when we configure the device to connect to Azure.
 6. Click the blue *`Save`* button, then click the *`Close`* button
 
@@ -147,9 +127,9 @@ Once the device has been configured for the X.509 individual enrollment, it is t
 
 2. Enter your WiFi network's SSID and passphrase as the *WiFi Credentials*
 3. Enter your Id scope and Device ID from the Connect dialog (from Step 4.4) into the *Azure Application/Device Information* settings.
-4. Enter the model ID of the device template you wish to interact with in IoT Central.  Example, we can emulate the SAM-IoT Demonstration board from the script using *dtmi:com:Microchip:SAM_IoT_WM;2* as the model ID. 
+4. Enter the model ID of the device template you wish to interact with in IoT Central.  Example, we can emulate the SAM-IoT Demonstration board from the script using *`dtmi:com:Microchip:SAM_IoT_WM;2`* as the model ID. 
 
-The model ID will be declared during the DPS registration process.  If the model is published in the [Azure Device Model Repository](https://devicemodels.azure.com), IoT Central will automatically download the device model and use it to interact with your device based on the model's characteristics.  You can also create a custom device template in your IoT Central application, which will generate a new model ID that can declared and used with AnyCloud™ as well.
+The model ID will be declared during the DPS registration process.  If the model is published in the [Azure Device Model Repository](https://devicemodels.azure.com), IoT Central will automatically download the device model and use it to interact with your device based on the model's characteristics.  You can also create a custom device template in your IoT Central application, which will generate a new model ID that can declared and used with the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) repository on [GitHub](https://github.com) as well.
 
 ### Step 6 - Run the AzureAnyCloud Script
 

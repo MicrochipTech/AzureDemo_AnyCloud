@@ -3,6 +3,9 @@ import time
 import subprocess
 import os
 
+# COM port setting
+COM_PORT = "your_COM_Port"
+
 class Delay_Non_Blocking:
   def __init__(self):
     self.isStarted = False
@@ -187,7 +190,7 @@ class AnyCloud:
   
 
 
-ac = AnyCloud("com11", 230400, False)
+ac = AnyCloud(COM_PORT, 230400, False)
 
 while True:
   
