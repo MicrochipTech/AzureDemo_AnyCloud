@@ -1,20 +1,25 @@
-# Connecting to Azure IoT Central using Microchip's UART to AnyCloud™ Solution
+# Connecting to Azure IoT Central using Microchip's UART-to-AnyCloud™ Solution
 
 ## Introduction
+
 [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) is a Cloud connectivity solution package for Microchip's [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) IoT module that runs on the [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A) or the [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a). The [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) solution includes a full set of firmware to enable custom modifications and the default binary image that can be used as well. The solution is publicly available on [Microchip Technology's GitHub account](https://github.com/MicrochipTech). To review the software, clone the repository, or simply download a ZIP file, access the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) repository on [GitHub](https://github.com).
+
+The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (which has been provisioned with the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) firmware) is meant to act as a "UART to Cloud" bridge to enable the Host MCU of an IoT device to easily connect to (and communicate with) a cloud application. In this example, a PC runs various Python scripts to emulate the operations that a Host MCU would need to execute in order to authenticate, connect, and communicate with a Microsoft Azure IoT Central application.
+
+<img src="./media/SolutionBlockDiagram.png" alt="A screenshot of a new Device button" width = 700/>
 
 ## Software Prerequisites / Tools Installation
 
 * [Git](https://git-scm.com/)
 * [Python 3.0](https://www.python.org/download/releases/3.0/)
 * [Python Serial Port Extension](https://pypi.org/project/pyserial/)
-* [OpenSSL](https://www.openssl.org) (or similar tool to parse the device certificate file)
+* [OpenSSL](https://www.openssl.org)
 
 ## Getting Started
 
-### Step 1 - Install AnyCloud™ Firmware onto the Development Board
+### Step 1 - Install the AnyCloud™ Firmware onto the Development Board
 
-Follow all of the existing instructions found in the [AnyCloud™ Getting Started Guide](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud/blob/main/README.md). During the setup process, you will discover the Virtual COM port number that is associated with your board's USB-to-UART serial connection. For example, with the help of the Windows Device Manager, under the category `Ports (COM & LPT)`, the Virtual COM port may show up as a "USB Serial Device" as illustrated here:
+Follow all of the existing instructions found in the [AnyCloud™ Getting Started Guide](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud/blob/main/README.md) to get the hardware platform set up and verified. During the setup process, you will discover the Virtual COM port number that is associated with your board's USB-to-UART serial connection with your PC. For example, with the help of the the Windows Device Manager, under the category `Ports (COM & LPT)`, the Virtual COM port may show up as a "USB Serial Device" as illustrated here:
 
 <img src="./media/WindowsDeviceManager.png" alt="A screenshot of a new Device button" width = 300/>
 
@@ -98,7 +103,7 @@ Refer to the linked instructions to [create an Azure IoT Central Application](Cr
 
 ### Step 4 - Enroll Your Device in the Azure IoT Central Application
 
-Choose either the [Group](./IoT_Central_Group_Enrollment.md) or [Individual](./IoT_Central_Individual_Enrollment.md) enrollment method to register your device with the IoT Central application. [Group enrollment](https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service#enrollment-group) allows you to create a group of allowable devices which each have a leaf certificate derived from a common root certificate so that devices do not need to be pre-enrolled on an individual basis. Enrollment groups are used to enroll multiple related devices; [Individual enrollment](https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service#individual-enrollment) is used to enroll a single device. Feel free to review both methods and be sure to complete one of them before proceeding with the next step.
+Choose either the [Group](./IoT_Central_Group_Enrollment.md) or [Individual](./IoT_Central_Individual_Enrollment.md) enrollment method to register your device with the IoT Central application. [Group enrollment](https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service#enrollment-group) allows you to create a group of allowable devices which each have a leaf certificate derived from a common root certificate so that devices do not need to be pre-enrolled on an individual basis. Enrollment groups are used to enroll multiple related devices; [Individual enrollment](https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service#individual-enrollment) is used to enroll a single device. Feel free to review both methods and be sure to complete your preferred method before proceeding with the next step.
 
 ### Step 5 - Configuring the AzureAnyCloud Script
 
