@@ -15,6 +15,51 @@ ID_SCOPE = "your_ID_SCOPE"
 DEVICE_ID = "your_DEVICE_ID"
 MODEL_ID = "your_MODEL_ID"
 
+
+# -----------------------------------------------------------------------------
+# Application States
+APP_STATE_INIT = 0
+APP_STATE_WIFI_CONNECT = 1
+APP_STATE_DPS_REGISTER = 2
+APP_STATE_IOTC_CONNECT = 3
+APP_STATE_IOTC_GET_DEV_TWIN = 4
+APP_STATE_IOTC_HELLO_AZURE = 5
+APP_STATE_IOTC_DEMO = 6
+# -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Azure DPS Topics
+
+# initiate DPS registration
+TOPIC_DPS_INIT_REG = "$dps/registrations/PUT/iotdps-register/?rid="
+
+TOPIC_DPS_POLL_REG_COMPLETE1 = "$dps/registrations/GET/iotdps-get-operationstatus/?$rid="
+TOPIC_DPS_POLL_REG_COMPLETE2 = "&operationId="
+
+# DPS result topic (for subscription)
+TOPIC_DPS_RESULT = "$dps/registrations/res/#"
+# -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# Azure IoT Central Topics
+
+# telemetry topic (for publish)
+TOPIC_IOTC_TELEMETRY = "devices/"+DEVICE_ID+"/messages/events/"
+# write property to cloud topic (for publish)
+TOPIC_IOTC_WRITE_PROPERTY = "$iothub/twin/PATCH/properties/reported/?rid=" 
+# request all device twin properties (for publish)
+TOPIC_IOTC_PROPERTY_REQEST = "$iothub/twin/GET/?$rid="
+#
+TOPIC_IOTC_CMD_RESP = "$iothub/methods/res/200/?$rid=" 
+
+# method topic (for subscription)
+TOPIC_IOTC_METHOD_REQ = "$iothub/methods/POST/#"
+
+# property topics (for subscriptions)
+TOPIC_IOTC_PROP_DESIRED = "$iothub/twin/PATCH/properties/desired/#"
+TOPIC_IOTC_PROPERTY_RES = "$iothub/twin/res/#" 
+# -----------------------------------------------------------------------------
+
 class Polling_KB_CMD_Input:
   def __init__(self):
     self.kb = kbhit.KBHit()
@@ -64,28 +109,77 @@ class Delay_Non_Blocking:
 
 class AnyCloud:
   def __init__(self, port, baud, debug):
-    self.PORT = port
-    self.BAUD = baud
-    self.DEBUG = debug
-    self.SER_TIMEOUT = 0.1
-    self.ser_buf = ""
-    self.init_state = 0
-    self.sub_state = 0
-    self.app_state = 0
-    self.wifi_connected = False
-    self.broker_connected = False
-    self.broker_topics_subs = 0
-    self.pub_topic = ""
+    
+    # initialize class variables
+    
+    self.ser_buf = ""                    # serial buffer for processing messages
+
+    # main application state
+    self.app_state = 0                   
+    
+    # MQTT handling variables 
+    self.rid = 0                         # request id field used by some publish commands.
+                                         #   incremented between publishing attempts
+    self.sub_payload = ""                # application serial buffer used to process recieved data.
+       
+    # wifi connection related variables
+    self.wifi_state = 0                  # state variable for wifi initialization
+    self.wifi_connected = False          # set to True when WiFi connected
+    
+    # DPS connection variables
+    self.dps_state = 0                   # state variable for DPS process
+    self.opId = ""                       # opId returned by DPS, used to poll registration
+    self.iotc_host = ""                  # iotc host name returned by DPS
+    self.broker_connected = False        # set to True when connected to DPS broker
+   
+    # IOTC connection variables
+    self.iotc_connect_state = 0          # state variable for IOTC connection
+    self.iotc_topic_index = 1;           # tracks how many topics have been subscribed to for
+                                         # iotc event call back to adjust the state variable.
+                                         
+    # IOTC Hello World variables
+    self.hw_state = 0                    # state variable for hellow world after connected.
+    
+    #IOTC application variables
+    self.telemetryInterval = 10          # default telemetry interval (seconds)
+    self.lightSensor = 0                 # default light sensor value
+
+    self.broker_topics_subs = 0          # keep track if we have subscribed DPS notification topic   
+    self.pub_topic = ""                  
     self.pub_payload = ""
-    self.sub_payload = ""
-    self.opId = ""
-    self.ser = serial.Serial(self.PORT, self.BAUD, timeout = self.SER_TIMEOUT)
+
+
+    # initialize event handle to None.  Set by rx_data_process so application can respond to
+    # events signaled by AnyCloud serial output
+    self.evt_handler = None
+    
+
+    self.DEBUG = debug        # if set to True, will print all recieved data.
+    
+    self.SER_TIMEOUT = 0.1    # sets how long pyserial will delay waiting for a character
+                              #   reading a character a time, no need to wait for long messages
+    
+    #initialize pyserial, delay and keyboard handler classes
+    self.ser = serial.Serial(port, baud, timeout = self.SER_TIMEOUT)
     self.delay = Delay_Non_Blocking()
     self.kb = Polling_KB_CMD_Input()
-    self.evt_handler = None
+
+
+  # keyboard processing
+  def kb_data_process(self, received):
+    if received.startswith("AT"):
+      self.pub_topic = None
+      self.sub_topic = None
+      return True
+    else:
+      return False
+  
+  # issue serial command to AnyCloud  
   def cmd_issue(self, command):
     self.ser.write(bytearray(command, 'utf-8'))
-  
+
+  # poll serial port for recieved. read until prompt '>',
+  # return whole message
   def serial_recieve(self):
     read_val = self.ser.read(1)
     if read_val != b'':
@@ -96,137 +190,14 @@ class AnyCloud:
         ret_val = self.ser_buf
         self.ser_buf = ""
         return ret_val
-    return ""        
-  
-  def sm_initialize(self):
-      # start initialization
-      if self.init_state == 0:
-        print("\r\nStart Initialization...\r\n.............................\r\n")
-        self.init_state = 1
-      self.delay.delay_time_start()
-      if self.delay.delay_sec_poll(0.100) :
-        #enable serial command echo
-        if self.init_state == 1:
-          self.cmd_issue('ATE1\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        
-        # default verbosity set to 5, which is max.
-        #if self.init_state == 1:
-        #  self.cmd_issue('ATV=5\r\n')
-        #  self.init_state = self.init_state + 1
-        #  return self.init_state
-                
-        # wifi initialization, starting with check for existing WiFi connection
-        elif self.init_state == 2:
-          self.cmd_issue('AT+WSTA\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        elif self.init_state == 3:
-          self.cmd_issue('AT+WSTAC=1,"'+SSID+'"\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        elif self.init_state == 4:
-          self.cmd_issue('AT+WSTAC=2,3\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        elif self.init_state == 5:
-          self.cmd_issue('AT+WSTAC=3,"' + PASSPHRASE + '"\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        elif self.init_state == 6:
-          self.cmd_issue('AT+WSTAC=4,255\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        elif self.init_state == 7:
-          self.cmd_issue('AT+WSTAC=12,"pool.ntp.org"\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        elif self.init_state == 8:
-          self.cmd_issue('AT+WSTAC=13,1\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        elif self.init_state == 9:
-          self.cmd_issue('AT+WSTA=1\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        
-        #delay until event changes init_state
-        elif self.init_state == 10: 
-          # don't advance state automatically, do it from evt_handler
-          pass
-        
-        elif self.init_state == 11:
-          self.cmd_issue('AT+MQTTCONN\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state  
-        
-        # configure and connect to MQTT broker
-        elif self.init_state == 12: #dps broker
-          self.cmd_issue('AT+MQTTC=1,"global.azure-devices-provisioning.net\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        elif self.init_state == 13: #dps broker port (TLS)
-          self.cmd_issue('AT+MQTTC=2,8883\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        elif self.init_state == 14: #IoTC MQTT Client ID
-          self.cmd_issue('AT+MQTTC=3,"' + DEVICE_ID + '"\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        elif self.init_state == 15: #IoTC Username
-          self.cmd_issue('AT+MQTTC=4,"' + ID_SCOPE +'/registrations/'+ DEVICE_ID + '/api-version=2019-03-31"\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state
-        elif self.init_state == 16: #enable TLS
-          self.cmd_issue('AT+MQTTC=7,1\r\n')
-          self.init_state = self.init_state + 1
-          return self.init_state        
-        elif self.init_state == 17:
-          self.cmd_issue('AT+MQTTCONN=1\r\n') # connect
-          #goto delay state and wait for connect to broker event
-          self.init_state = 10                            
-          return self.init_state
-        
-        # init complete        
-        elif self.init_state == 254:
-          return self.init_state          
-        else:
-          return 255
-      else:
-        return 0
-  
-  def sm_dps_register(self):
-      if self.sub_state == 0:
-        print("subscribe to topics")
-        self.sub_state = self.sub_state + 1
-        return self.sub_state
-      elif self.sub_state == 1:
-        self.mqtt_subscribe("\"$dps/registrations/res/#\"", 0)
-        self.sub_state = 2 #delay for evt_topic_subscribed
-        return self.sub_state
-      elif self.sub_state == 2:
-        #delay here until event moves to next state
-        return self.sub_state
-      elif self.sub_state == 3:
-        self.mqtt_publish(0,0,"$dps/registrations/PUT/iotdps-register/?rid=1",('{\\\"payload\\\" : {\\\"modelId\\\" : \\\"' + MODEL_ID + '\\\"}}'))
-        self.sub_state = 2 #delay for evt_topic_published
-        return self.sub_state  
-      elif self.sub_state == 4:
-        self.delay.delay_time_start()
-        if self.delay.delay_sec_poll(12.0):
-          self.mqtt_publish(0,0,("$dps/registrations/GET/iotdps-get-operationstatus/?rid=2&operationId="+self.opId),"")
-          self.sub_state = 2 #delay for evt_topic_published
-        return self.sub_state    
-      elif self.sub_state == 254:
-        return self.sub_state
-      else:
-        print("subscriptions error")
-        
+    return ""       
+    
+  # subscribe to MQTT topic
   def mqtt_subscribe(self, topic, iQOS):
-    cmd = "AT+MQTTSUB=" + topic +","+str(iQOS) +'\r\n'
+    cmd = "AT+MQTTSUB=" + '\"' +topic +'\",' + str(iQOS) +'\r\n'
     self.cmd_issue(cmd)
   
+  # publish to MQTT topic
   def mqtt_publish(self, iQoS, iRetain, strTopic, strPayload):
     try:  #try blick looks for CR, and removes it if present before joining CMD
       loc = strPayload.index('\r')
@@ -236,22 +207,37 @@ class AnyCloud:
       strPayload = strPayload[0:loc]
     cmd = "AT+MQTTPUB=0," + str(iQoS)+','+ str(iRetain)+ ',\"' + strTopic + '\",\"' + strPayload + '\"\r\n'
     self.cmd_issue(cmd)
+  
+  # returns JSON topic and payload from AT+MQTTPUB event notification payload
+  def processTopicNotification(self, ATMQTTPUB_payload):
+    topic_start = ATMQTTPUB_payload.find(',') + 1
+    topic_len = int(ATMQTTPUB_payload[10:ATMQTTPUB_payload.find(',')])+2
+    topic = ATMQTTPUB_payload[topic_start:topic_start+topic_len]
+    payload_len_str_start = topic_start + topic_len + 1
+    payload_len_str_end = payload_len_str_start + int(ATMQTTPUB_payload[(payload_len_str_start):].find(','))
+    payload_len = int(ATMQTTPUB_payload[payload_len_str_start:payload_len_str_end])
+    payload = ATMQTTPUB_payload[(payload_len_str_end+2):(payload_len_str_end + payload_len + 2)]
+    print("--------------------------------\r\nsubscription topic received\r\n  "+topic)
+    json_payload = json.loads(payload)
+    print("subcription payload recieved\r\n"+json.dumps(json_payload, indent = 4)+"\r\n--------------------------------")
+    return (topic, payload)
     
+   
+  
   def evt_init_error(self):
-    self.init_state = 254
+    self.wifi_state = 254
     print("Event: Error,stopping initialization")
   
   def evt_wifi_connected(self):
     if self.wifi_connected == True :
-      self.init_state = 11 #no WiFi Init needed, jump to MQTT configure and connect
+      self.wifi_state = 254 #no WiFi Init needed
       print("Event: WiFi connected")    
     else :
       print("Event: WiFi not connected, initialializing")
   
   def evt_dps_broker_connected(self):
-     self.init_state = 254
-     self.sub_state = 0
-     #self.app_state = 2
+     #self.wifi_state = 254
+     self.dps_state = 7
      self.broker_connected = True
      print("Event: MQTT broker connected")
   
@@ -259,36 +245,328 @@ class AnyCloud:
     print("\r\nEvent: Subscribed to DPS topics, publish registration request....\r\n")
     self.broker_topics_subs = self.broker_topics_subs + 1
     if self.broker_topics_subs == 1 :
-      self.sub_state = 3 #publish registration
+      self.dps_state = 8 #publish registration
     else:
       print("Event:  Error, wasn't expecting multiple subscriptions for DPS server")
-    
+  
+  def evt_iotc_topic_subscribed(self):
+    if self.iotc_topic_index == 1:
+      self.iotc_connect_state = 8 #8
+      self.iotc_topic_index = 2
+    elif self.iotc_topic_index == 2:
+      self.iotc_connect_state = 9
+      self.iotc_topic_index = 3
+    elif self.iotc_topic_index == 3:
+      self.iotc_connect_state = 10
+      self.iotc_topic_index = 1
+    else :
+      print("not expecting additional IOTC topics for subscription")
+      
   def evt_dps_topic_notified(self):
     print("Event: DPS subscription recieved notification")
     if self.opId == "":
-      topic_start = self.sub_payload.find(',') + 1
-      topic_len = int(self.sub_payload[10:self.sub_payload.find(',')])+2
-      topic = self.sub_payload[topic_start:topic_start+topic_len]
-      print("topic: " + topic)
-      payload_len_str_start = topic_start + topic_len + 1
-      payload_len_str_end = payload_len_str_start + int(self.sub_payload[(payload_len_str_start):].find(','))
-      payload_len = int(self.sub_payload[payload_len_str_start:payload_len_str_end])
-      #print("S:" + str(payload_len_str_start) + " P:" + str(payload_len_str_end) + " payload len: " + str(payload_len))
-      json_payload = json.loads(self.sub_payload[(payload_len_str_end+2):(payload_len_str_end + payload_len + 2)])
-      print(json.dumps(json_payload, indent = 4))
-      #print("operationId: ", json_payload["operationId"])
+      (topic, payload) = self.processTopicNotification(self.sub_payload)
+      json_payload = json.loads(payload)
       self.opId = json_payload["operationId"]
       self.sub_payload = ""
-      self.sub_state = 4
-
-  def kb_data_process(self, received):
-    if received.startswith("AT"):
-      self.pub_topic = None
-      self.sub_topic = None
-      return True
+      self.dps_state = 9
     else:
-      return False
+      (topic, payload) = self.processTopicNotification(self.sub_payload)
+      json_payload = json.loads(payload)
+      if json_payload["status"] == "assigning" :
+        self.sub_payload = ""
+        self.dps_state = 9
+      else: 
+        self.iotc_host = json_payload["registrationState"]["assignedHub"]
+        self.sub_payload = ""
+        self.dps_state = 254
+
+  def evt_iotc_command(self):
+    print("received command from IoT Central")
+    (topic,payload) = self.processTopicNotification(self.sub_payload)
+    start = len(TOPIC_IOTC_METHOD_REQ)
+    stop = start + topic[start:].find('/')
+    command = topic[start:stop]
+    rid = topic[(topic.find("rid=")+4):(len(topic)-1)]
+    json_payload = json.loads(payload)
+    #print("command received: " + topic[start:stop])
+    if command == "sendMsg" :
+      arg1 = json_payload["sendMsgString"]
+      #print(arg1)
+      print('\r\nexecute sendMsg("' + arg1 +'")\r\n')
+      self.mqtt_publish(0,0,(TOPIC_IOTC_CMD_RESP + rid),'{\\\"status\\\" : \\\"Success\\\"}')
+    if command == "reboot" :
+      arg1 = json_payload["delay"]
+      delay = arg1[2:arg1.find('S')]
+      #print(delay)
+      print('\r\nexecute reboot(' + delay +')\r\n')
+      self.mqtt_publish(0,0,(TOPIC_IOTC_CMD_RESP + rid),'{\\\"status\\\" : \\\"Success\\\"}')
+    self.sub_payload = ""    
+
+  
+  def propertyIntResponse(self, propertyName, topic, payload) :
+    #(topic,payload) = self.processTopicNotification(self.sub_payload)
+    if propertyName in payload:
+      json_payload = json.loads(payload)
+      version = json_payload["$version"]
+      print("$version = "+ str(version))
+      intVal = json_payload[propertyName]
+      ad = propertyName +" set to: " + str(intVal)
+      print(ad)
+      resp = '{\\\"' + propertyName +'\\\" : {\\\"ac\\\" : 200, \\\"av\\\" : ' +str(version)+ ', \\\"ad\\\" : \\\"' + ad + '\\\", \\\"value\\\" : ' +str(intVal) + '}}'
+      self.rid = self.rid+1
+      self.mqtt_publish(0,0,(TOPIC_IOTC_WRITE_PROPERTY+str(self.rid)),resp)
+      return intVal
+    return None
     
+  
+  def evt_iotc_property_received(self):
+    print("\r\nproperty updated from IoT Central")
+    (topic,payload) = self.processTopicNotification(self.sub_payload)
+    
+    retVal = self.propertyIntResponse("property_3", topic, payload)
+    if retVal != None :
+      print("\r\nNo property_3 feature implemented in script\r\n")
+    
+    retVal = self.propertyIntResponse("property_4", topic, payload)
+    if retVal != None :
+      print("\r\nNo property_4 feature implemented in script\r\n")
+    
+    retVal = self.propertyIntResponse("disableTelemetry", topic, payload)
+    if retVal != None :
+      print("\r\nDisable telemetry feature not implemented in script\r\n")
+    
+    retVal = self.propertyIntResponse("telemetryInterval", topic, payload)
+    if retVal != None :
+      self.telemetryInterval = retVal
+      print("\r\nLight sensor telemetry updating at the new telemetry interval\r\nCheck Raw Data tab to verify\r\n")
+    
+    retVal = self.propertyIntResponse("led_y", topic, payload)
+    if retVal != None :
+      if retVal == 1 :
+        print("yellow LED is ON\r\n")
+      elif retVal == 2 :
+        print("yellow LED is OFF\r\n")
+      elif retVal == 3 :
+        print("yellow LED is Blinking\r\n")
+      else :
+        print("invalid yellow LED setting received\r\n")
+    
+    self.sub_payload = ""  
+    
+  def evt_iotc_property_download(self):
+    print("Properties downloaded from IoT Central")  
+    self.sub_payload = ""
+    
+  def sm_wifi_init(self):
+      # start initialization
+      if self.wifi_state == 0:
+        print("\r\nStart Initialization...\r\n.............................\r\n")
+        self.wifi_state = 1
+      self.delay.delay_time_start()
+      if self.delay.delay_sec_poll(0.100) :
+        # enable serial command echo
+        if self.wifi_state == 1:
+          self.cmd_issue('ATE1\r\n')
+          self.wifi_state = self.wifi_state + 1
+          return self.wifi_state
+        # check if connected to WiFi
+        # if connectedn evt_wifi_connected will skip WiFi setup below by adjusting state variable
+        # else, the following commands configure AnyCloud to connect to a WiFi access point
+        elif self.wifi_state == 2:
+          self.cmd_issue('AT+WSTA\r\n')
+          self.wifi_state = self.wifi_state + 1
+          return self.wifi_state
+        elif self.wifi_state == 3:
+          self.cmd_issue('AT+WSTAC=1,"'+SSID+'"\r\n')
+          self.wifi_state = self.wifi_state + 1
+          return self.wifi_state
+        elif self.wifi_state == 4:
+          self.cmd_issue('AT+WSTAC=2,3\r\n')
+          self.wifi_state = self.wifi_state + 1
+          return self.wifi_state
+        elif self.wifi_state == 5:
+          self.cmd_issue('AT+WSTAC=3,"' + PASSPHRASE + '"\r\n')
+          self.wifi_state = self.wifi_state + 1
+          return self.wifi_state
+        elif self.wifi_state == 6:
+          self.cmd_issue('AT+WSTAC=4,255\r\n')
+          self.wifi_state = self.wifi_state + 1
+          return self.wifi_state
+        elif self.wifi_state == 7:
+          self.cmd_issue('AT+WSTAC=12,"pool.ntp.org"\r\n')
+          self.wifi_state = self.wifi_state + 1
+          return self.wifi_state
+        elif self.wifi_state == 8:
+          self.cmd_issue('AT+WSTAC=13,1\r\n')
+          self.wifi_state = self.wifi_state + 1
+          return self.wifi_state
+        elif self.wifi_state == 9:
+          self.cmd_issue('AT+WSTA=1\r\n')
+          self.wifi_state = self.wifi_state + 1
+          return self.wifi_state
+        
+        #delay until event changes wifi_state
+        elif self.wifi_state == 10: 
+          # don't advance state automatically, do it from evt_handler
+          pass
+        
+        # init complete        
+        elif self.wifi_state == 254:
+          return self.wifi_state          
+        else:
+          return 255
+      else:
+        return 0
+
+    
+  def sm_dps_register(self):
+    #check if connected to MQTT broker
+    if self.dps_state == 0:
+      self.cmd_issue('AT+MQTTCONN\r\n')
+      self.dps_state = self.dps_state + 1
+      return self.dps_state  
+        
+    # configure and connect to MQTT broker
+    elif self.dps_state == 1: #dps broker
+      self.cmd_issue('AT+MQTTC=1,"global.azure-devices-provisioning.net\r\n')
+      self.dps_state = self.dps_state + 1
+      return self.dps_state
+    elif self.dps_state == 2: #dps broker port (TLS)
+      self.cmd_issue('AT+MQTTC=2,8883\r\n')
+      self.dps_state = self.dps_state + 1
+      return self.dps_state
+    elif self.dps_state == 3: #IoTC MQTT Client ID
+      self.cmd_issue('AT+MQTTC=3,"' + DEVICE_ID + '"\r\n')
+      self.dps_state = self.dps_state + 1
+      return self.dps_state
+    elif self.dps_state == 4: #IoTC Username
+      self.cmd_issue('AT+MQTTC=4,"' + ID_SCOPE +'/registrations/'+ DEVICE_ID + '/api-version=2019-03-31"\r\n')
+      self.dps_state = self.dps_state + 1
+      return self.dps_state
+    elif self.dps_state == 5: #enable TLS
+      self.cmd_issue('AT+MQTTC=7,1\r\n')
+      self.dps_state = self.dps_state + 1
+      return self.dps_state        
+    elif self.dps_state == 6:
+      self.cmd_issue('AT+MQTTCONN=1\r\n') # connect
+      #goto delay state and wait for connect to broker event
+      self.dps_state = 200                            
+      return self.dps_state
+    elif self.dps_state == 7:
+      print("subscribe to DPS result topic")
+      self.mqtt_subscribe(TOPIC_DPS_RESULT, 0)
+      self.dps_state = 200 #delay for evt_topic_subscribed
+      return self.dps_state
+    elif self.dps_state == 8:
+      print("publish DPS registration message")
+      self.rid = self.rid + 1
+      self.mqtt_publish(0,0,TOPIC_DPS_INIT_REG+str(self.rid) ,('{\\\"payload\\\" : {\\\"modelId\\\" : \\\"' + MODEL_ID + '\\\"}}'))
+      self.dps_state = 200 #delay for evt_topic_published
+      return self.dps_state  
+    elif self.dps_state == 9:
+      self.delay.delay_time_start()
+      if self.delay.delay_sec_poll(3):
+        self.rid = self.rid + 1
+        self.mqtt_publish(0,0,(TOPIC_DPS_POLL_REG_COMPLETE1 + str(self.rid) + TOPIC_DPS_POLL_REG_COMPLETE2 + self.opId),"")
+        self.dps_state = 200 #delay for evt_topic_published
+      return self.dps_state    
+    
+    elif self.dps_state == 200:
+      #delay here until event
+      pass
+    elif self.dps_state == 254:
+      return self.dps_state
+    else:
+      print("subscriptions error")
+  
+  def iotc_get_device_twin_state(self):
+    self.rid = self.rid + 1
+    self.mqtt_publish(0,0,(TOPIC_IOTC_PROPERTY_REQEST + str(self.rid)),"")
+    
+  def iotc_int_telemetry_send(self,Parameter, iVal):
+    print("Sending " +Parameter+ " telemetry value of: " +str(iVal)+"\r\n");
+    payload = '{\\\"' + Parameter + '\\\" : ' +str(iVal) +'}'
+    self.mqtt_publish(0,0,TOPIC_IOTC_TELEMETRY,payload)
+    
+  def iotc_str_telemetry_send(self,Parameter, strVal):
+    print('Sending ' +Parameter+ ' telemetry value of: \"' + strVal+'\"\r\n');
+    payload = '{\\\"' + Parameter + '\\\" : \\\"' +strVal +'\\\"}'
+    self.mqtt_publish(0,0,TOPIC_IOTC_TELEMETRY,payload)
+
+  def iotc_int_property_send(self,Parameter,iVal):
+    print("Sending " +Parameter+ " property value of: " +str(iVal)+"\r\n");
+    self.rid = self.rid + 1
+    self.mqtt_publish(0,0,TOPIC_IOTC_WRITE_PROPERTY+str(self.rid), '{\\\"'+Parameter+'\\\" : '+ str(iVal) + '}')
+      
+  def sm_iotc_app(self):
+    self.delay.delay_time_start()
+    if self.delay.delay_sec_poll(self.telemetryInterval):
+      self.lightSensor = self.lightSensor + 10
+      if self.lightSensor >100 :
+        self.lightSensor = 10
+      self.iotc_int_telemetry_send("light", self.lightSensor)
+    
+  def sm_iotc_connect(self):
+    # configure and connect to iotc MQTT broker
+    if self.iotc_connect_state == 0 :
+      self.cmd_issue('AT+MQTTDISCONN\r\n')      
+      self.iotc_connect_state = 200  # delay state
+    elif self.iotc_connect_state == 1: #dps broker
+      self.cmd_issue('AT+MQTTC=1,\"'+self.iotc_host+'\"\r\n')
+      self.iotc_connect_state = self.iotc_connect_state + 1
+      return self.iotc_connect_state
+    elif self.iotc_connect_state == 2: #dps broker port (TLS)
+      self.cmd_issue('AT+MQTTC=2,8883\r\n')
+      self.iotc_connect_state = self.iotc_connect_state + 1
+      return self.iotc_connect_state
+    elif self.iotc_connect_state == 3: #IoTC MQTT Client ID
+      self.cmd_issue('AT+MQTTC=3,"' + DEVICE_ID + '"\r\n')
+      self.iotc_connect_state = self.iotc_connect_state + 1
+      return self.iotc_connect_state
+    elif self.iotc_connect_state == 4: #IoTC Username
+      self.cmd_issue('AT+MQTTC=4,\"'+self.iotc_host+'/'+DEVICE_ID+'/?api-version=2021-04-12\"\r\n')
+      self.iotc_connect_state = self.iotc_connect_state + 1
+      return self.iotc_connect_state
+    elif self.iotc_connect_state == 5: #enable TLS
+      self.cmd_issue('AT+MQTTC=7,1\r\n')
+      self.iotc_connect_state = self.iotc_connect_state + 1
+      return self.iotc_connect_state        
+    elif self.iotc_connect_state == 6:
+      self.cmd_issue('AT+MQTTCONN=1\r\n') # connect
+      #goto delay state and wait for connect to broker event
+      self.iotc_connect_state = 200                            
+      return self.iotc_connect_state
+
+    # subscribe to IOTC topics
+    elif self.iotc_connect_state == 7:
+      self.mqtt_subscribe(TOPIC_IOTC_METHOD_REQ, 1)
+      #goto delay state and wait for connect to broker event
+      self.iotc_connect_state = 200                            
+      return self.iotc_connect_state
+    elif self.iotc_connect_state == 8:
+      self.mqtt_subscribe(TOPIC_IOTC_PROPERTY_RES, 1)    
+      self.iotc_connect_state = 200 #delay for evt_topic_subscribed
+      #goto delay state and wait for connect to broker event
+      self.iotc_connect_state = 200                            
+      return self.iotc_connect_state
+    elif self.iotc_connect_state == 9:
+      self.mqtt_subscribe(TOPIC_IOTC_PROP_DESIRED, 1)
+      #goto delay state and wait for connect to broker event
+      self.iotc_connect_state = 200                            
+      return self.iotc_connect_state  
+    
+    elif self.iotc_connect_state == 10:
+      self.iotc_connect_state = 254                            
+      return self.iotc_connect_state
+    
+    elif self.iotc_connect_state == 200: # delay state.
+      # do nothing.  wait for event call back to change state.                            
+      return self.iotc_connect_state
+  
+  def evt_iotc_connected(self):
+    self.iotc_connect_state = 7
+
   def rx_data_process(self, received):
     # if error setting echo on, bail
     if ("ATE1" in received) and ("ERROR:" in received) :
@@ -315,27 +593,49 @@ class AnyCloud:
       ret_val = 1 #operating state
     
     if ("+MQTTCONN:0" in received) :
-      print("\r\nBroker connection not found, connecting...\r\n");
+      print("\r\nBroker disconnected....\r\n");
+      if self.app_state == 3 :
+        self.iotc_connect_state = 1
       ret_val = 1 #operating state
       
     if ("+MQTTCONN:1" in received) :
-      if self.app_state == 1:
-        self.evt_handler = self.evt_dps_broker_connected    
+      if self.app_state == APP_STATE_DPS_REGISTER:
+        self.evt_handler = self.evt_dps_broker_connected
+      if self.app_state == APP_STATE_IOTC_CONNECT:
+        self.evt_handler = self.evt_iotc_connected      
       ret_val = 1 #operating state
     
     if("+MQTTSUB:0" in received) :
-      self.evt_handler = self.evt_dps_topic_subscribed    
+      if self.app_state == APP_STATE_DPS_REGISTER :
+        self.evt_handler = self.evt_dps_topic_subscribed
+      elif self.app_state == APP_STATE_IOTC_CONNECT :
+        self.evt_handler = self.evt_iotc_topic_subscribed     
       ret_val = 1
       
-    if ("+MQTTPUB:" in received and "$dps/registrations/res" in received) :
-      if self.sub_payload == "" :
-        self.sub_payload = received
-        self.evt_handler = self.evt_dps_topic_notified
-      else:
-        print("warning: topic notification ignored, last topic still being processed") 
-      ret_val = 1 #operating state    
+    
+    if "+MQTTPUB:" in received :
+      if TOPIC_DPS_RESULT[:(len(TOPIC_DPS_RESULT)-2)] in received:
+        if self.sub_payload == "" :
+          self.sub_payload = received
+          self.evt_handler = self.evt_dps_topic_notified
+      if TOPIC_IOTC_METHOD_REQ[:(len(TOPIC_IOTC_METHOD_REQ)-2)] in received :
+         if self.sub_payload == "" :
+          self.sub_payload = received
+          self.evt_handler = self.evt_iotc_command
+      if TOPIC_IOTC_PROP_DESIRED[:(len(TOPIC_IOTC_PROP_DESIRED)-2)] in received :
+        if self.sub_payload == "" :
+          self.sub_payload = received
+          self.evt_handler = self.evt_iotc_property_received
+      if TOPIC_IOTC_PROPERTY_RES[:(len(TOPIC_IOTC_PROPERTY_RES)-2)] in received :
+        if self.sub_payload == "" :
+          self.sub_payload = received
+          self.evt_handler = self.evt_iotc_property_download
+          
+          
+          TOPIC_IOTC_PROPERTY_RES
+      ret_val = 1 #operating state
   
-  def runApp(self):
+  def keyboardListen(self):
     # wait for keyboard events
     if self.kb.poll_keyboard() == False:
       exit()
@@ -351,46 +651,66 @@ class AnyCloud:
           else:
             self.mqtt_publish(0,0, self.pub_topic, self.pub_payload)
         else:
-          print("publish command not found")
-        
+          print("publish command not found")        
       self.kb.cmd_clear()
- 
+  
+  
+  def runApp(self):
+    
+    # read keyboard, scan for exit (ESC) or AT commands
+    self.keyboardListen()
+
     #top level app state machine
-    if self.app_state == 0:  # start of application
+    if self.app_state == APP_STATE_INIT:  # start of application
       print("\r\n--------------------------------------------------------------------------------")
       print("Starting the AnyCloud Azure IoT Central Demonstration")
       print("--------------------------------------------------------------------------------\r\n")
       print('Once device provisioning is complete, enter AT commands to continue.\r\nPress ESC to Exit')
-      self.app_state = 1
+      self.app_state = APP_STATE_WIFI_CONNECT
     
-    elif self.app_state == 1:  # init AnyCloud
-      init_resp = self.sm_initialize()
+    elif self.app_state == APP_STATE_WIFI_CONNECT:  # init AnyCloud
+      init_resp = self.sm_wifi_init()
       if init_resp == 254 :
         print("\r\nStart DPS registration...\r\n")
-        self.app_state = 2
+        self.app_state = APP_STATE_DPS_REGISTER
     
-    elif self.app_state == 2: # subscribe to dps topics
+    elif self.app_state == APP_STATE_DPS_REGISTER: # subscribe to dps topics
       sub_resp = self.sm_dps_register()
       if sub_resp == 254 :
-        print("Registration complete")
-        self.app_state = 3
+        print("\r\nRegistration complete, connect to Azure IoT Central\r\n")
+        self.app_state = APP_STATE_IOTC_CONNECT
     
-    elif self.app_state == 3:
-      print("Enter AT command to execute")
-      self.app_state = 4
+    elif self.app_state == APP_STATE_IOTC_CONNECT:
+      conn_resp = self.sm_iotc_connect()
+      if conn_resp == 254 :
+        print("Connected to IoT Central")
+        self.app_state = APP_STATE_IOTC_GET_DEV_TWIN
       
-    elif self.app_state == 4:
-      #self.mqtt_publish(0,0,"AnyCloud/testA","hello world")
-      pass
-    
-    elif self.app_state == 5:
-      print("press ESC to end")
-      self.app_state = self.app_state + 1
-    
-    elif self.app_state == 6:
-      #if you get here, do nothing while waiting for ESC
-      pass
+    elif self.app_state == APP_STATE_IOTC_GET_DEV_TWIN:         
+      print("\r\nRead current device twin settings from IOTC\r\n")
+      self.iotc_get_device_twin_state()
+            
+      print("\r\nSending Telemetry and Properties.\r\n    Press ESC to end script\r\n")
+      self.app_state = APP_STATE_IOTC_HELLO_AZURE
+
+    elif self.app_state == APP_STATE_IOTC_HELLO_AZURE:
+      self.delay.delay_time_start()
+      if self.delay.delay_sec_poll(1) :
+        if self.hw_state == 0:
+          print("\r\nPublish Hello World telemetry")
+          self.iotc_str_telemetry_send("telemetry_Str_1", "Hello Azure IoT Central")
+          self.hw_state = 1
+        elif self.hw_state == 1:
+          print("\r\nSet led_b read-only property initial value: OFF")
+          self.iotc_int_property_send("led_b", 0)
+          self.hw_state = 2
+        elif self.hw_state == 2 :
+          print("\r\nStart sending periodic telemetry and properties. Press ESC to end script\r\n")
+          self.app_state = APP_STATE_IOTC_DEMO
       
+    elif self.app_state == APP_STATE_IOTC_DEMO:
+      self.sm_iotc_app()
+    
     rx_data = self.serial_recieve()
     # parse received data
     if rx_data != "":
