@@ -300,7 +300,7 @@ class AnyCloud:
       delay = arg1[2:arg1.find('S')]
       #print(delay)
       print('\r\nexecute reboot(' + delay +')\r\n')
-      self.mqtt_publish(0,0,(TOPIC_IOTC_CMD_RESP + rid),'{\\\"status\\\" : \\\"Success\\\"}')
+      self.mqtt_publish(0,0,(TOPIC_IOTC_CMD_RESP + rid),'{\\\"status\\\" : \\\"Success\\\", \\\"delay\\\" : ' + str(delay) +'}')
     self.sub_payload = ""    
 
   
@@ -355,7 +355,13 @@ class AnyCloud:
     self.sub_payload = ""  
     
   def evt_iotc_property_download(self):
-    print("Properties downloaded from IoT Central")  
+    (topic, payload) = self.processTopicNotification(self.sub_payload)
+    json_payload = json.loads(payload)
+    
+    if "telemetryInterval" in payload :
+      self.telemetryInterval = json_payload["desired"]["telemetryInterval"]
+      print("telemetryInterval set to " +str(self.telemetryInterval)+ " based on Device Twin State")
+    
     self.sub_payload = ""
     
   def sm_wifi_init(self):
