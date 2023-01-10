@@ -713,11 +713,13 @@ class AnyCloud:
           self.iotc_str_telemetry_send("telemetry_Str_1", "Hello Azure IoT Central")
           self.hw_state = 1
         elif self.hw_state == 1:
-          print("\r\nReport Read-Only Property: Blue LED = ON")
+          print("\r\nReport Read-Only Property: Blue LED = On")
           self.iotc_int_property_send("led_b", 1)
-          print("\r\nReport Read-Only Property = Green LED = ON")
+          print("\r\nReport Read-Only Property: Green LED = On")
           self.iotc_int_property_send("led_g", 1)
-          print("\r\nReport Read-Only Property = Red LED = OFF")
+          print("\r\nReport Read-Only Property: Yellow LED = Blinking")
+          self.iotc_int_property_send("led_r", 3)
+          print("\r\nReport Read-Only Property: Red LED = Off")
           self.iotc_int_property_send("led_r", 2)
           print("\r\nReport Read-Only Property: IP Address = 192.168.1.0")
           self.iotc_str_property_send("ipAddress", "192.168.1.0")
