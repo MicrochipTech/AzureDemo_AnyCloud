@@ -15,6 +15,12 @@ ID_SCOPE = "your_ID_SCOPE"
 DEVICE_ID = "your_DEVICE_ID"
 MODEL_ID = "your_MODEL_ID"
 
+COM_PORT = "COM4"
+SSID = "JasonWiFi"
+PASSPHRASE = "rauch:net:secure" 
+ID_SCOPE = "0ne006ED32B"
+DEVICE_ID = "sn0123FE0CF960432D01"
+MODEL_ID = "dtmi:com:Microchip:SAM_IoT_WM;2"
 
 # -----------------------------------------------------------------------------
 # Application States
@@ -671,7 +677,7 @@ class AnyCloud:
       print("\r\n--------------------------------------------------------------------------------")
       print("Starting the AnyCloud Azure IoT Central Demonstration")
       print("--------------------------------------------------------------------------------\r\n")
-      print('Once device provisioning is complete, enter AT commands to continue.\r\nPress ESC to Exit')
+      print('\r\nPress ESC to Exit the script')
       self.app_state = APP_STATE_WIFI_CONNECT
     
     elif self.app_state == APP_STATE_WIFI_CONNECT:  # init AnyCloud
