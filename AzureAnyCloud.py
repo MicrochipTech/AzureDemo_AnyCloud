@@ -723,7 +723,7 @@ class AnyCloud:
           self.iotc_int_property_send("led_r", 2)
           print("\r\nReport Read-Only Property: IP Address = 192.168.1.0")
           self.iotc_str_property_send("ipAddress", "192.168.1.0")
-          print("\r\nReport Read-Only Property: Firmware Version = 19.7.3.0")
+          print("\r\nReport Read-Only Property: ATWINC1510 Firmware Version = 19.7.3.0")
           self.iotc_str_property_send("firmwareVersion", "19.7.3.0")
           print("\r\nReport Read-Only Property: APP MCU Property 1 = 1")
           self.iotc_int_property_send("property_1", 1)
