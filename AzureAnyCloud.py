@@ -717,7 +717,7 @@ class AnyCloud:
           self.iotc_int_property_send("led_b", 1)
           print("\r\nReport Read-Only Property: Green LED = On")
           self.iotc_int_property_send("led_g", 1)
-          print("\r\nReport Writeble Property: Yellow LED = Blinking")
+          print("\r\nReport Writable Property: Yellow LED = Blinking")
           self.iotc_int_property_send("led_r", 3)
           print("\r\nReport Read-Only Property: Red LED = Off")
           self.iotc_int_property_send("led_r", 2)
