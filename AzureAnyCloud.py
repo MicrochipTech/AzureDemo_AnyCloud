@@ -510,7 +510,12 @@ class AnyCloud:
     print("Sending " +Parameter+ " property value of: " +str(iVal)+"\r\n");
     self.rid = self.rid + 1
     self.mqtt_publish(0,0,TOPIC_IOTC_WRITE_PROPERTY+str(self.rid), '{\\\"'+Parameter+'\\\" : '+ str(iVal) + '}')
-      
+
+  def iotc_str_property_send(self,Parameter,strVal):
+    print("Sending " +Parameter+ " property value of: " +strVal+"\r\n");
+    self.rid = self.rid + 1
+    self.mqtt_publish(0,0,TOPIC_IOTC_WRITE_PROPERTY+str(self.rid), '{\\\"'+Parameter+'\\\" : \\\"'+ strVal + '\\\"}')
+
   def sm_iotc_app(self):
     self.delay.delay_time_start()
     if self.delay.delay_sec_poll(self.telemetryInterval):
@@ -518,6 +523,7 @@ class AnyCloud:
       if self.lightSensor >100 :
         self.lightSensor = 10
       self.iotc_int_telemetry_send("light", self.lightSensor)
+      self.iotc_int_telemetry_send("temperature", 22)
     
   def sm_iotc_connect(self):
     # configure and connect to iotc MQTT broker
@@ -713,8 +719,30 @@ class AnyCloud:
           self.iotc_str_telemetry_send("telemetry_Str_1", "Hello Azure IoT Central")
           self.hw_state = 1
         elif self.hw_state == 1:
-          print("\r\nSet led_b read-only property initial value: OFF")
-          self.iotc_int_property_send("led_b", 0)
+          print("\r\nReport Read-Only Property: Blue LED = On")
+          self.iotc_int_property_send("led_b", 1)
+          print("\r\nReport Read-Only Property: Green LED = On")
+          self.iotc_int_property_send("led_g", 1)
+          print("\r\nReport Writable Property: Yellow LED = Blinking")
+          self.iotc_int_property_send("led_r", 3)
+          print("\r\nReport Read-Only Property: Red LED = Off")
+          self.iotc_int_property_send("led_r", 2)
+          print("\r\nReport Read-Only Property: IP Address = 192.168.1.0")
+          self.iotc_str_property_send("ipAddress", "192.168.1.0")
+          print("\r\nReport Read-Only Property: ATWINC1510 Firmware Version = 19.7.3.0")
+          self.iotc_str_property_send("firmwareVersion", "19.7.3.0")
+          print("\r\nReport Read-Only Property: APP MCU Property 1 = 1")
+          self.iotc_int_property_send("property_1", 1)
+          print("\r\nReport Read-Only Property: APP MCU Property 2 = 2")
+          self.iotc_int_property_send("property_2", 2)
+          print("\r\nReport Writable Property: APP MCU Property 3 = 3")
+          self.iotc_int_property_send("property_3", 3)
+          print("\r\nReport Writable Property: APP MCU Property 4 = 4")
+          self.iotc_int_property_send("property_4", 4)
+          print("\r\nReport Writable Property: Disable Telemetry = 0")
+          self.iotc_int_property_send("disableTelemetry", 0)
+          print("\r\nReport Writable Property: Debug Level = INFO")
+          self.iotc_int_property_send("debugLevel", 4)
           self.hw_state = 2
         elif self.hw_state == 2 :
           print("\r\nStart sending periodic telemetry and properties. Press ESC to end script\r\n")
