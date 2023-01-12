@@ -549,7 +549,7 @@ The response code is typically "200" for OK, and the rid value is handled much l
 
 So the response topic follows this pattern: "$iothub/methods/res/`Response Code`/?$rid=`Request_RID`"
 
-Putting it all together for for the example reboot command received above, the response published has the following topic and payload.
+Putting it all together for for the example reboot command received above, the response published has the following topic and payload:
 
 
 
