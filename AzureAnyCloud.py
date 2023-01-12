@@ -149,6 +149,7 @@ class AnyCloud:
     #IOTC application variables
     self.telemetryInterval = 10          # default telemetry interval (seconds)
     self.lightSensor = 0                 # default light sensor value
+    self.ip_addr = None                  # default
 
     self.broker_topics_subs = 0          # keep track if we have subscribed DPS notification topic   
     self.pub_topic = ""                  
@@ -607,6 +608,9 @@ class AnyCloud:
     
     if ("+WSTAAIP:" in received) :
       self.wifi_connected = True
+      start = received.find('"') + 1
+      end = start+received[(start+1):].find('"')+1
+      self.ip_addr = received[start:end]
       self.evt_handler = self.evt_wifi_connected    
       ret_val = 1 #operating state
     
@@ -672,6 +676,65 @@ class AnyCloud:
           print("publish command not found")        
       self.kb.cmd_clear()
   
+  def sm_hello_world(self):
+    self.delay.delay_time_start()
+    if self.delay.delay_sec_poll(1) :
+      if self.hw_state == 0:
+        print("\r\nPublish Hello World telemetry")
+        self.iotc_str_telemetry_send("telemetry_Str_1", "Hello Azure IoT Central")
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 1:
+        print("\r\nReport Read-Only Property: Blue LED = On")
+        self.iotc_int_property_send("led_b", 1)
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 2:
+        print("\r\nReport Read-Only Property: Green LED = On")
+        self.iotc_int_property_send("led_g", 1)
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 3:
+        print("\r\nReport Writable Property: Yellow LED = Blinking")
+        self.iotc_int_property_send("led_r", 3)
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 4:
+        print("\r\nReport Read-Only Property: Red LED = Off")
+        self.iotc_int_property_send("led_r", 2)
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 5:
+        print("\r\nReport Read-Only Property: IP Address = " + self.ip_addr)
+        type(self.ip_addr)
+        self.iotc_str_property_send("ipAddress", self.ip_addr)
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 6:
+        print("\r\nReport Read-Only Property: ATWINC1510 Firmware Version = 19.7.3.0")
+        self.iotc_str_property_send("firmwareVersion", "19.7.3.0")
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 7:
+        print("\r\nReport Read-Only Property: APP MCU Property 1 = 1")
+        self.iotc_int_property_send("property_1", 1)
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 8:
+        print("\r\nReport Read-Only Property: APP MCU Property 2 = 2")
+        self.iotc_int_property_send("property_2", 2)
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 9:
+        print("\r\nReport Writable Property: APP MCU Property 3 = 3")
+        self.iotc_int_property_send("property_3", 3)
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 10:
+        print("\r\nReport Writable Property: APP MCU Property 4 = 4")
+        self.iotc_int_property_send("property_4", 4)
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 11:
+        print("\r\nReport Writable Property: Disable Telemetry = 0")
+        self.iotc_int_property_send("disableTelemetry", 0)
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 12:
+        print("\r\nReport Writable Property: Debug Level = INFO")
+        self.iotc_int_property_send("debugLevel", 4)
+        self.hw_state = self.hw_state + 1
+      elif self.hw_state == 13:
+        print("\r\nStart sending periodic telemetry and properties. Press ESC to end script\r\n")
+        self.app_state = APP_STATE_IOTC_DEMO
   
   def runApp(self):
     
@@ -712,41 +775,7 @@ class AnyCloud:
       self.app_state = APP_STATE_IOTC_HELLO_AZURE
 
     elif self.app_state == APP_STATE_IOTC_HELLO_AZURE:
-      self.delay.delay_time_start()
-      if self.delay.delay_sec_poll(1) :
-        if self.hw_state == 0:
-          print("\r\nPublish Hello World telemetry")
-          self.iotc_str_telemetry_send("telemetry_Str_1", "Hello Azure IoT Central")
-          self.hw_state = 1
-        elif self.hw_state == 1:
-          print("\r\nReport Read-Only Property: Blue LED = On")
-          self.iotc_int_property_send("led_b", 1)
-          print("\r\nReport Read-Only Property: Green LED = On")
-          self.iotc_int_property_send("led_g", 1)
-          print("\r\nReport Writable Property: Yellow LED = Blinking")
-          self.iotc_int_property_send("led_r", 3)
-          print("\r\nReport Read-Only Property: Red LED = Off")
-          self.iotc_int_property_send("led_r", 2)
-          print("\r\nReport Read-Only Property: IP Address = 192.168.1.0")
-          self.iotc_str_property_send("ipAddress", "192.168.1.0")
-          print("\r\nReport Read-Only Property: ATWINC1510 Firmware Version = 19.7.3.0")
-          self.iotc_str_property_send("firmwareVersion", "19.7.3.0")
-          print("\r\nReport Read-Only Property: APP MCU Property 1 = 1")
-          self.iotc_int_property_send("property_1", 1)
-          print("\r\nReport Read-Only Property: APP MCU Property 2 = 2")
-          self.iotc_int_property_send("property_2", 2)
-          print("\r\nReport Writable Property: APP MCU Property 3 = 3")
-          self.iotc_int_property_send("property_3", 3)
-          print("\r\nReport Writable Property: APP MCU Property 4 = 4")
-          self.iotc_int_property_send("property_4", 4)
-          print("\r\nReport Writable Property: Disable Telemetry = 0")
-          self.iotc_int_property_send("disableTelemetry", 0)
-          print("\r\nReport Writable Property: Debug Level = INFO")
-          self.iotc_int_property_send("debugLevel", 4)
-          self.hw_state = 2
-        elif self.hw_state == 2 :
-          print("\r\nStart sending periodic telemetry and properties. Press ESC to end script\r\n")
-          self.app_state = APP_STATE_IOTC_DEMO
+      self.sm_hello_world()
       
     elif self.app_state == APP_STATE_IOTC_DEMO:
       self.sm_iotc_app()
