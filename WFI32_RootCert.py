@@ -108,6 +108,10 @@ class AnyCloud:
         index = line.decode().find("CN = ")
         cn = line.decode()[(index + 5):]
         cn = cn.rstrip()
+      if "Subject: O=Microchip Technology Inc," in line.decode():
+        index = line.decode().find("CN=")
+        cn = line.decode()[(index + 3):]
+        cn = cn.rstrip()
       print(line.rstrip().decode())
 
     print("\r\nThe Common Name in the root certificate is: " + cn)  

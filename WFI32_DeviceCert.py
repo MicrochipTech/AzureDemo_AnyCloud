@@ -125,6 +125,10 @@ class AnyCloud:
         index = line.decode().find("CN = ")
         cn = line.decode()[(index + 5):]
         cn = cn.rstrip()
+      if "Subject: O=Microchip Technology Inc," in line.decode():
+        index = line.decode().find("CN=")
+        cn = line.decode()[(index + 3):]
+        cn = cn.rstrip()
       print(line.rstrip().decode())
 
     print("\r\n\r\nThe common name in the WFI32's ECC608 certificate is: " + cn + "\r\n")
@@ -136,15 +140,11 @@ class AnyCloud:
     print(cmd_line)
     p = subprocess.Popen(cmd_line, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
-      if "Subject: O = Microchip Technology Inc," in line.decode():
-        index = line.decode().find("CN = ")
-        cn = line.decode()[(index + 5):]
-        print(cn.rstrip())
       print(line.rstrip().decode())
     
     print("\r\nPlease add a device into IoT Central using the common name as the device ID")
     print("For the connection parameters, select individual enrollement -> x.509 Certificate")
-    print("Upload " + cn + ".PEM for both the primary and secondary certficate")    
+    print("Upload " + cn + ".PEM for both the primary and secondary certificate")    
     self.init_state = 254 # end initialization.
   
   def rx_data_process(self, received):
