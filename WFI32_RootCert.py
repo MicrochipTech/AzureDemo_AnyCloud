@@ -4,7 +4,7 @@ import subprocess
 import os
 
 # COM port setting
-COM_PORT = "your_COM_Port"
+COM_PORT = "/dev/tty.usbserial-A51MXHIL"
 
 class Delay_Non_Blocking:
   def __init__(self):
@@ -107,6 +107,10 @@ class AnyCloud:
       if "Subject: O = Microchip Technology Inc," in line.decode():
         index = line.decode().find("CN = ")
         cn = line.decode()[(index + 5):]
+        cn = cn.rstrip()
+      if "Subject: O=Microchip Technology Inc," in line.decode():
+        index = line.decode().find("CN=")
+        cn = line.decode()[(index + 3):]
         cn = cn.rstrip()
       print(line.rstrip().decode())
 
