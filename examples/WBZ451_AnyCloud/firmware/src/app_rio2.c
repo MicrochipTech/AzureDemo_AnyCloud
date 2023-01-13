@@ -772,8 +772,8 @@ typedef struct {
  *        stationCmdTbl[]
  *
  **************************************/
-char stationSSID[50] = SSID;
-char stationPWD[50] = PWD;
+char stationSSID[50] = NETWORK_SSID;
+char stationPWD[50] = NETWORK_PSWD;
 char stationMode[2] = SEC_TYPE;
 #ifdef  TCPSERVER
 char serverPORT[5] = SERVER_PORT;
@@ -832,7 +832,7 @@ char TLS[2] = TLSENABLE;
 char brokerUserName[100] = BROKER_USER_NAME;
 #endif
 char brokerUserPWD[50] = BROKER_USER_PWD;
-char clientID[50] = CLIENTID;
+char clientID[50] = CLIENT_ID;
 char keepAlive[50] = KEEPALIVE;
 
 static uint8_t mqttCmdTblIndex;
@@ -1196,7 +1196,7 @@ void APP_RIO2_Tasks(void) {
             char buffer[150];
 
             gMQTTPUB = false;
-            sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_DPS_PUT"\",\""PUB_REPORTED_PAYLODAD"\"\r\n");
+            sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_DPS_PUT"\",\""PUB_REPORTED_PAYLOAD"\"\r\n");
             SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
             printf_2RIO(( "%s" , buffer));
             app_rio2Data.state = APP_RIO2_STATE_AZURE_PUB_DPS_REGISTRATION_GET;
@@ -1373,7 +1373,7 @@ void APP_RIO2_Tasks(void) {
             {
                 case 0:
                 {
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_PROPERTIES"\",\""PUB_PAYLODAD_IP"\"\r\n", valueIP4, valueIP3, valueIP2, valueIP1);
+                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_PROPERTIES"\",\""PUB_PAYLOAD_IP"\"\r\n", valueIP4, valueIP3, valueIP2, valueIP1);
                     pubState = 1;
                     break;
                 }
@@ -1421,7 +1421,7 @@ void APP_RIO2_Tasks(void) {
                 }
                 case 3:
                 {
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\""PUB_AZURE_PAYLODAD_TELEMETRY_TEMPERATURE"\"\r\n", thingID, (int) pubCount++);
+                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\""PUB_AZURE_PAYLOAD_TELEMETRY_TEMPERATURE"\"\r\n", thingID, (int) pubCount++);
                     pubState = 1;
                     break;
                 }

@@ -24,7 +24,8 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 2. [Python 3.0](https://www.python.org/download/releases/3.0/)
 3. [Python Serial Port Extension](https://pypi.org/project/pyserial/)
 4. [OpenSSL](https://www.openssl.org)
-5. Microchip `MPLAB X IDE` tool chain for embedded code development on 32-bit architecture MCU/MPU platforms (made up of 3 major components)
+5. Any [Terminal Emulator](https://en.wikipedia.org/wiki/List_of_terminal_emulators) program of your choice
+6. Microchip `MPLAB X IDE` tool chain for embedded code development on 32-bit architecture MCU/MPU platforms (made up of 3 major components)
 
     - [MPLAB X IDE (minimum v6.05)](https://www.microchip.com/mplab/mplab-x-ide) (when prompted, enable the installation of the [MPLAB IPE](https://www.microchip.com/en-us/tools-resources/production/mplab-integrated-programming-environment) too)
 
@@ -562,7 +563,7 @@ Notice the command is enabled, and a response is expected.  There are also two o
 
 From here notice two items are expected in the response payload, a "status" string, and a "delay" integer, that should match the reboot delay.  
 
-Two other things are dictated by the plug-n-play method response standard.  The response topic published to, includes an status code in the path of the topic, and the the rid value received with the method request.  
+Two other things are dictated by the IoT Plug-and-Play method response standard.  The response topic published to, includes an status code in the path of the topic, and the the rid value received with the method request.  
 
 The response code is typically "200" for OK, and the rid value is handled much like the version field of property write resopnses. 
 
@@ -570,24 +571,83 @@ So the response topic follows this pattern: "$iothub/methods/res/`Response Code`
 
 Putting it all together for for the example reboot command received above, the response published has the following topic and payload:
 
-
-
     AT+MQTTPUB=0,0,0,"$iothub/methods/res/200/?$rid=1","{\"status\" : \"Success\", \"delay\" : 5}"
     OK
     >
 
-## Embedded Firmware Example
+## Setting Up and Actual Embedded Firmware Example
 
 Now that you've successfully run Python scripts on a PC to emulate all of the necessary transactions an IoT device would need to perform to connect to IoT Central, you can also use an actual embedded application running on a Host MCU development board such as Microchip Technology's [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A).
 
-Replace the USB-to-UART converter connection with the `WBZ451 Curiosity Board` based on whether you're using the `WFI32-IoT` or `PIC32 WFI32E Curiosity` development board as the AnyCloud™ bridge:
+1. Replace the USB-to-UART converter connection with the `WBZ451 Curiosity Board` based on whether you're using the `WFI32-IoT` or `PIC32 WFI32E Curiosity` development board as the AnyCloud™ bridge (make sure to follow the correct diagram)
 
-<img src=".//media/WBZ451_WFI32-IoT.png"/>
+    <img src=".//media/WBZ451_WFI32-IoT.png"/>
 
-<img src=".//media/WBZ451_WFI32E-Curiosity.png"/>
+    <img src=".//media/WBZ451_WFI32E-Curiosity.png"/>
 
-The complete MPLAB X IDE project for the WBZ451 module acting as the Host MCU can be found in the folder
-```bash
-/examples/WBZ451_AnyCloud/firmware/WBZ451_AnyCloud_Multimeter.X
-```
+2. Connect the `WBZ451 Curiosity Board` to the PC using the supplied micro-USB cable. Launch a [Terminal Emulator](https://en.wikipedia.org/wiki/List_of_terminal_emulators) program of your choice and connect to the WBZ451 Curiosity Board's Virtual COM Port at 115200 baud
+<br>
+**Note** The WBZ451 Curiosity Board creates two Virtual COM Ports; the correct one to select will most likely be the one that is shorter in length, e.g.
 
+    <img src=".//media/image17.png" width=200 />
+
+3. Launch the `MPLAB X` IDE (this tool should have been previously installed and most likely resides in the \Program Files\Microchip\ folder)
+
+    <img src=".//media/image18a.png" width=200 />
+
+    Once the MPLAB X IDE has finished its initialization routines, you should notice the "Kit Window" that acknowledges an active connection to the WBZ451 Curiosity Board
+
+    <img src=".//media/image18b.png"  />
+
+4. Navigate to the main toolbar's `File` > `Open Project` operation to load the demo project folder (\*.X) located at `[your_path]\AzureDemo_AnyCloud\firmware\examples\WBZ451_AnyCloud.X`
+
+    <img src=".//media/image19a.png" width=200 />
+    <img src=".//media/image19b.png" width=400 />
+
+   If the `load error` message in red appears in the `Output` window, click on the `Resolve DFP for configuration: default` link
+
+    <img src=".//media/image21.png" style="width:6.5in;height:1.00833in" alt="A screenshot of a cell phone Description automatically generated" />
+
+5. Set the `WBZ451_AnyCloud` project as the main (currently focused/active) project by right-clicking on it and selecting `Set as Main Project`
+
+    <img src=".//media/image40.png" style="width:5.in;height:3.18982in" alt="A screenshot of a cell phone Description automatically generated" />
+
+6. In the `Projects` window, open the `app_rio2_config.h` header file by double-clicking directly on the file name
+
+    <img src=".//media/image22.png" width=250 />
+
+7. In the `app_rio2_config.h` header file, set the necessary parameters corresponding to your IoT device
+
+    - NETWORK_SSID (name of your Wi-Fi Access Point)
+    - NETWORK_PSWD (password for your Wi-Fi Access Point)
+    - ID_SCOPE (confirm it is mapped to the correct IoT Central application)
+    - CLIENT_ID (confirm this matches the Common Name in the client certificate)
+    - MODEL_ID (confirm Device Twin Model Identifier (DTMI) is correct)
+
+8. Verify the project properties are set correctly before building the project by executing the following steps:
+
+    - right-click on the `WBZ451_AnyCloud` project
+    - select `Properties`
+    - under `Connected Hardware Tool`, select `WBZ451 Curiosity Board-SN`
+    - select the latest version for `CMSIS`
+    - select the latest version for `PIC32CX-BZ_DFP`
+    - select the latest XC32 version for `Compiler Toolchain`
+
+        <img src=".//media/image42.png" style="width:5.in;height:3.18982in" alt="A screenshot of a cell phone Description automatically generated" />
+
+    **Note** If any changes were made in the project properties window, the `Apply` button should become enabled.  Make sure to hit the `Apply` button before hitting `OK`
+
+9. Right-click on the active project and select `Clean`. Right-click the project again and select `Make and Program Device`. This operation will automatically build the project before attempting to program the target device.
+
+10. After the `BUILD SUCCESSFUL` message appears in the Output window, the application HEX file will be programmed onto the development Board. Once programming has finished, the board will automatically reset and start running its application code.
+
+11. To restart the entire connection sequence, peform the following steps in order:
+
+    - Press the reset button on the AnyCloud™ serial bridge board
+        - WFI32-IoT Development Board: `RESET`
+        - PIC32 WFI32E Curiosity Board: `MCLR`
+
+            <img src=".//media/WFI32_RESET.png" width=400 />
+    - Press the reset button on the WBZ451 Curiosity Board (or hit [CTRL-C] in the terminal window)
+
+        <img src=".//media/WBZ451_RESET.png" width=400 />
