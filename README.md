@@ -20,10 +20,19 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 
 ## Software Prerequisites / Tools Installation
 
-* [Git](https://git-scm.com/)
-* [Python 3.0](https://www.python.org/download/releases/3.0/)
-* [Python Serial Port Extension](https://pypi.org/project/pyserial/)
-* [OpenSSL](https://www.openssl.org)
+1. [Git](https://git-scm.com/)
+2. [Python 3.0](https://www.python.org/download/releases/3.0/)
+3. [Python Serial Port Extension](https://pypi.org/project/pyserial/)
+4. [OpenSSL](https://www.openssl.org)
+5. Microchip `MPLAB X IDE` tool chain for embedded code development on 32-bit architecture MCU/MPU platforms (made up of 3 major components)
+
+    - [MPLAB X IDE (minimum v6.05)](https://www.microchip.com/mplab/mplab-x-ide) (when prompted, enable the installation of the [MPLAB IPE](https://www.microchip.com/en-us/tools-resources/production/mplab-integrated-programming-environment) too)
+
+    - [MPLAB XC32 Compiler (minimum v4.20)](https://www.microchip.com/en-us/development-tools-tools-and-software/mplab-xc-compilers#tabs)
+
+        NOTE: This demonstration project was tested successfully with XC32 v4.20, and in general should work with later versions of the compiler as they become available. If you encounter issues building the project with a newer version of the compiler, it is recommended to download XC32 v4.20 from the [MPLAB Development Ecosystem Downloads Archive](https://www.microchip.com/en-us/tools-resources/archives/mplab-ecosystem) (to fall back to the version Microchip successfully tested prior to release). 
+
+     - [MPLAB Harmony Software Framework](https://microchipdeveloper.com/harmony3:mhc-overview)
 
 ## Getting Started - Using a PC to emulate a Host MCU
 
