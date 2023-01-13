@@ -8,6 +8,16 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 
 <img src="./media/SolutionBlockDiagram.png" alt="A screenshot of a new Device button" width = 700/>
 
+## Hardware Requirements
+
+* [USB-to-UART Serial Adapter/Bridge/Converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter)
+* [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A)
+
+    <img src=".//media/WBZ451_Curiosity.png" width=350/>
+* [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a) **or** [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A)
+    <img src=".//media/WFI32-IoT.jpeg" width=350/>
+    <img src=".//media/PIC32_WFI32E_Curiosity.jpeg"/>
+
 ## Software Prerequisites / Tools Installation
 
 * [Git](https://git-scm.com/)
@@ -63,9 +73,9 @@ Alternatively for MacOS users - the COM_PORT setting may look something like
 COM_PORT = "/dev/tty.usbserial-A51MXHIL"
 ```
 
-#### 1.3 Navigate to the [/certificates/](./certificates/) directory. Open the `WFI32_DeviceCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated.
+#### 1.3 Navigate to the [/certificates](./certificates/) directory. Open the `WFI32_DeviceCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated.
 
-#### 1.4 Navigate to the [/certificates/](./certificates/) directory. Open the `WFI32_RootCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated.
+#### 1.4 Navigate to the [/certificates](./certificates/) directory. Open the `WFI32_RootCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated.
 
 #### 1.5 Cycle power to the board by disconnecting and reconnecting the USB cable. For good measure, press the `RESET` button on the WFI32-IoT development board (for the WFI32E Curiosity development board, the reset button is the `MCLR` button)
 
@@ -75,7 +85,7 @@ COM_PORT = "/dev/tty.usbserial-A51MXHIL"
 
 The device certificate file will be needed when we create the device in Azure IoT Central using the individual enrollment method. Another option is to use the group enrollment method which requires uploading the signer certificate file (which could also be the root) to the Azure IoT Central application, so that any device which presents a leaf certificate that was derived from the signer certificate will automatically be granted access to registration.
 
-#### 2.1 The **Device** certificate can be read out of the WFI32 module by executing the `WFI32_DeviceCert.py` script in the [/certificates/](./certificates/) directory. The certificate file will be named based on the device's Common Name (i.e. `<"COMMON_NAME">.PEM`). Execute the following command in a PowerShell or Command Prompt window:
+#### 2.1 The **Device** certificate can be read out of the WFI32 module by executing the `WFI32_DeviceCert.py` script in the [/certificates](./certificates/) directory. The certificate file will be named based on the device's Common Name (i.e. `<"COMMON_NAME">.PEM`). Execute the following command in a PowerShell or Command Prompt window:
 
     python3 WFI32_DeviceCert.py
 
@@ -106,7 +116,7 @@ The output of the command will show all fields, but the common name is what is r
                     8b:4c:e8:ea:60:81:ce:e0:0e:a6:a7:68:3f:e0:de:
                     ....
 
-#### 2.3 The **Root** certificate can be read out of the WFI32 module by executing the `WFI32_RootCert.py` script in the [/certificates/](./certificates/) directory. The certificate file will be named `RootCA.PEM`. Execute the following command in a PowerShell or Command Prompt window:
+#### 2.3 The **Root** certificate can be read out of the WFI32 module by executing the `WFI32_RootCert.py` script in the [/certificates](./certificates/) directory. The certificate file will be named `RootCA.PEM`. Execute the following command in a PowerShell or Command Prompt window:
 
     python3 WFI32_RootCert.py
 
