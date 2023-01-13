@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML><HEAD></HEAD><BODY>
+<OBJECT type="text/site properties">
+<param name="FrameName" value="right">
+</OBJECT>
+<UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Main Page"><param name="Local" value="index.html"><param name="ImageNumber" value="11"></OBJECT>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Modules"><param name="Local" value="modules.html"><param name="ImageNumber" value="1"></OBJECT>
+  <UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Multimeter Click Driver"><param name="Local" value="group__multimeter.html"><param name="ImageNumber" value="1"></OBJECT>
+    <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Macros"><param name="Local" value="group__macros.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="MikroBUS"><param name="Local" value="group__map__mikrobus.html"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_MAP_MIKROBUS"><param name="Local" value="group__map__mikrobus.html#ga162eda627356ab26f5631dfc89890342"><param name="ImageNumber" value="11"></OBJECT>
+        </UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Error Code"><param name="Local" value="group__error__code.html"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_INIT_ERROR"><param name="Local" value="group__error__code.html#ga897b494d43b588fb440f34abce2796fb"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_OK"><param name="Local" value="group__error__code.html#ga0ea3f9ba57183d93a9c6dc0c2cc97e3c"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_RETVAL"><param name="Local" value="group__error__code.html#ga83872a1bccb6e6121f3ff492fbb60e21"><param name="ImageNumber" value="11"></OBJECT>
+        </UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="Channels"><param name="Local" value="group__channels.html"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_C_CHANNEL"><param name="Local" value="group__channels.html#ga0da8ed05c5aff3a672734cae180055ad"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_I_CHANNEL"><param name="Local" value="group__channels.html#gaa3a1b7224fa17d9c3b4d6b6f90b6cf40"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_MAX_VOLTAGE"><param name="Local" value="group__channels.html#ga19187a795e65fa9a5ff1411f96d4f196"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_R_CHANNEL"><param name="Local" value="group__channels.html#ga1dbddaed8b012f6c467b8f8360d99be8"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_U_CHANNEL"><param name="Local" value="group__channels.html#ga7f05a3135c4692819c26b1aee4f9098f"><param name="ImageNumber" value="11"></OBJECT>
+        </UL>
+      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Types"><param name="Local" value="group__type.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="calibration_t"><param name="Local" value="structcalibration__t.html"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="capacitance_cal"><param name="Local" value="structcalibration__t.html#a629eeb8637c0765d8bc00c5dd5124964"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="current_cal"><param name="Local" value="structcalibration__t.html#a8d43d5349ed80127a33463f6dccbca62"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="scan_range"><param name="Local" value="structcalibration__t.html#ae48ef067516bdbac14b599857b34ed58"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="voltage_cal"><param name="Local" value="structcalibration__t.html#a0879a48537c18c19a5f02448fe34ca2f"><param name="ImageNumber" value="11"></OBJECT>
+        </UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="calibration_cfg_t"><param name="Local" value="structcalibration__cfg__t.html"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="capa_cal_cfg"><param name="Local" value="structcalibration__cfg__t.html#afb1cb8ba9218a95aa56bbefe44b9803c"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="curr_cal_cfg"><param name="Local" value="structcalibration__cfg__t.html#a53c318451882d04d3f05e731bafb02e0"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="scan_range_cfg"><param name="Local" value="structcalibration__cfg__t.html#a0cc20e2ad992773cf87140d26edab343"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="volt_cal_cfg"><param name="Local" value="structcalibration__cfg__t.html#aa0e136df2ca5f39754f30dd0e23e1a7c"><param name="ImageNumber" value="11"></OBJECT>
+        </UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_t"><param name="Local" value="structmultimeter__t.html"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="a"><param name="Local" value="structmultimeter__t.html#a499da3642d669bace8c7060f4e07d177"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="b"><param name="Local" value="structmultimeter__t.html#ac3f639067a9640427f479a0d5eb682ec"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="c"><param name="Local" value="structmultimeter__t.html#abe9cf0b67cdd61284218e1d0c855706e"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="calibration"><param name="Local" value="structmultimeter__t.html#a63979931affd8a45df08fe33f10190b2"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="chip_select"><param name="Local" value="structmultimeter__t.html#ae4ecd3ce05887af3df2edaa617ce20c5"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="cs"><param name="Local" value="structmultimeter__t.html#a00ce96649495c02a546f16ea8192ca36"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="spi"><param name="Local" value="structmultimeter__t.html#a1a3ff96f28dc09691b0a5746ff720189"><param name="ImageNumber" value="11"></OBJECT>
+        </UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_cfg_t"><param name="Local" value="structmultimeter__cfg__t.html"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="a"><param name="Local" value="structmultimeter__cfg__t.html#aac01ead1248187fb5e6b18d644ff3e70"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="b"><param name="Local" value="structmultimeter__cfg__t.html#a92c57a154547010cfceb1949efc9e02c"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="c"><param name="Local" value="structmultimeter__cfg__t.html#ae5a3da85439880d8e47d8c2e38780caa"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="calibration_cfg"><param name="Local" value="structmultimeter__cfg__t.html#a4e5c24dd5b6b2a336ed377639400498e"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="cs"><param name="Local" value="structmultimeter__cfg__t.html#af942f9c5ef2f039bb7277c130ea9d17f"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="cs_polarity"><param name="Local" value="structmultimeter__cfg__t.html#a75c0dfb30561bfa74feb35b6e037efa6"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="miso"><param name="Local" value="structmultimeter__cfg__t.html#ad68efd7e8ad1531f79a1d9e004473307"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="mosi"><param name="Local" value="structmultimeter__cfg__t.html#aad2210fd7a5119c1d12f5003fe359c21"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="sck"><param name="Local" value="structmultimeter__cfg__t.html#a7d4fefea9071f5217ef8973c771751e5"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="spi_mode"><param name="Local" value="structmultimeter__cfg__t.html#a8b8321dd2f1b623cd940e73b118f610d"><param name="ImageNumber" value="11"></OBJECT>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="spi_speed"><param name="Local" value="structmultimeter__cfg__t.html#aaf56291fd6677734c778aef6c89548e8"><param name="ImageNumber" value="11"></OBJECT>
+        </UL>
+      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Public function"><param name="Local" value="group__public__function.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_cfg_setup"><param name="Local" value="group__public__function.html#ga456dd75a4e8ef3d4ae4a8ada3637ff52"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_default_cfg"><param name="Local" value="group__public__function.html#gaaf821d735c197faff23cd9e79d5a6d53"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_get_resistance_range"><param name="Local" value="group__public__function.html#ga9f425a654179ab66bef5c06e35d46d3f"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_init"><param name="Local" value="group__public__function.html#ga29559a98e1e4297c8f7026130b055fcf"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_read_capacitance"><param name="Local" value="group__public__function.html#ga597b25bba51ac8b06ddafe2009a85ff2"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_read_current"><param name="Local" value="group__public__function.html#ga800dcc43cab5fbe77acbfffdc90096ef"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_read_resistance"><param name="Local" value="group__public__function.html#gaafbc333578f1d2c8825ae7a6b972ba7d"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_read_voltage"><param name="Local" value="group__public__function.html#ga081eb092f50632a80f0420930e9c4d01"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_set_resistance_range"><param name="Local" value="group__public__function.html#ga49283fec58758535a944e813072c1c33"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
+    </UL>
+  </UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Data Structures"><param name="Local" value="annotated.html"><param name="ImageNumber" value="1"></OBJECT>
+  <UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Data Structures"><param name="Local" value="annotated.html"><param name="ImageNumber" value="1"></OBJECT>
+    <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="calibration_cfg_t"><param name="Local" value="structcalibration__cfg__t.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="capa_cal_cfg"><param name="Local" value="structcalibration__cfg__t.html#afb1cb8ba9218a95aa56bbefe44b9803c"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="curr_cal_cfg"><param name="Local" value="structcalibration__cfg__t.html#a53c318451882d04d3f05e731bafb02e0"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="scan_range_cfg"><param name="Local" value="structcalibration__cfg__t.html#a0cc20e2ad992773cf87140d26edab343"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="volt_cal_cfg"><param name="Local" value="structcalibration__cfg__t.html#aa0e136df2ca5f39754f30dd0e23e1a7c"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="calibration_t"><param name="Local" value="structcalibration__t.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="capacitance_cal"><param name="Local" value="structcalibration__t.html#a629eeb8637c0765d8bc00c5dd5124964"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="current_cal"><param name="Local" value="structcalibration__t.html#a8d43d5349ed80127a33463f6dccbca62"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="scan_range"><param name="Local" value="structcalibration__t.html#ae48ef067516bdbac14b599857b34ed58"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="voltage_cal"><param name="Local" value="structcalibration__t.html#a0879a48537c18c19a5f02448fe34ca2f"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_cfg_t"><param name="Local" value="structmultimeter__cfg__t.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="a"><param name="Local" value="structmultimeter__cfg__t.html#aac01ead1248187fb5e6b18d644ff3e70"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="b"><param name="Local" value="structmultimeter__cfg__t.html#a92c57a154547010cfceb1949efc9e02c"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="c"><param name="Local" value="structmultimeter__cfg__t.html#ae5a3da85439880d8e47d8c2e38780caa"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="calibration_cfg"><param name="Local" value="structmultimeter__cfg__t.html#a4e5c24dd5b6b2a336ed377639400498e"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="cs"><param name="Local" value="structmultimeter__cfg__t.html#af942f9c5ef2f039bb7277c130ea9d17f"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="cs_polarity"><param name="Local" value="structmultimeter__cfg__t.html#a75c0dfb30561bfa74feb35b6e037efa6"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="miso"><param name="Local" value="structmultimeter__cfg__t.html#ad68efd7e8ad1531f79a1d9e004473307"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="mosi"><param name="Local" value="structmultimeter__cfg__t.html#aad2210fd7a5119c1d12f5003fe359c21"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="sck"><param name="Local" value="structmultimeter__cfg__t.html#a7d4fefea9071f5217ef8973c771751e5"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="spi_mode"><param name="Local" value="structmultimeter__cfg__t.html#a8b8321dd2f1b623cd940e73b118f610d"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="spi_speed"><param name="Local" value="structmultimeter__cfg__t.html#aaf56291fd6677734c778aef6c89548e8"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_t"><param name="Local" value="structmultimeter__t.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="a"><param name="Local" value="structmultimeter__t.html#a499da3642d669bace8c7060f4e07d177"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="b"><param name="Local" value="structmultimeter__t.html#ac3f639067a9640427f479a0d5eb682ec"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="c"><param name="Local" value="structmultimeter__t.html#abe9cf0b67cdd61284218e1d0c855706e"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="calibration"><param name="Local" value="structmultimeter__t.html#a63979931affd8a45df08fe33f10190b2"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="chip_select"><param name="Local" value="structmultimeter__t.html#ae4ecd3ce05887af3df2edaa617ce20c5"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="cs"><param name="Local" value="structmultimeter__t.html#a00ce96649495c02a546f16ea8192ca36"><param name="ImageNumber" value="11"></OBJECT>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="spi"><param name="Local" value="structmultimeter__t.html#a1a3ff96f28dc09691b0a5746ff720189"><param name="ImageNumber" value="11"></OBJECT>
+      </UL>
+    </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Data Structure Index"><param name="Local" value="classes.html"><param name="ImageNumber" value="11"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Data Fields"><param name="Local" value="functions.html"><param name="ImageNumber" value="1"></OBJECT>
+    <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="All"><param name="Local" value="functions.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Variables"><param name="Local" value="functions_vars.html"><param name="ImageNumber" value="11"></OBJECT>
+    </UL>
+  </UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Files"><param name="Local" value="files.html"><param name="ImageNumber" value="1"></OBJECT>
+  <UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="File List"><param name="Local" value="files.html"><param name="ImageNumber" value="1"></OBJECT>
+    <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="cmake"><param name="Local" value="dir_a5bdbfbbaa7895161d62825676df7980.html"><param name="ImageNumber" value="1"></OBJECT>
+      <UL>
+      <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter"><param name="Local" value="dir_ec6cdd86e8b73228666a05c35dec6be6.html"><param name="ImageNumber" value="1"></OBJECT>
+        <UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="example"><param name="Local" value="dir_331cb22f673f8ffd2a6ce711e29a6698.html"><param name="ImageNumber" value="1"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="main.c"><param name="Local" value="main_8c.html"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="application_init"><param name="Local" value="main_8c.html#a30548166a2f46e9b006b93f10d2c1eca"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="application_task"><param name="Local" value="main_8c.html#a49f3be06e2af9692c30ce04480692c22"><param name="ImageNumber" value="11"></OBJECT>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="main"><param name="Local" value="main_8c.html#acdef7a1fd863a6d3770c1268cb06add3"><param name="ImageNumber" value="11"></OBJECT>
+            </UL>
+          </UL>
+        <LI><OBJECT type="text/sitemap"><param name="Name" value="lib_multimeter"><param name="Local" value="dir_b134a2bb29cbeeef4218739dd90d9dff.html"><param name="ImageNumber" value="1"></OBJECT>
+          <UL>
+          <LI><OBJECT type="text/sitemap"><param name="Name" value="include"><param name="Local" value="dir_f82dc2f0c423a0b474aa451fcb866267.html"><param name="ImageNumber" value="1"></OBJECT>
+            <UL>
+            <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter.h"><param name="Local" value="multimeter_8h.html"><param name="ImageNumber" value="1"></OBJECT>
+              <UL>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_C_CHANNEL"><param name="Local" value="group__channels.html#ga0da8ed05c5aff3a672734cae180055ad"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_I_CHANNEL"><param name="Local" value="group__channels.html#gaa3a1b7224fa17d9c3b4d6b6f90b6cf40"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_INIT_ERROR"><param name="Local" value="group__error__code.html#ga897b494d43b588fb440f34abce2796fb"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_MAP_MIKROBUS"><param name="Local" value="group__map__mikrobus.html#ga162eda627356ab26f5631dfc89890342"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_MAX_VOLTAGE"><param name="Local" value="group__channels.html#ga19187a795e65fa9a5ff1411f96d4f196"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_OK"><param name="Local" value="group__error__code.html#ga0ea3f9ba57183d93a9c6dc0c2cc97e3c"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_R_CHANNEL"><param name="Local" value="group__channels.html#ga1dbddaed8b012f6c467b8f8360d99be8"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_RETVAL"><param name="Local" value="group__error__code.html#ga83872a1bccb6e6121f3ff492fbb60e21"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="MULTIMETER_U_CHANNEL"><param name="Local" value="group__channels.html#ga7f05a3135c4692819c26b1aee4f9098f"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_cfg_setup"><param name="Local" value="group__public__function.html#ga456dd75a4e8ef3d4ae4a8ada3637ff52"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_default_cfg"><param name="Local" value="group__public__function.html#gaaf821d735c197faff23cd9e79d5a6d53"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_get_resistance_range"><param name="Local" value="group__public__function.html#ga9f425a654179ab66bef5c06e35d46d3f"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_init"><param name="Local" value="group__public__function.html#ga29559a98e1e4297c8f7026130b055fcf"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_read_capacitance"><param name="Local" value="group__public__function.html#ga597b25bba51ac8b06ddafe2009a85ff2"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_read_current"><param name="Local" value="group__public__function.html#ga800dcc43cab5fbe77acbfffdc90096ef"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_read_resistance"><param name="Local" value="group__public__function.html#gaafbc333578f1d2c8825ae7a6b972ba7d"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_read_voltage"><param name="Local" value="group__public__function.html#ga081eb092f50632a80f0420930e9c4d01"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="multimeter_set_resistance_range"><param name="Local" value="group__public__function.html#ga49283fec58758535a944e813072c1c33"><param name="ImageNumber" value="11"></OBJECT>
+              </UL>
+            </UL>
+          </UL>
+        </UL>
+      </UL>
+    </UL>
+  <LI><OBJECT type="text/sitemap"><param name="Name" value="Globals"><param name="Local" value="globals.html"><param name="ImageNumber" value="11"></OBJECT>
+    <UL>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="All"><param name="Local" value="globals.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Functions"><param name="Local" value="globals_func.html"><param name="ImageNumber" value="11"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="Macros"><param name="Local" value="globals_defs.html"><param name="ImageNumber" value="11"></OBJECT>
+    </UL>
+  </UL>
+</UL>
+</BODY>
+</HTML>

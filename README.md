@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) is a Cloud connectivity embedded firmware package for Microchip's [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) IoT module that runs on the [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A) or the [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a). The [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) solution includes a full set of firmware source code to enable custom modifications and the default binary image that can be used straight "out of the box". The solution is publicly available on [Microchip Technology's GitHub account](https://github.com/MicrochipTech). To review the software, clone the repository, download a ZIP file, or just get the latest release of the AnyCloud binary file, access the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) repository on [GitHub](https://github.com).
+[AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) is a Cloud connectivity embedded firmware package for Microchip's [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) IoT module that runs on the [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A) or the [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a). The [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) solution includes a full set of firmware source code to enable custom modifications and the default binary image that can be used straight "out of the box". The solution is publicly available on [Microchip Technology's GitHub account](https://github.com/MicrochipTech). To review the software, clone the repository, download a ZIP file, or just get the latest release of the AnyCloud™ binary file, access the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) repository on [GitHub](https://github.com).
 
 The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (which has been provisioned with the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) firmware) is meant to act as a "UART to Cloud" bridge to enable the Host MCU of an IoT device to easily connect to (and communicate with) a cloud application. In this example, a PC runs various Python scripts to emulate the operations that a Host MCU would need to execute in order to authenticate, connect, and communicate with a Microsoft Azure IoT Central application.
 
@@ -15,13 +15,13 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 * [Python Serial Port Extension](https://pypi.org/project/pyserial/)
 * [OpenSSL](https://www.openssl.org)
 
-## Getting Started
+## Getting Started - Using a PC to emulate a Host MCU
 
 ### Step 1 - Set up a WFI32E01 Development Board as an AnyCloud™ UART-to-Cloud Bridge
 
-Follow the section titled "Re-Flashing the device" in the [AnyCloud™ Getting Started Guide](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud/blob/main/README.md) to program the AnyCloud firmware onto one of the WFI32E01 development boards (if using WFI32-IoT, skip the step regarding a jumper setting).
+Follow the section titled "Re-Flashing the device" in the [AnyCloud™ Getting Started Guide](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud/blob/main/README.md) to program the AnyCloud™ firmware onto one of the WFI32E01 development boards (if using WFI32-IoT, skip the step regarding a jumper setting).
 
-After the AnyCloud firmware has been programmed, proceed with connecting a [USB-to-UART converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter) between the PC and the specified header for the specific WFI32E01 development board being used:
+After the AnyCloud™ firmware has been programmed, proceed with connecting a [USB-to-UART converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter) between the PC and the specified header for the specific WFI32E01 development board being used:
 
 - [WFI32-IoT](https://www.microchip.com/en-us/development-tool/ev36w50a): Connect the USB-to-UART converter's TXD & RXD pins to the `RX` & `TX` pins of the mikroBUS Header (`J402`), respectively
 
@@ -43,7 +43,7 @@ ls /dev/tty.usb*
 ```
 to see a list of all USB devices which have been assigned to serial ports - most likely one of them is the string that will be assigned to the `COM_PORT` variable in the script
 
-#### 1.1 Create a copy of the `AzureAnyCloud.py` file and rename it to something more specific (e.g. `AzureAnyCloud_<YOURINITIALS>.py` (in order to preserve the original baseline script in case you need to reference it again in the future)
+#### 1.1 Navigate to the [/examples/PC_Python](./examples/PC_Python/) directory. Create a copy of the `AzureAnyCloud.py` file and rename it to something more specific (e.g. `AzureAnyCloud_<YOURINITIALS>.py` (in order to preserve the original baseline script in case you need to reference it again in the future)
 
 #### 1.2 Using the text editor of your choice, open the newly-created `AzureAnyCloud_<YOURINITIALS>.py` file and locate the following line towards the top of the file:
 
@@ -63,9 +63,9 @@ Alternatively for MacOS users - the COM_PORT setting may look something like
 COM_PORT = "/dev/tty.usbserial-A51MXHIL"
 ```
 
-#### 1.3 Open the `WFI32_DeviceCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated.
+#### 1.3 Navigate to the [/certificates/](./certificates/) directory. Open the `WFI32_DeviceCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated.
 
-#### 1.4 Open the `WFI32_RootCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated.
+#### 1.4 Navigate to the [/certificates/](./certificates/) directory. Open the `WFI32_RootCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated.
 
 #### 1.5 Cycle power to the board by disconnecting and reconnecting the USB cable. For good measure, press the `RESET` button on the WFI32-IoT development board (for the WFI32E Curiosity development board, the reset button is the `MCLR` button)
 
@@ -75,7 +75,7 @@ COM_PORT = "/dev/tty.usbserial-A51MXHIL"
 
 The device certificate file will be needed when we create the device in Azure IoT Central using the individual enrollment method. Another option is to use the group enrollment method which requires uploading the signer certificate file (which could also be the root) to the Azure IoT Central application, so that any device which presents a leaf certificate that was derived from the signer certificate will automatically be granted access to registration.
 
-#### 2.1 The **Device** certificate can be read out of the WFI32 module by executing the `WFI32_DeviceCert.py` script. The certificate file will be named based on the device's Common Name (i.e. `<"COMMON_NAME">.PEM`). Execute the following command in a PowerShell or Command Prompt window:
+#### 2.1 The **Device** certificate can be read out of the WFI32 module by executing the `WFI32_DeviceCert.py` script in the [/certificates/](./certificates/) directory. The certificate file will be named based on the device's Common Name (i.e. `<"COMMON_NAME">.PEM`). Execute the following command in a PowerShell or Command Prompt window:
 
     python3 WFI32_DeviceCert.py
 
@@ -106,7 +106,7 @@ The output of the command will show all fields, but the common name is what is r
                     8b:4c:e8:ea:60:81:ce:e0:0e:a6:a7:68:3f:e0:de:
                     ....
 
-#### 2.3 The **Root** certificate can be read out of the WFI32 module by executing the `WFI32_RootCert.py` script. The certificate file will be named `RootCA.PEM`. Execute the following command in a PowerShell or Command Prompt window:
+#### 2.3 The **Root** certificate can be read out of the WFI32 module by executing the `WFI32_RootCert.py` script in the [/certificates/](./certificates/) directory. The certificate file will be named `RootCA.PEM`. Execute the following command in a PowerShell or Command Prompt window:
 
     python3 WFI32_RootCert.py
 
@@ -142,7 +142,7 @@ The model ID will be announced by the device during the DPS registration process
 
 ### Step 6 - Run the AzureAnyCloud Script
 
-Press the reset button on the development board. It is always good practice to press the reset button just before each time a new script operation is invoked. To run the main Azure IoT Central script, execute the following command line:
+Press the reset button on the development board. It is always good practice to press the reset button just before each time a new script operation is invoked. To run the main Azure IoT Central script, navigate to the [/examples/PC_Python](./examples/PC_Python/) directory and execute the following command line:
 
     python3 AzureAnyCloud_<YOURINITIALS>.py
 
@@ -297,7 +297,7 @@ Finally, the script subscribes to the DPS MQTT notification topic, and publishes
 
 At this point, the DPS process has completed.  The application will disconnect from the DPS server.  
 
-**Note:** AnyCloud does not support simultaneous connections to multiple MQTT brokers, so the disconnect step is required.
+**Note:** AnyCloud™ does not support simultaneous connections to multiple MQTT brokers, so the disconnect step is required.
 
     Registration complete, connect to Azure IoT Central
 
@@ -476,7 +476,7 @@ IoT Central will publish a message to the property PATCH topic.  The message wil
     Light sensor telemetry updating at the new telemetry interval
     Check Raw Data tab to verify
 
-The Plug-n-Play standard requries acknowledging these messages.  The AnyCloud response payload is show below.
+The Plug-n-Play standard requries acknowledging these messages.  The AnyCloud™ response payload is show below.
 
     AT+MQTTPUB=0,0,0,"$iothub/twin/PATCH/properties/reported/?rid=8","{\"telemetryInterval\" : {\"ac\" : 200, \"av\" : 105, \"ad\" : \"telemetryInterval set to: 5\", \"value\" : 5}}"
     OK
@@ -556,4 +556,19 @@ Putting it all together for for the example reboot command received above, the r
     AT+MQTTPUB=0,0,0,"$iothub/methods/res/200/?$rid=1","{\"status\" : \"Success\", \"delay\" : 5}"
     OK
     >
+
+## Embedded Firmware Example
+
+Now that you've successfully run Python scripts on a PC to emulate all of the necessary transactions an IoT device would need to perform to connect to IoT Central, you can also use an actual embedded application running on a Host MCU development board such as Microchip Technology's [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A).
+
+Replace the USB-to-UART converter connection with the `WBZ451 Curiosity Board` based on whether you're using the `WFI32-IoT` or `PIC32 WFI32E Curiosity` development board as the AnyCloud™ bridge:
+
+<img src=".//media/WBZ451_WFI32-IoT.png"/>
+
+<img src=".//media/WBZ451_WFI32E-Curiosity.png"/>
+
+The complete MPLAB X IDE project for the WBZ451 module acting as the Host MCU can be found in the folder
+```bash
+/examples/WBZ451_AnyCloud/firmware/WBZ451_AnyCloud_Multimeter.X
+```
 
