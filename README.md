@@ -13,10 +13,9 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 * PC Interface to AnyCloud™ Serial Bridge: [USB-to-UART Serial Adapter/Bridge/Converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter)
 * Host MCU Development Board: [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A)
 
-    <img src=".//media/WBZ451_Curiosity.png" width=350/>
+    <img src=".//media/WBZ451_Curiosity.png" width=300/>
 * AnyCloud™ Serial Bridge: [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a) **or** [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A)
-    <img src=".//media/WFI32-IoT.jpeg" width=350/>
-    <img src=".//media/PIC32_WFI32E_Curiosity.jpeg"/>
+    <img src=".//media/AnyCloud_Boards.png" width=500/>
 
 ## Software Prerequisites / Tools Installation
 
@@ -648,7 +647,9 @@ Now that you've successfully run Python scripts on a PC to emulate all of the ne
 
 11. After the `BUILD SUCCESSFUL` message appears in the Output window, the application HEX file will be programmed onto the development Board. Once programming has finished, the board will automatically reset and start running its application code.
 
-12. To restart the entire connection sequence, peform the following steps in order:
+12. Observe the debug messages in the terminal window and verify that telemetry and properties are being updated in the IoT Central application.
+
+13. To restart the entire connection sequence, peform the following steps in order:
 
     - Press the reset button on the AnyCloud™ serial bridge board
         - WFI32-IoT Development Board: `RESET`
