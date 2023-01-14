@@ -620,7 +620,7 @@ Now that you've successfully run Python scripts on a PC to emulate all of the ne
 
 7. In the `Projects` window, open the `app_rio2_config.h` header file by double-clicking directly on the file name
 
-    <img src=".//media/image22.png" width=250 />
+    <img src=".//media/image22.png" width=200 />
 
 8. In the `app_rio2_config.h` header file, set the necessary parameters corresponding to your IoT device
 
@@ -639,7 +639,7 @@ Now that you've successfully run Python scripts on a PC to emulate all of the ne
     - select the latest version for `PIC32CX-BZ_DFP`
     - select the latest XC32 version for `Compiler Toolchain`
 
-        <img src=".//media/image42.png" style="width:5.in;height:3.18982in" alt="A screenshot of a cell phone Description automatically generated" />
+        <img src=".//media/image42.png" width=375 />
 
         **Note** If any changes were made in the project properties window, the `Apply` button should become enabled.  Make sure to hit the `Apply` button before hitting `OK`
 
