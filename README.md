@@ -4,17 +4,17 @@
 
 [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) is a Cloud connectivity embedded firmware package for Microchip's [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) IoT module that runs on the [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A) or the [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a). The [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) solution includes a full set of firmware source code to enable custom modifications and the default binary image that can be used straight "out of the box". The solution is publicly available on [Microchip Technology's GitHub account](https://github.com/MicrochipTech). To review the software, clone the repository, download a ZIP file, or just get the latest release of the AnyCloud™ binary file, access the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) repository on [GitHub](https://github.com).
 
-The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (which has been provisioned with the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) firmware) is meant to act as a "UART to Cloud" bridge to enable the Host MCU of an IoT device to easily connect to (and communicate with) a cloud application. In this example, a PC runs various Python scripts to emulate the operations that a Host MCU would need to execute in order to authenticate, connect, and communicate with a Microsoft Azure IoT Central application.
+The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (which has been provisioned with the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) firmware) is meant to act as a "UART to Cloud" bridge to enable the Host MCU of an IoT device to easily connect to (and communicate with) a cloud application. In this example, we first use a PC to run Python scripts to emulate the operations that a Host MCU would need to execute in order to authenticate, connect, and communicate with a Microsoft Azure IoT Central application. For a more real-world case, the second part of this example uses an actual Host MCU development board which performs the same operations as the Python scripts. The full set of source code for the embedded application is provided to use as a baseline for an actual production designs!
 
 <img src="./media/SolutionBlockDiagram.png" alt="A screenshot of a new Device button" width = 700/>
 
 ## Hardware Requirements
 
-* [USB-to-UART Serial Adapter/Bridge/Converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter)
-* [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A)
+* PC Interface to AnyCloud™ Serial Bridge: [USB-to-UART Serial Adapter/Bridge/Converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter)
+* Host MCU Development Board: [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A)
 
     <img src=".//media/WBZ451_Curiosity.png" width=350/>
-* [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a) **or** [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A)
+* AnyCloud™ Serial Bridge: [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a) **or** [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A)
     <img src=".//media/WFI32-IoT.jpeg" width=350/>
     <img src=".//media/PIC32_WFI32E_Curiosity.jpeg"/>
 
@@ -35,7 +35,7 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 
      - [MPLAB Harmony Software Framework](https://microchipdeveloper.com/harmony3:mhc-overview)
 
-## Getting Started - Using a PC to emulate a Host MCU
+## Getting Started - Using a PC to Emulate a Host MCU
 
 ### Step 1 - Set up a WFI32E01 Development Board as an AnyCloud™ UART-to-Cloud Bridge
 
@@ -579,19 +579,26 @@ Putting it all together for for the example reboot command received above, the r
 
 Now that you've successfully run Python scripts on a PC to emulate all of the necessary transactions an IoT device would need to perform to connect to IoT Central, you can also use an actual embedded application running on a Host MCU development board such as Microchip Technology's [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A).
 
-1. Replace the USB-to-UART converter connection with the `WBZ451 Curiosity Board` based on whether you're using the `WFI32-IoT` or `PIC32 WFI32E Curiosity` development board as the AnyCloud™ bridge (make sure to follow the correct diagram)
+1. Press the reset button on the AnyCloud™ serial bridge board
+    - WFI32-IoT Development Board: `RESET`
+    - PIC32 WFI32E Curiosity Board: `MCLR`
+
+        <img src=".//media/WFI32_RESET.png" width=400 />
+
+2. Replace the USB-to-UART converter connection with the `WBZ451 Curiosity Board` based on whether you're using the `WFI32-IoT` or `PIC32 WFI32E Curiosity` development board as the AnyCloud™ serial bridge (make sure to follow the correct diagram for your board)
 
     <img src=".//media/WBZ451_WFI32-IoT.png"/>
 
     <img src=".//media/WBZ451_WFI32E-Curiosity.png"/>
 
-2. Connect the `WBZ451 Curiosity Board` to the PC using the supplied micro-USB cable. Launch a [Terminal Emulator](https://en.wikipedia.org/wiki/List_of_terminal_emulators) program of your choice and connect to the WBZ451 Curiosity Board's Virtual COM Port at 115200 baud
+3. Connect the `WBZ451 Curiosity Board` to the PC using the supplied micro-USB cable. Launch a [Terminal Emulator](https://en.wikipedia.org/wiki/List_of_terminal_emulators) program of your choice and connect to the WBZ451 Curiosity Board's Virtual COM Port at 115200 baud
 <br>
-**Note** The WBZ451 Curiosity Board creates two Virtual COM Ports; the correct one to select will most likely be the one that is shorter in length, e.g.
+
+    **Note** The WBZ451 Curiosity Board creates two Virtual COM Ports; the correct one to select will most likely be the one that is shorter in length and does not contain the RYN digits, e.g.
 
     <img src=".//media/image17.png" width=200 />
 
-3. Launch the `MPLAB X` IDE (this tool should have been previously installed and most likely resides in the \Program Files\Microchip\ folder)
+4. Launch the `MPLAB X` IDE (this tool should have been previously installed and most likely resides in the \Program Files\Microchip\ folder)
 
     <img src=".//media/image18a.png" width=200 />
 
@@ -599,7 +606,7 @@ Now that you've successfully run Python scripts on a PC to emulate all of the ne
 
     <img src=".//media/image18b.png"  />
 
-4. Navigate to the main toolbar's `File` > `Open Project` operation to load the demo project folder (\*.X) located at `[your_path]\AzureDemo_AnyCloud\firmware\examples\WBZ451_AnyCloud.X`
+5. Navigate to the main toolbar's `File` > `Open Project` operation to load the demo project folder (\*.X) located at `\AzureDemo_AnyCloud\firmware\examples\WBZ451_AnyCloud.X`
 
     <img src=".//media/image19a.png" width=200 />
     <img src=".//media/image19b.png" width=400 />
@@ -608,23 +615,23 @@ Now that you've successfully run Python scripts on a PC to emulate all of the ne
 
     <img src=".//media/image21.png" style="width:6.5in;height:1.00833in" alt="A screenshot of a cell phone Description automatically generated" />
 
-5. Set the `WBZ451_AnyCloud` project as the main (currently focused/active) project by right-clicking on it and selecting `Set as Main Project`
+6. Set the `WBZ451_AnyCloud` project as the main (currently focused/active) project by right-clicking on it and selecting `Set as Main Project`
 
-    <img src=".//media/image40.png" style="width:5.in;height:3.18982in" alt="A screenshot of a cell phone Description automatically generated" />
+    <img src=".//media/image40.png" width=300 />
 
-6. In the `Projects` window, open the `app_rio2_config.h` header file by double-clicking directly on the file name
+7. In the `Projects` window, open the `app_rio2_config.h` header file by double-clicking directly on the file name
 
     <img src=".//media/image22.png" width=250 />
 
-7. In the `app_rio2_config.h` header file, set the necessary parameters corresponding to your IoT device
+8. In the `app_rio2_config.h` header file, set the necessary parameters corresponding to your IoT device
 
-    - NETWORK_SSID (name of your Wi-Fi Access Point)
-    - NETWORK_PSWD (password for your Wi-Fi Access Point)
-    - ID_SCOPE (confirm it is mapped to the correct IoT Central application)
-    - CLIENT_ID (confirm this matches the Common Name in the client certificate)
-    - MODEL_ID (confirm Device Twin Model Identifier (DTMI) is correct)
+    - `NETWORK_SSID` (name of your Wi-Fi Access Point)
+    - `NETWORK_PSWD` (password for your Wi-Fi Access Point)
+    - `ID_SCOPE` (confirm it is mapped to the correct IoT Central application)
+    - `CLIENT_ID` (confirm this matches the Common Name in the client certificate)
+    - `MODEL_ID` (confirm Device Twin Model Identifier (DTMI) is correct)
 
-8. Verify the project properties are set correctly before building the project by executing the following steps:
+9. Verify the project properties are set correctly before building the project by executing the following steps:
 
     - right-click on the `WBZ451_AnyCloud` project
     - select `Properties`
@@ -635,19 +642,19 @@ Now that you've successfully run Python scripts on a PC to emulate all of the ne
 
         <img src=".//media/image42.png" style="width:5.in;height:3.18982in" alt="A screenshot of a cell phone Description automatically generated" />
 
-    **Note** If any changes were made in the project properties window, the `Apply` button should become enabled.  Make sure to hit the `Apply` button before hitting `OK`
+        **Note** If any changes were made in the project properties window, the `Apply` button should become enabled.  Make sure to hit the `Apply` button before hitting `OK`
 
-9. Right-click on the active project and select `Clean`. Right-click the project again and select `Make and Program Device`. This operation will automatically build the project before attempting to program the target device.
+10. Right-click on the active project and select `Clean`. Right-click the project again and select `Make and Program Device`. This operation will automatically build the project before attempting to program the target device.
 
-10. After the `BUILD SUCCESSFUL` message appears in the Output window, the application HEX file will be programmed onto the development Board. Once programming has finished, the board will automatically reset and start running its application code.
+11. After the `BUILD SUCCESSFUL` message appears in the Output window, the application HEX file will be programmed onto the development Board. Once programming has finished, the board will automatically reset and start running its application code.
 
-11. To restart the entire connection sequence, peform the following steps in order:
+12. To restart the entire connection sequence, peform the following steps in order:
 
     - Press the reset button on the AnyCloud™ serial bridge board
         - WFI32-IoT Development Board: `RESET`
         - PIC32 WFI32E Curiosity Board: `MCLR`
 
             <img src=".//media/WFI32_RESET.png" width=400 />
-    - Press the reset button on the WBZ451 Curiosity Board (or hit [CTRL-C] in the terminal window)
+    - Press the reset button on the WBZ451 Curiosity Board (or type `CTRL-C` in the terminal window)
 
         <img src=".//media/WBZ451_RESET.png" width=400 />
