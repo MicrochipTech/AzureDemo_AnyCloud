@@ -659,3 +659,7 @@ Now that you've successfully run Python scripts on a PC to emulate all of the ne
     - Press the reset button on the WBZ451 Curiosity Board (or type `CTRL-C` in the terminal window)
 
         <img src=".//media/WBZ451_RESET.png" width=400 />
+
+## Adding Extra Sensors to the Embedded Firmware Example
+
+For additional guidance on how to add extra sensors to the WBZ451 Curiosity Board embedded firmware example, [click here](./exercises/WBZ451_Curiosity_Multimeter/) to find a document (in a lab manual format) outlining the necessary procedures.
