@@ -624,10 +624,10 @@ Now that you've successfully run Python scripts on a PC to emulate all of the ne
 
 8. In the `app_rio2_config.h` header file, set the necessary parameters corresponding to your IoT device
 
-    - `NETWORK_SSID` (name of your Wi-Fi Access Point)
-    - `NETWORK_PSWD` (password for your Wi-Fi Access Point)
+    - `WIFI_SSID` (name of your Wi-Fi Access Point)
+    - `WIFI_PSWD` (password for your Wi-Fi Access Point)
+    - `MY_THING_ID` (confirm this matches the Common Name in the client certificate)
     - `ID_SCOPE` (confirm it is mapped to the correct IoT Central application)
-    - `CLIENT_ID` (confirm this matches the Common Name in the client certificate)
     - `MODEL_ID` (confirm Device Twin Model Identifier (DTMI) is correct)
 
 9. Verify the project properties are set correctly before building the project by executing the following steps:
