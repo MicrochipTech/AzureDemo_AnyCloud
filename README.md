@@ -591,9 +591,9 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
     <img src=".//media/image19a.png" width=200 />
     <img src=".//media/image19b.png" width=400 />
 
-   If the `load error` message in red appears in the `Output` window, click on the `Resolve DFP for configuration: default` link
+   If the `Configuration load error` message in red appears in the `Output` window, click on the `Resolve DFP for configuration: default` link
 
-    <img src=".//media/image21.png" style="width:6.5in;height:1.00833in" alt="A screenshot of a cell phone Description automatically generated" />
+    <img src=".//media/image21a.png" width=500 />
 
 6. Set the `WBZ451_AnyCloud` project as the main (currently focused/active) project by right-clicking on it and selecting `Set as Main Project`
 

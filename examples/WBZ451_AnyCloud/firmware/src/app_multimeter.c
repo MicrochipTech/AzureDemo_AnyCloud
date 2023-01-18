@@ -192,7 +192,7 @@ void APP_MULTIMETER_Tasks(void) {
             voltage_cal = (float)value/2;
             
             SPI_CS_Set();
-            printf("voltage_cal in hex= %lx\r",value);
+            printf("voltage_cal in hex= %x\r",value);
             printf("voltage_cal in float = %f\r",voltage_cal);
             app_multimeterData.state = APP_MULTIMETER_STATE_SERVICE_TASKS;
             

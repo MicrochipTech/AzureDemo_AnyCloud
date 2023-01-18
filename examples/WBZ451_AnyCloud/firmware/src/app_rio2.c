@@ -1526,6 +1526,7 @@ void APP_RIO2_Tasks(void) {
             break;
         }
 #ifdef USE_AZURE
+            static char rebootDelay[10];
             static char requestID[10];
 #endif
             static char responseMQTTPUB[500];
@@ -1584,18 +1585,19 @@ void APP_RIO2_Tasks(void) {
 #ifdef USE_AZURE                
                 //+MQTTPUB:35,"$iothub/methods/POST/reboot/?$rid=4",16,"{"delay":"PT5S"}"
                 if ((ptr = strstr(messPtr, "\"delay")) && strstr(topicPtr, "$iothub/methods/POST/reboot/")) {
-
-                    ptr += strlen("\"delay\":\"");
-                    *strstr((ptr), "\"") = 0; //Closing " quote 
-                    printf_MQTT(("\r\n\r\n\r\n""Rebooting in %s.... Just kidding :p\r\n\r\n\r\n\r\n", ptr));
-                    //Get "rid" value
+                    // Get reboot delay value     
+                    if ((ptr = strstr(messPtr, "PT"))) {
+                        ptr += strlen("PT");
+                        sprintf(rebootDelay, ptr);
+                    }                    
+                    printf_MQTT(("\r\n\r\n\r\n""Rebooting in %u seconds.... Just Kidding!!! :p\r\n\r\n\r\n\r\n", atoi(rebootDelay)));                   
+                    // Get "rid" value
                     if ((ptr = strstr(topicPtr, "$rid="))) {
                         ptr += strlen("$rid=");
                         sprintf(requestID, ptr);
                     }
-
-                    //prepare response TOPIC and PAYLAOD
-                    sprintf(responseMQTTPUB, "AT+MQTTPUB=0,0,0,\"$iothub/methods/res/200/?$rid=%s\",\"{\\\"status\\\":\\\"Success\\\"}\"\r\n", requestID);
+                    // Prepare response TOPIC and PAYLOAD
+                    sprintf(responseMQTTPUB, "AT+MQTTPUB=0,0,0,\"$iothub/methods/res/200/?$rid=%s\",\"{\\\"status\\\":\\\"Success\\\",\\\"delay\\\":\%u\}\"\r\n", requestID, atoi(rebootDelay));
                     app_rio2Data.state = APP_MQTT_STATE_PUB_RESPONSE;
                     break;
                 }

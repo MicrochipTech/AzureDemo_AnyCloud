@@ -120,7 +120,7 @@ APP_RIO2_DATA app_rio2Data;
 // C&P response and save into DeviceCert.cer
 //  Ensure to replace all "\r" with real CRLF !!!!!!
 
-#define HOSTNAME "RIO2-AZURE-LucA" /* HostName KEEP it SHORT*/ 
+//app#define HOSTNAME "RIO2-AZURE-LucA" /* HostName KEEP it SHORT*/ 
 
 #define MQTTCLIENT
 //Azure IoT Central
