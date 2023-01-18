@@ -409,7 +409,7 @@ Once the topics are subcribed, the script requests the current status of the dev
                 "ac": 200,
                 "av": 95,
                 "ad": "rgb_led_blue set to: 0",
-                "value": 7
+                "value": 0
             },
             "rgb_led_green": {
                 "ac": 200,
@@ -421,13 +421,13 @@ Once the topics are subcribed, the script requests the current status of the dev
                 "ac": 200,
                 "av": 100,
                 "ad": "rgb_led_red set to: 0",
-                "value": 3
+                "value": 0
             },
             "led_user": {
                 "ac": 200,
                 "av": 95,
                 "ad": "led_user set to: 3",
-                "value": 8
+                "value": 3
             },
         "$version": 145
         }
@@ -444,9 +444,9 @@ Start by looking at the devices registered to the application.  Click **Devices*
 
 <img src="./media/IOTC_Device_View.png" alt="The IOTC Device list" width = 1000/>
 
-If you click the device name shown on the devices screen, IoT Central will show you are currently connected. You will also have the ability to click on a selection of device views that allow you to inspect the device state and data from recent transactions.  I have selected the **Raw data** view.
+If you click the device name shown on the devices screen, IoT Central will show you are currently connected. You will also have the ability to click on a selection of device views that allow you to inspect the device state and data from recent transactions; the **Raw data** view is typically the most convenient place to see all received messages.
 
-<img src="./media/IOTC_Individual_Device_View.png" alt="The IOTC Raw Data view for Hello World Message" width = 800/>
+<img src="./media/IOTC_Individual_Device_View.png" alt="The IOTC Raw Data view" width = 800/>
 
 Scrolling down to the first two transactions sent after the connection to IoT Central was established, you can expand them to see the values written by the script.
 
@@ -494,11 +494,11 @@ A pretty version of the response payload follows for readability
         }
     }
 
-There are several things to note in the response.  The response to a writeable property must be in a specific format.  It includes an acknowledge code ("ac"), which is essentially an HTTP status code. "200" for OK.  Other codes are availble to indicate problematic states. The version number received with the telemetry interval is a value used to serialize and track the requests.  The version received in the write request must be returned in the acknowledge version ("av") field of the response.  "ad" is an optional string that can be included for a descriptive text, and the last field returned is the updated value for the received property. 
+There are several things to note in the response.  The response to a writeable property must be in a specific format.  It includes an acknowledge code ("ac"), which is essentially an HTTP status code (the most common being 200 for OK).  Other codes are available to indicate problematic/error states. The version number received with the telemetry interval is a value used to serialize and track the requests.  The version received in the write request must be returned in the acknowledge version ("av") field of the response; "ad" is an optional string that can be included for a descriptive text, and the last field returned is the updated value for the received property.
 
-Depending how quickly the write propery response is received, it is possible that IoT Central will show the value as pending. If the device is offline or doesn't respond to writeable property request, the value can display as pending forever in IoT Central.
+Depending how quickly the write propery response is received, it is possible that IoT Central will show the value as "pending". If the device is offline or doesn't respond to writeable property request, the value can display as pending indefinitely in IoT Central until a valid property update acknowledge has been received.
 
-The last item the script demonstrates is receiving cloud to device commands, which are referred to as methods in the IoT central documentation.  To send a method request to the embedded device, IoT Central publishes to methods POST topic, with the command name included in the topic path.  In the example below, the method name is reboot.
+The last item the script demonstrates is receiving Cloud to Device (C2D) commands, which are referred to as "methods" in the IoT Central documentation.  To send a method request to the embedded device, IoT Central publishes to the methods POST topic, with the command name included in the topic path.  In the example below, the method name is "reboot".
 
     $iothub/methods/POST/reboot/
 
@@ -531,7 +531,7 @@ IoT Central will publish to the topic described above with the payload defined i
 
     execute reboot(5)
 
-When the `WBZ451_Curiosity;1` device twin model interface (DTMI) was defined, part of that definition included a response packet for the command.  The device twin structure can be viewed in IoT Central, by selecting "Device Templates" using the left-hand side navigatin pane, then the name and version of the device template being used.
+When the `WBZ451_Curiosity;1` device twin model interface (DTMI) was originally defined, part of that definition included a response packet for the command.  The device twin structure can be viewed in IoT Central, by selecting "Device Templates" using the left-hand side navigation pane, then the name and version of the device template being used.
 
 <img src="./media/IOTC_Navigate_Device_Template.png" alt="The IOTC reboot command" width = 800/>
 
@@ -539,15 +539,15 @@ When the device template opens, expand the reboot command with the drop down con
 
 <img src="./media/IOTC_Navigate_Command_Objects.png" alt="Navigate to the reboot command in the Device Template" width = 800/>
 
-Notice the command is enabled, and a response is expected.  There are also two objects being defined: one for the command playload, and one for the response payload. Click the Define button for the response payload, to view the object that is expected to be returned by the embedded device when the reboot command is received. 
+Notice the command is enabled, and a response is expected.  There are also two objects being defined: one for the command payload, and one for the response payload. Click the Define button for the response payload, to view the object that is expected to be returned by the embedded device when the reboot command is received. 
 
 <img src="./media/IOTC_Reboot_Response_Object.png" alt="The reboot command Response Object" width = 600/>
 
-From here notice two items are expected in the response payload, a "status" string, and a "delay" integer, that should match the reboot delay.  
+From here, notice two items are expected in the response payload, a "status" string, and a "delay" integer, that should match the reboot delay.  
 
 Two other things are dictated by the IoT Plug-and-Play method response standard.  The response topic published to, includes an status code in the path of the topic, and the the rid value received with the method request.  
 
-The response code is typically "200" for OK, and the rid value is handled much like the version field of property write resopnses. 
+The response code is typically 200 for OK, and the rid value is handled much like the version field of property write resopnses. 
 
 So the response topic follows this pattern: "$iothub/methods/res/`Response Code`/?$rid=`Request_RID`"
 
@@ -559,7 +559,7 @@ Putting it all together for for the example reboot command received above, the r
 
 ## Setting Up and Actual Embedded Firmware Example
 
-Now that you've successfully run Python scripts on a PC to emulate all of the necessary transactions an IoT device would need to perform to connect to IoT Central, you can also use an actual embedded application running on a Host MCU development board such as Microchip Technology's [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A).
+Now that we've successfully run Python scripts on a PC to emulate all of the necessary transactions an IoT device would need to emulate a WBZ451 Curiosity device model, we can now run an embedded firmware example that's programmed onto the actual [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A).
 
 1. Press the reset button on the AnyCloud™ serial bridge board
     - WFI32-IoT Development Board: `RESET`
@@ -643,6 +643,8 @@ Now that you've successfully run Python scripts on a PC to emulate all of the ne
 
         <img src=".//media/WBZ451_RESET.png" width=400 />
 
+14. Access your IoT Central application and confirm that telemetry messages are being received and that all other IoT Central functions are working like before when the Python script was running on the PC. The WBZ451 Curiosity Board should be interacting with IoT Central just like the main Python script was doing earlier. At this point, you have a working embedded firmware project to use as a starting point for a new proof-of-concept and/or IoT device design!
+
 ## Adding Extra Sensors to the Embedded Firmware Example
 
-For additional guidance on how to add extra sensors to the WBZ451 Curiosity Board embedded firmware example, [click here](./exercises/WBZ451_Curiosity_Multimeter/) to find a document (in a lab manual format) outlining the necessary procedures.
+For additional guidance on how to add extra sensors to the WBZ451 Curiosity Board embedded firmware example, [click here](./exercises/WBZ451_Curiosity_Multimeter/) to find a document (in a lab manual format) outlining the necessary off-the-shelf hardware and corresponding procedures.
