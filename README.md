@@ -383,7 +383,7 @@ Once the topics are subcribed, the script requests the current status of the dev
     AT+MQTTPUB=0,0,0,"$iothub/twin/GET/?$rid=4",""
     OK
     >
-    +MQTTPUB:28,"$iothub/twin/res/200/?$rid=4",517,"{"desired":{"telemetryInterval":5,"led_y":3,"property_3":7,"property_4":8,"disableTelemetry":0,"$version":101},"reported":{"led_b":0,"telemetryInterval":{"ac":200,"av":101,"ad":"telemetryInterval set to: 5","value":5},"property_3":{"ac":200,"av":95,"ad":"property_3 set to: 7","value":7},"disableTelemetry":{"ac":200,"av":96,"ad":"disableTelemetry set to: 0","value":0},"led_y":{"ac":200,"av":100,"ad":"led_y set to: 3","value":3},"property_4":{"ac":200,"av":95,"ad":"property_4 set to: 8","value":8},"$version":145}}"
+    +MQTTPUB:28,"$iothub/twin/res/200/?$rid=4",517,"{"desired":{"telemetryInterval":5,"rgb_led_blue":0,"rgb_led_green":0,"rgb_led_red":0,"led_user":3,"$version":101},"reported":{"telemetryInterval":{"ac":200,"av":101,"ad":"telemetryInterval set to: 5","value":5},"rgb_led_blue":{"ac":200,"av":95,"ad":"rgb_led_blue set to: 0","value":7},"rgb_led_green":{"ac":200,"av":96,"ad":"rgb_led_green set to: 0","value":0},rgb_led_red":{"ac":200,"av":100,"ad":"rgb_led_red to: 0","value":0},"led_user":{"ac":200,"av":95,"ad":"led_user set to: 3","value":3},"$version":145}}"
     >
     --------------------------------
     subscription topic received
@@ -392,42 +392,41 @@ Once the topics are subcribed, the script requests the current status of the dev
     {
         "desired": {
             "telemetryInterval": 5,
-            "led_y": 3,
-            "property_3": 7,
-            "property_4": 8,
-            "disableTelemetry": 0,
+            "rgb_led_blue": 0,
+            "rgb_led_green": 0,
+            "rgb_led_red": 0,
+            "led_user": 3,
             "$version": 101
         },
         "reported": {
-            "led_b": 0,
             "telemetryInterval": {
                 "ac": 200,
                 "av": 101,
                 "ad": "telemetryInterval set to: 5",
                 "value": 5
             },
-            "property_3": {
+            "rgb_led_blue": {
                 "ac": 200,
                 "av": 95,
-                "ad": "property_3 set to: 7",
+                "ad": "rgb_led_blue set to: 0",
                 "value": 7
             },
-            "disableTelemetry": {
+            "rgb_led_green": {
                 "ac": 200,
                 "av": 96,
-                "ad": "disableTelemetry set to: 0",
+                "ad": "rgb_led_green set to: 0",
                 "value": 0
             },
-            "led_y": {
+            "rgb_led_red": {
                 "ac": 200,
                 "av": 100,
-                "ad": "led_y set to: 3",
+                "ad": "rgb_led_red set to: 0",
                 "value": 3
             },
-            "property_4": {
+            "led_user": {
                 "ac": 200,
                 "av": 95,
-                "ad": "property_4 set to: 8",
+                "ad": "led_user set to: 3",
                 "value": 8
             },
         "$version": 145
@@ -439,23 +438,7 @@ Once the topics are subcribed, the script requests the current status of the dev
     Sending Telemetry and Properties.
         Press ESC to end script
 
-The script continues to demonstrate publishing telemetry and a read-only property.
-
-     Publish Hello World telemetry
-     Sending telemetry_Str_1 telemetry value of: "Hello Azure IoT Central"
-
-     AT+MQTTPUB=0,0,0,"devices/sn0123FE0CF960432D01/messages/events/","{\"telemetry_Str_1\" : \"Hello Azure IoT Central\"}"
-     OK
-     >
-
-     Set led_b read-only property initial value: OFF
-     Sending led_b property value of: 0
-
-     AT+MQTTPUB=0,0,0,"$iothub/twin/PATCH/properties/reported/?rid=5","{\"led_b\" : 0}"
-     OK
-     >
-
-If you login to your application on IoT Central, it is now possible to see the how the script is interacting with the IoT Central application.
+If you login to your application on IoT Central, it is now possible to see how the script is interacting with the IoT Central application.
 
 Start by looking at the devices registered to the application.  Click **Devices** on the left naviagation pane, and note that the device shows up with the common name from the x.509 certifcate as its *Device ID*.  Also note the *Device Template* selected is now `WBZ451_Curiosity;1`.  This device template was configured during the connection to the Device Provisioning Service.
 
@@ -465,13 +448,13 @@ If you click the device name shown on the devices screen, IoT Central will show 
 
 <img src="./media/IOTC_Individual_Device_View.png" alt="The IOTC Raw Data view for Hello World Message" width = 800/>
 
-Scrolling down to the first two transactions sent after the connection to IoT Central was established, you can expand them to see the values written by the "Hello World" portion of the script.  The led_b and telemetry_Str_1 values are shown below.
+Scrolling down to the first two transactions sent after the connection to IoT Central was established, you can expand them to see the values written by the script.
 
-<img src="./media/IOTC_Raw_Data_HelloWorld.png" alt="The IOTC Raw Data view for Hello World Message" width = 400/>
+<img src="./media/IOTC_Raw_Data.png" alt="The IOTC Raw Data view for Hello World Message" width = 400/>
 
-After these initial values are sent, the script begins publishing spoofed light sensor telemetry at the "telemetryInterval" rate.  The telemetry interval defaults to 10 seconds, but this is a writeable property that can be updated from IoT Central.
+After these initial values are sent, the script begins publishing spoofed temperature sensor telemetry at the "telemetryInterval" rate.  The telemetry interval defaults to 10 seconds, but this is a writeable property that can be updated from IoT Central.
 
-<img src="./media/IOTC_LightSensor_Telemetry.png" alt="The IOTC Raw Data view of light sensor data" width = 800/>
+<img src="./media/IOTC_Temperature_Telemetry.png" alt="The IOTC Raw Data view of light sensor data" width = 800/>
 
 Leveraging a view that allows editting writeable properties, type a new value for the telemetryInterval and save it.
 **Note** Configuring additional device views is beyond the scope of this documentation
@@ -492,7 +475,7 @@ IoT Central will publish a message to the property PATCH topic.  The message wil
     $version = 105
     telemetryInterval set to: 5
 
-    Light sensor telemetry updating at the new telemetry interval
+    Temperature sensor telemetry updating at the new telemetry interval
     Check Raw Data tab to verify
 
 The Plug-n-Play standard requries acknowledging these messages.  The AnyCloud™ response payload is show below.
@@ -548,7 +531,7 @@ IoT Central will publish to the topic described above with the payload defined i
 
     execute reboot(5)
 
-When the `WBZ451_Curiosity;1` device twin was defined, part of that definition included a response packet for the command.  The device twin structure can be viewed in IoT Central, by selecting "Device Templates, then the name and version of the device template being used.
+When the `WBZ451_Curiosity;1` device twin model interface (DTMI) was defined, part of that definition included a response packet for the command.  The device twin structure can be viewed in IoT Central, by selecting "Device Templates" using the left-hand side navigatin pane, then the name and version of the device template being used.
 
 <img src="./media/IOTC_Navigate_Device_Template.png" alt="The IOTC reboot command" width = 800/>
 

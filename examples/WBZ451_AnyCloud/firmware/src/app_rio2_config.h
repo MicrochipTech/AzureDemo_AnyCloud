@@ -45,8 +45,8 @@
 APP_RIO2_DATA app_rio2Data;
 
 #define HOSTNAME "RIO2-LucA" /* HostName KEEP it SHORT*/ 
-#define WIFI_SSID "mySSID"
-#define WIFI_PSWD "myPWD"
+#define WIFI_SSID "MY_WIFI_SSID" // e.g. "Home_Broadband_Router"
+#define WIFI_PSWD "MY_WIFI_PSWD" // e.g. "Guess_The_Password???"
 
 #define SEC_TYPE "3" //"3"
 
@@ -128,10 +128,10 @@ APP_RIO2_DATA app_rio2Data;
 #define PORT "8883"  //TLS PORT 8886 uses ISRGRootX1.pem from Free CA signer "Let's Encrypt"  https://letsencrypt.org/certificates/
 #define TLSENABLE "1"
 
-#define MY_THING_ID "sn012319AAC99CF42A01"
-#define ID_SCOPE "0ne007F418E"
+#define MY_THING_ID "MY_COMMON_NAME"// e.g. "sn012319AAC99CF42A01"
+#define ID_SCOPE "MY_ID_SCOPE" // e.g. "0ne007F418E"
 
-#define MULTIMETER_CLICK // Comment out if no Multimeter click is installed
+//#define MULTIMETER_CLICK // Comment out if no Multimeter click is installed
 #ifdef MULTIMETER_CLICK
     #define MODEL_ID "dtmi:com:Microchip:WBZ451_Curiosity_Multimeter;1"
 #else
