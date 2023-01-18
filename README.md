@@ -573,11 +573,9 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
 
     <img src=".//media/WBZ451_WFI32E-Curiosity.png"/>
 
-3. Connect the `WBZ451 Curiosity Board` to the PC using the supplied micro-USB cable. Launch a [Terminal Emulator](https://en.wikipedia.org/wiki/List_of_terminal_emulators) program of your choice and connect to the WBZ451 Curiosity Board's Virtual COM Port at 115200 baud
-<br>
+3. Connect the `WBZ451 Curiosity Board` to the PC using the supplied micro-USB cable. Launch a [Terminal Emulator](https://en.wikipedia.org/wiki/List_of_terminal_emulators) program of your choice and connect to the WBZ451 Curiosity Board's Virtual COM Port at 115200 baud. The WBZ451 Curiosity Board creates two Virtual COM Ports; the correct one to select will most likely be the one that is shorter in length and does not contain the RYN digits, e.g.
 
-    **Note** The WBZ451 Curiosity Board creates two Virtual COM Ports; the correct one to select will most likely be the one that is shorter in length and does not contain the RYN digits, e.g.
-<img src=".//media/image17.png" width=200 />
+    <img src=".//media/image17.png" width=200 />
 
 4. Launch the `MPLAB X` IDE (this tool should have been previously installed and most likely resides in the \Program Files\Microchip\ folder)
 
