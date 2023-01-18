@@ -45,8 +45,8 @@
 APP_RIO2_DATA app_rio2Data;
 
 #define HOSTNAME "RIO2-LucA" /* HostName KEEP it SHORT*/ 
-#define NETWORK_SSID "NETGEAR51"
-#define NETWORK_PSWD "melodicship232"
+#define WIFI_SSID "mySSID"
+#define WIFI_PSWD "myPWD"
 
 #define SEC_TYPE "3" //"3"
 
@@ -74,6 +74,7 @@ APP_RIO2_DATA app_rio2Data;
 #ifdef USE_MOSQUITTO
 #define HOSTNAME "RIO2-MOSQ-LucA" /* HostName KEEP it SHORT*/ 
 #define MY_THING_ID "WFI32_AnyCloud"
+#define CLIENTID MY_THING_ID
 
 #define MQTTCLIENT
 #define BROKER "test.mosquitto.org"
@@ -99,6 +100,7 @@ APP_RIO2_DATA app_rio2Data;
 #define TLSENABLE "1"
 #define HOSTNAME "RIO2-AWS-LucA" /* HostName KEEP it SHORT*/ 
 #define MY_THING_ID "sn0123BF8C8062EBEF01"
+#define CLIENTID MY_THING_ID
 
 #define SUB_TOPIC "$aws/things/%s/shadow/update/delta"
 #define PUB_TOPIC "$aws/things/%s/shadow/update"
@@ -119,7 +121,6 @@ APP_RIO2_DATA app_rio2Data;
 //  Ensure to replace all "\r" with real CRLF !!!!!!
 
 #define HOSTNAME "RIO2-AZURE-LucA" /* HostName KEEP it SHORT*/ 
-#define MY_THING_ID CLIENT_ID
 
 #define MQTTCLIENT
 //Azure IoT Central
@@ -127,33 +128,37 @@ APP_RIO2_DATA app_rio2Data;
 #define PORT "8883"  //TLS PORT 8886 uses ISRGRootX1.pem from Free CA signer "Let's Encrypt"  https://letsencrypt.org/certificates/
 #define TLSENABLE "1"
 
+#define MY_THING_ID "sn012319AAC99CF42A01"
 #define ID_SCOPE "0ne007F418E"
-#define CLIENT_ID "sn012319AAC99CF42A01"
-#define MODEL_ID "dtmi:com:Microchip:SAM_IoT_WM;2"
 
-#define PUB_REPORTED_PAYLOAD "{\\\"payload\\\" : {\\\"modelId\\\" : \\\""MODEL_ID"\\\"}}"
-//#define PUB_REPORTED_PAYLOAD "{\\\"payload\\\" : {\\\"modelId\\\" : \\\"dtmi:com:Microchip:SAM_IoT_WM;2\\\"}}"
+#define MULTIMETER_CLICK // Comment out if no Multimeter click is installed
+#ifdef MULTIMETER_CLICK
+    #define MODEL_ID "dtmi:com:Microchip:WBZ451_Curiosity_Multimeter;1"
+#else
+    #define MODEL_ID "dtmi:com:Microchip:WBZ451_Curiosity;1"
+#endif /* MULTIMETER_CLICK */
 
-#define BROKER_USER_NAME ID_SCOPE"/registrations/"CLIENT_ID"/api-version=2019-03-31"
+#define CLIENTID MY_THING_ID
+#define BROKER_USER_NAME ID_SCOPE"/registrations/"CLIENTID"/api-version=2019-03-31"
+
 #define SUB_DPS_REGISTRATION_TOPIC "$dps/registrations/res/#"
 #define PUB_TOPIC_PROPERTIES "$iothub/twin/PATCH/properties/reported/?$rid=1"
-#define PUB_PAYLOAD_MESSAGE "{\\\"WBZ451Message\\\":\\\"Hello from WBZ451 count => %d!!\\\"}"
+//#define PUB_PAYLODAD_MESSSAGE "{\\\"WBZ451Message\\\":\\\"Hello from WBZ451 count => %d!!\\\"}"
 #define PUB_PAYLOAD_IP "{\\\"ipAddress\\\":\\\"%s.%s.%s.%s\\\"}"
-
 #define PUB_TOPIC_TELEMETRY "devices/%s/messages/events/"
-#define PUB_AZURE_PAYLOAD_TELEMETRY_TEMPERATURE "{\\\"temperature\\\":%d}"
-
+#define PUB_AZURE_PAYLOAD_TELEMETRY_TEMPERATURE "{\\\"temperature\\\":%2.2f}"
 #define PUB_TOPIC_DPS_PUT "$dps/registrations/PUT/iotdps-register/?rid=1"
 #define PUB_TOPIC_DPS_GET "$dps/registrations/GET/iotdps-get-operationstatus/?rid=2&operationId=%s"
+#define PUB_REPORTED_PAYLOAD "{\\\"payload\\\" : {\\\"modelId\\\" : \\\""MODEL_ID"\\\"}}"
 #define PUB_REPORTED_MSG ""
 //#define PUB_AZURE_PAYLODAD "{\\\"ipAdress\\\":{\\\"reported\\\":{\\\"value\\\":\\\"Hello from WBZ451 count => %d!!\\\"}}}"
 //#define PUB_AZURE_PAYLODAD "{\\\"ipAddress\\\":{\\\"ac\\\":200,\\\"av\\\":26,\\\"ad\\\":\\\"success\\\",\\\"value\\\":\\\"Hello from WBZ451 count => %d!!\\\"}}"
 //#define PUB_AZURE_PAYLODAD "{\\\"ipAddress\\\":\\\"Hello from WBZ451 count => %d!!\\\"}"
 //#define PUB_AZURE_PAYLODAD "{\\\"rcvMsg\\\":{\\\"ac\\\":200,\\\"av\\\":26,\\\"ad\\\":\\\"success\\\",\\\"value\\\":\\\"WBZ451 count => %d!!\\\"}}"
-#define PUB_AZURE_REPORTED_PAYLODAD "\\\"%s\\\":{\\\"ac\\\":200,\\\"av\\\":%s,\\\"ad\\\":\\\"success\\\",\\\"value\\\":%d}"
-#define PUB_AZURE_REPORTED_VALUE_PAYLODAD "\\\"%s\\\":{\\\"value\\\":%d}"
-//#define PUB_AZURE_REPORTED_VALUE_PAYLODAD "{\\\"%s\\\":%d}"
-#define PUB_AZURE_DESIRED_VALUE_PAYLODAD "\\\"%s\\\":%d"
+//#define PUB_AZURE_REPORTED_PAYLOAD "\\\"%s\\\":{\\\"ac\\\":200,\\\"av\\\":%s,\\\"ad\\\":\\\"success\\\",\\\"value\\\":%d}"
+#define PUB_AZURE_REPORTED_PAYLOAD "\\\"%s\\\":{\\\"ac\\\":200,\\\"av\\\":%s,\\\"value\\\":%d}"
+#define PUB_AZURE_REPORTED_VALUE_PAYLOAD "\\\"%s\\\":{\\\"value\\\":%d}"
+#define PUB_AZURE_DESIRED_VALUE_PAYLOAD "\\\"%s\\\":%d"
 //#define PUB_AZURE_REPORTED_PAYLODAD "\\\"%s\\\":{\\\"ac\\\":200,\\\"av\\\":%s,\\\"value\\\":%d}"
 
 

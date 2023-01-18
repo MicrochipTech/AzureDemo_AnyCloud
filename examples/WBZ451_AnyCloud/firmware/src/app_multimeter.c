@@ -114,11 +114,11 @@ uint64_t getTick(void);
 uint64_t time;
 uint8_t txByte,rxByte,numberOfTime;
 float fVoltage,voltage_cal;
-char multimeterVolage[50];
+float multimeterVolage;
 
-void getVoltageString( char *ptr) 
+float getVoltage( void) 
 {
-    ptr = multimeterVolage;
+    return multimeterVolage;
 }
 
 #define MULTIMETER_I_CHANNEL   0x00
@@ -228,8 +228,8 @@ void APP_MULTIMETER_Tasks(void) {
 //            printf("fVoltage = %f\r",fVoltage);
 //            printf ("Voltage = %.1f mV\r", ( fVoltage - voltage_cal ) * 33 / 2);
                                
-            sprintf (multimeterVolage,"Multimeter Voltage is  = %.1f mV", ( fVoltage - voltage_cal ) * 33 / 2);
-            fVoltage = ( fVoltage - voltage_cal ) * 33 / 2 ;
+//            sprintf (multimeterVolage,"Multimeter Voltage is  = %.1f mV", ( fVoltage - voltage_cal ) * 33 / 2);
+            multimeterVolage = ( fVoltage - voltage_cal ) * 33 / 2 ;
             break;
         }
 

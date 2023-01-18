@@ -53,6 +53,8 @@
  Application strings and buffers are be defined outside this structure.
  */
 
+extern APP_DATA appData;
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Application Callback Functions
@@ -772,8 +774,8 @@ typedef struct {
  *        stationCmdTbl[]
  *
  **************************************/
-char stationSSID[50] = NETWORK_SSID;
-char stationPWD[50] = NETWORK_PSWD;
+char stationSSID[50] = WIFI_SSID;
+char stationPWD[50] = WIFI_PSWD;
 char stationMode[2] = SEC_TYPE;
 #ifdef  TCPSERVER
 char serverPORT[5] = SERVER_PORT;
@@ -804,7 +806,7 @@ static uint8_t softAPCmdTblIndex;
 #define CONFIG_SOFTAP_INIT_SIZE sizeof (softAPCmdTbl) / sizeof (*softAPCmdTbl)
 static INIT_STRUCT softAPCmdTbl[] = {
     { 0, "AT+WAPC=1,\"%s\"\r\n", "WFI32_WPA2" /*softAPSSID*/}, //BSSID
-    {1,  "AT+WAPC=2,%s\r\n", "3"/*softAPMode*/}, //Mode 3 is WPA/WPA2
+    {1, "AT+WAPC=2,%s\r\n", "3"/*softAPMode*/}, //Mode 3 is WPA/WPA2
     { 2, "AT+WAPC=3,\"%s\"\r\n", "Microchip" /*softAPPWD*/}, //PWD
     { 3, "AT+WAPC=4,%s\r\n", "11" /*softAPChannel*/}, //AP Channel "1" to "14"
     { 4, "AT+WAPC=5,%s\r\n", "0" /*softAPVisible*/}, //Visible "0" Hidden "1"
@@ -832,7 +834,7 @@ char TLS[2] = TLSENABLE;
 char brokerUserName[100] = BROKER_USER_NAME;
 #endif
 char brokerUserPWD[50] = BROKER_USER_PWD;
-char clientID[50] = CLIENT_ID;
+char clientID[50] = CLIENTID;
 char keepAlive[50] = KEEPALIVE;
 
 static uint8_t mqttCmdTblIndex;
@@ -840,7 +842,7 @@ static uint8_t mqttCmdTblIndex;
 static INIT_STRUCT mqttCmdTbl[] = {
     { -2, "AT+TIME=3\r\n", NULL},
     { -1, "ATE0\r\n", NULL},
-    
+
     { 0, "AT+MQTTC=1,\"%s\"\r\n", broker},
     { 1, "AT+MQTTC=2,%s\r\n", port},
     { 2, "AT+MQTTC=3,\"%s\"\r\n", clientID},
@@ -870,7 +872,7 @@ void APP_RIO2_Tasks(void) {
     //static bool connected2IoTCentral;
 
     static char valueIP4[5], valueIP3[5], valueIP2[5], valueIP1[5];
-
+    static uint8_t telemetryInterval = 10;
 
     echoTerminal2RIO();
 
@@ -891,7 +893,7 @@ void APP_RIO2_Tasks(void) {
         printf_FRIO(("%s", &linearBuffer[count])); // print received line
 #else
 
-        
+
         printf_FRIO(("%s", &linearBuffer[count])); // print received line
 #endif        
         parseRIO2RxMessage(&linearBuffer[count]); //Parse current "LINE\r\\n"
@@ -940,11 +942,10 @@ void APP_RIO2_Tasks(void) {
 
     if (((app_rio2Data.state == APP_RIO2_STATE_SOCKET_IDLE)
             && (getTick() > myPUBDelay)) && mqttConnected) {
-        myPUBDelay = getTick() + SECOND * 10;
-
+        
         app_rio2Data.state = APP_MQTT_STATE_PUBLISH; //APP_RIO2_STATE_AZURE_PUBLISH;
     }
-    
+
 #endif
 
     /* Check the application's current state. */
@@ -970,8 +971,8 @@ void APP_RIO2_Tasks(void) {
                 mqttCmdTblIndex = 0;
 #ifdef USE_AZURE
                 //reinit MQTT Config for Azure
-                strcpy (broker,BROKER);
-                strcpy (brokerUserName, BROKER_USER_NAME);
+                strcpy(broker, BROKER);
+                strcpy(brokerUserName, BROKER_USER_NAME);
                 //connected2IoTCentral = false;
 #endif
             }
@@ -1037,7 +1038,7 @@ void APP_RIO2_Tasks(void) {
                     char buffer[100];
                     sprintf(buffer, stationCmdTbl[stationCmdTblIndex].cmdDescr,
                             stationCmdTbl[stationCmdTblIndex].param);
-                    printf_2RIO(( "%s" , buffer));
+                    printf_2RIO(("%s", buffer));
                     SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
                     stationCmdTblIndex++;
                     gOK = false;
@@ -1137,7 +1138,7 @@ void APP_RIO2_Tasks(void) {
                     sprintf(buffer, mqttCmdTbl[mqttCmdTblIndex].cmdDescr,
                             mqttCmdTbl[mqttCmdTblIndex].param);
                     SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
-                    printf_2RIO(( "%s" , buffer));
+                    printf_2RIO(("%s", buffer));
 
                     mqttCmdTblIndex++;
 
@@ -1170,7 +1171,7 @@ void APP_RIO2_Tasks(void) {
             sprintf(buffer, "AT+MQTTSUB=\""SUB_TOPIC"\",0\r\n", MY_THING_ID);
 #endif
             SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
-            printf_2RIO(( "%s" , buffer));
+            printf_2RIO(("%s", buffer));
             gMQTTSUB = false;
             app_rio2Data.state = APP_MQTT_STATE_SUBSCRIBE_COMPLETE;
 
@@ -1198,7 +1199,7 @@ void APP_RIO2_Tasks(void) {
             gMQTTPUB = false;
             sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_DPS_PUT"\",\""PUB_REPORTED_PAYLOAD"\"\r\n");
             SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
-            printf_2RIO(( "%s" , buffer));
+            printf_2RIO(("%s", buffer));
             app_rio2Data.state = APP_RIO2_STATE_AZURE_PUB_DPS_REGISTRATION_GET;
             myDelay = getTick();
 
@@ -1220,7 +1221,7 @@ void APP_RIO2_Tasks(void) {
 
                     sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_DPS_GET"\",\"""\"\r\n", operationID);
                     SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
-                    printf_2RIO(( "%s" , buffer));
+                    printf_2RIO(("%s", buffer));
                     // if Azure +MQTTPUB response does not contain "retry-after=",  
                     // move to next state, otherwise retry in 1 SECOND
                     if (!strstr(resultPtrMQTTPUB, "retry-after="))
@@ -1244,7 +1245,7 @@ void APP_RIO2_Tasks(void) {
                     *(strstr(azureAssignedHub, "\"")) = 0;
                     sprintf(buffer, "AT+MQTTDISCONN\r\n");
                     SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
-                    printf_2RIO(( "%s" , buffer));
+                    printf_2RIO(("%s", buffer));
 
 
                     app_rio2Data.state = APP_RIO2_STATE_AZURE_WAIT_DISCONNET;
@@ -1278,7 +1279,7 @@ void APP_RIO2_Tasks(void) {
                     sprintf(buffer, mqttCmdTbl[mqttCmdTblIndex].cmdDescr,
                             mqttCmdTbl[mqttCmdTblIndex].param);
                     SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
-                    printf_2RIO(( "%s" , buffer));
+                    printf_2RIO(("%s", buffer));
 
                     mqttCmdTblIndex++;
 
@@ -1301,7 +1302,7 @@ void APP_RIO2_Tasks(void) {
                 //sprintf(buffer, "AT+MQTTSUB=\"$iothub/twin/PATCH/properties/desired/#\",0\r\n");
                 sprintf(buffer, "AT+MQTTSUB=\"$iothub/methods/POST/#\",0\r\n");
                 SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
-                printf_2RIO(( "%s" , buffer));
+                printf_2RIO(("%s", buffer));
                 gMQTTSUB = false;
                 app_rio2Data.state = APP_RIO2_STATE_AZURE_SUBSCRIBE_2; //APP_RIO2_STATE_AZURE_PUBLISH; //APP_RIO2_STATE_AZURE_SUBSCRIBE_2;
 
@@ -1320,7 +1321,7 @@ void APP_RIO2_Tasks(void) {
                 sprintf(buffer, "AT+MQTTSUB=\"$iothub/twin/PATCH/properties/desired/#\",0\r\n");
 
                 SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
-                printf_2RIO(( "%s" , buffer));
+                printf_2RIO(("%s", buffer));
 
                 app_rio2Data.state = APP_RIO2_STATE_AZURE_SUBSCRIBE_3; //APP_RIO2_STATE_AZURE_PUBLISH;
 
@@ -1339,7 +1340,7 @@ void APP_RIO2_Tasks(void) {
                 //sprintf(buffer, "AT+MQTTSUB=\"$iothub/twin/PATCH/properties/desired/#\",0\r\n");
 
                 SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
-                printf_2RIO(( "%s" , buffer));
+                printf_2RIO(("%s", buffer));
 
                 app_rio2Data.state = APP_RIO2_STATE_AZURE_SUBSCRIBE_DONE; //APP_RIO2_STATE_AZURE_PUBLISH;
 
@@ -1363,79 +1364,91 @@ void APP_RIO2_Tasks(void) {
 
 
 #endif
+        #define PUBSTATESNUM_INIT 2
+        #define PUBSTATESNUM_TOTAL 5
+        
         case APP_MQTT_STATE_PUBLISH:
         {
-            static uint32_t pubCount;
+            static double pubCount;
             char buffer[512];
+            
+            app_rio2Data.state = APP_MQTT_STATE_WAIT_PUB;
 #ifdef USE_AZURE
-            static uint8_t  pubState;
-            switch (pubState)
-            {
+            static uint8_t pubState;
+            
+            switch (pubState) {
                 case 0:
-                {
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_PROPERTIES"\",\""PUB_PAYLOAD_IP"\"\r\n", valueIP4, valueIP3, valueIP2, valueIP1);
-                    pubState = 1;
-                    break;
-                }
-                case 4:
-                {//Does NOT WORK Publishing "desired"state   !!!!!!!!
-                    char buffer1[50];
-                    strcpy(buffer, "AT+MQTTPUB=0,0,0,\"$iothub/twin/PATCH/properties/desired/?rid=1\",\"{");
-                    sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLODAD, "led_r", RED_LED_Get() == 0 ? 2 : 1);
-                    strcat(buffer, buffer1);
-                    strcat(buffer,",");
-                    sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLODAD, "led_g", GREEN_LED_Get() == 0 ? 2 : 1);
-                    strcat(buffer, buffer1);
-                    strcat(buffer,",");
-                    sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLODAD, "led_b", BLUE_LED_Get() == 0 ? 2 : 1);
-                    strcat(buffer, buffer1);
-                    strcat(buffer, "}\"\r\n");
-                        
-                    pubState = 1;
+                {//Get TWIN state   !!!!!!!!
+                    //char buffer1[50];
+                    strcpy(buffer, "AT+MQTTPUB=0,0,0,\"$iothub/twin/GET/?$rid=1234\",\"\"\n\r");
+
+                    pubState++;
                     break;
                 }
                 case 1:
                 {
+                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_PROPERTIES"\",\""PUB_PAYLOAD_IP"\"\r\n", valueIP4, valueIP3, valueIP2, valueIP1);
+                    
+                    pubState = PUBSTATESNUM_TOTAL;
+                    break;
+                }
+                /* Each publish state above is only executed once after reset */
+                /* Start of Telemetry Loop which should get updated on every "telemetryInterval" seconds */
+                case PUBSTATESNUM_INIT:
+                {
                     char buffer1[50];
-                    strcpy(buffer, "AT+MQTTPUB=0,0,0,\"$iothub/twin/PATCH/properties/reported/?rid=55\",\"{");
-                    sprintf(buffer1, PUB_AZURE_REPORTED_VALUE_PAYLODAD, "led_r", RED_LED_Get() == 0 ? 2 : 1);
+                    strcpy(buffer, "AT+MQTTPUB=0,0,0,\"$iothub/twin/PATCH/properties/reported/?rid=rgbLED\",\"{");
+                    sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "rgb_led_red", RED_LED_Get() == 0 ? 0 : 100);
                     strcat(buffer, buffer1);
-                    strcat(buffer,",");
-                    sprintf(buffer1, PUB_AZURE_REPORTED_VALUE_PAYLODAD, "led_g", GREEN_LED_Get() == 0 ? 2 : 1);
+                    strcat(buffer, ",");
+                    sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "rgb_led_green", GREEN_LED_Get() == 0 ? 0 : 100);
                     strcat(buffer, buffer1);
-                    strcat(buffer,",");
-                    sprintf(buffer1, PUB_AZURE_REPORTED_VALUE_PAYLODAD, "led_b", BLUE_LED_Get() == 0 ? 2 : 1);
+                    strcat(buffer, ",");
+                    sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "rgb_led_blue", BLUE_LED_Get() == 0 ? 0 : 100);
+                    strcat(buffer, buffer1);
+                    strcat(buffer, ",");
+                    sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "led_user", appData.LED_user);
                     strcat(buffer, buffer1);
                     strcat(buffer, "}\"\r\n");
-                        
-                    pubState = 2;
+
+                    pubState++;
                     break;
                 }
-                case 2:
+                case (PUBSTATESNUM_TOTAL-2):
                 {
-                    //sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_PROPERTIES"\",\""PUB_PAYLODAD_MESSSAGE"\"\r\n", (int) pubCount);
-                    extern char multimeterVolage[50];
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_PROPERTIES"\",\"{\\\"WBZ451Message\\\":\\\"%s!\\\"}\"\r\n",  multimeterVolage);
-                    pubState = 3;
+                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\""PUB_AZURE_PAYLOAD_TELEMETRY_TEMPERATURE"\"\r\n", thingID, pubCount++);
+                    pubState++;
                     break;
                 }
-                case 3:
+                case (PUBSTATESNUM_TOTAL-1): /* Only this state (just before the final state) can be empty */
                 {
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\""PUB_AZURE_PAYLOAD_TELEMETRY_TEMPERATURE"\"\r\n", thingID, (int) pubCount++);
-                    pubState = 1;
+#ifdef MULTIMETER_CLICK
+                    float getVoltage( void);
+                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\"{\\\"MULTIMETER_voltage\\\":%f}\"\r\n", thingID, getVoltage());
+                    
+                    pubState++;
+                    break;
+#endif /* MULTIMETER_CLICK */
+                }
+                case PUBSTATESNUM_TOTAL:
+                {
+                    pubState = PUBSTATESNUM_INIT;
+                    sprintf(buffer, "AT\r\n");
+                    app_rio2Data.state = APP_RIO2_STATE_SOCKET_IDLE;
+                    myPUBDelay = getTick() + telemetryInterval * SECOND;
+                    //goto exitCase;
                     break;
                 }
+
                 
-                
-                
-                   
+
+
             }
 
 #else
 #ifdef USE_AWS
-            static uint8_t  pubState;
-            switch (pubState)
-            {
+            static uint8_t pubState;
+            switch (pubState) {
                 case 0:
                 {
                     sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC"\",\""PUB_REPORTED_IP"\"\r\n", thingID, valueIP4, valueIP3, valueIP2, valueIP1);
@@ -1443,9 +1456,10 @@ void APP_RIO2_Tasks(void) {
                     break;
                 }
                 case 1:
-                {  //PUB Volt ONLY
+                { //PUB Volt ONLY
                     extern float fVoltage;
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC"\",\""PUB_REPORTED_VOLTAGE"\"\r\n", thingID, (float)  fVoltage);pubState = 1;
+                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC"\",\""PUB_REPORTED_VOLTAGE"\"\r\n", thingID, (float) fVoltage);
+                    pubState = 1;
                     pubState = 2;
                     break;
                 }
@@ -1460,26 +1474,40 @@ void APP_RIO2_Tasks(void) {
                     char tempBuffer[50];
                     extern float fVoltage;
                     sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC"\",\""PUB_REPORTED_START, thingID);
-                    sprintf(tempBuffer, JSON_VOLTAGE,(float) fVoltage);
-                    strcat (buffer,tempBuffer);
-                    strcat (buffer,",");
-                    sprintf(tempBuffer, JSON_COUNT,(int) pubCount++);
-                    strcat (buffer,tempBuffer);
-                    strcat (buffer,PUB_REPORTED_END);
-                    
+                    sprintf(tempBuffer, JSON_VOLTAGE, (float) fVoltage);
+                    strcat(buffer, tempBuffer);
+                    strcat(buffer, ",");
+                    sprintf(tempBuffer, JSON_COUNT, (int) pubCount++);
+                    strcat(buffer, tempBuffer);
+                    strcat(buffer, PUB_REPORTED_END);
+                    pubState = 5;
                     break;
                 }
+                case 5:
                 
+                {
+                    pubState = 4;
+                    sprintf(buffer, "AT\r\n");
+                    app_rio2Data.state = APP_RIO2_STATE_SOCKET_IDLE;
+                    myPUBDelay = getTick() + telemetryInterval * SECOND;
+                    //goto exitCase;
+                    break;
+                }
+
             }
-  #else
+#else
             sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC"\",\""PUB_PAYLODAD"\"\r\n", (int) pubCount++);
+            myPUBDelay = getTick() + telemetryInterval * SECOND;
+            app_rio2Data.state = APP_RIO2_STATE_SOCKET_IDLE;
+                    
 #endif
-            
+
 #endif
             SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
-            printf_MQTT(( "%s" , buffer));
+            printf_MQTT(("%s", buffer));
             myDelay = getTick();
-            app_rio2Data.state = APP_MQTT_STATE_WAIT_PUB;
+            
+         
             break;
         }
         case APP_MQTT_STATE_WAIT_PUB:
@@ -1491,8 +1519,9 @@ void APP_RIO2_Tasks(void) {
             if (gOK) {
                 printf_MQTT(("PUB OK\r\n\r\n"));
                 gOK = false;
-                app_rio2Data.state = APP_RIO2_STATE_SOCKET_IDLE;
-                myPUBDelay = getTick() + 10 * SECOND;
+                //See if there is more PUB to do!
+                app_rio2Data.state = APP_MQTT_STATE_PUBLISH; //APP_RIO2_STATE_SOCKET_IDLE;
+                //myPUBDelay = getTick() + telemetryInterval * SECOND;
             }
             break;
         }
@@ -1555,22 +1584,22 @@ void APP_RIO2_Tasks(void) {
 #ifdef USE_AZURE                
                 //+MQTTPUB:35,"$iothub/methods/POST/reboot/?$rid=4",16,"{"delay":"PT5S"}"
                 if ((ptr = strstr(messPtr, "\"delay")) && strstr(topicPtr, "$iothub/methods/POST/reboot/")) {
-                    
+
                     ptr += strlen("\"delay\":\"");
-                    *strstr((ptr),"\"") = 0; //Closing " quote 
-                    printf_MQTT(("\r\n\r\n\r\n""Rebooting in %s.... Just kidding :p\r\n\r\n\r\n\r\n",ptr));
+                    *strstr((ptr), "\"") = 0; //Closing " quote 
+                    printf_MQTT(("\r\n\r\n\r\n""Rebooting in %s.... Just kidding :p\r\n\r\n\r\n\r\n", ptr));
                     //Get "rid" value
                     if ((ptr = strstr(topicPtr, "$rid="))) {
                         ptr += strlen("$rid=");
                         sprintf(requestID, ptr);
                     }
-                    
+
                     //prepare response TOPIC and PAYLAOD
                     sprintf(responseMQTTPUB, "AT+MQTTPUB=0,0,0,\"$iothub/methods/res/200/?$rid=%s\",\"{\\\"status\\\":\\\"Success\\\"}\"\r\n", requestID);
                     app_rio2Data.state = APP_MQTT_STATE_PUB_RESPONSE;
                     break;
                 }
-                
+
                 //Search in JSON OBJ for KEY:VALUE of "sendMsgString":"A message"
                 //+MQTTPUB:36,"$iothub/methods/POST/sendMsg/?$rid=1",25,"{"sendMsgString":"Hello"}"
                 if ((ptr = strstr(messPtr, "\"sendMsgString\":")) && strstr(topicPtr, "methods/POST/sendMsg/")) {
@@ -1594,11 +1623,12 @@ void APP_RIO2_Tasks(void) {
                     break;
                 }
                 char jsonPayloadResponse[500];
-                char buffer[100], ledRespJsonStart;
-                ledRespJsonStart = false;
-
+                char buffer[100], JsonRespStarted;
+                JsonRespStarted = false;
+                
+                
                 //+MQTTPUB:51,"$iothub/twin/PATCH/properties/desired/?$version=235",46,"{"led_b":2,"led_g":1,"led_r":1,"$version":235}
-                if ((ptr = strstr(messPtr, "\"led")) && strstr(topicPtr, "$iothub/twin/PATCH/properties/desired/")) {
+                if ((strstr(topicPtr, "$iothub/twin/PATCH/properties/desired/"))) {
                     memset(jsonPayloadResponse, 0, sizeof (jsonPayloadResponse));
 
                     strcpy(jsonPayloadResponse, "AT+MQTTPUB=0,0,0,\"$iothub/twin/PATCH/properties/reported/?rid=55\",\"{");
@@ -1606,54 +1636,95 @@ void APP_RIO2_Tasks(void) {
                     char version[10];
                     //Get version from TOPIC desired state
                     //+MQTTPUB:51,"$iothub/twin/PATCH/properties/desired/?$version=235",46,"{"led_b":2,"led_g":1,"led_r":1,"$version":235}
-                    if ((ptr = strstr(ptr, "$version\":"))) {
+                    if ((ptr = strstr(messPtr, "$version\":"))) {
                         ptr += strlen("$version\":");
                         *strstr(ptr, "}") = 0;
                         strcpy(version, ptr);
 
                     }
-                    if ((ptr = strstr(messPtr, "\"led_b\":"))) {
-                        ptr += strlen("\"led_b\":");
+                    if ((ptr = strstr(messPtr, "\"led_user\":"))) {
+                        ptr += strlen("\"led_user\":");
+                        
+                        if (*ptr == '1')
+                        {
+                            appData.LED_user = LED_STATE_ON;
+                        }
+                        if (*ptr == '2')
+                        {
+                            appData.LED_user = LED_STATE_OFF;
+                        }
+                        if (*ptr == '3')
+                        {
+                            appData.LED_user = LED_STATE_BLINKING;
+                        }
+                        sprintf(buffer, PUB_AZURE_REPORTED_PAYLOAD, "led_user", version, appData.LED_user);
+                        strcat(jsonPayloadResponse, buffer);
+                        JsonRespStarted = true;
+                    }
+                    
+                    if ((ptr = strstr(messPtr, "\"rgb_led_blue\":"))) {
+                        ptr += strlen("\"rgb_led_blue\":");
                         if (*ptr == '1')
                             BLUE_LED_Set();
                         else
                             BLUE_LED_Clear();
                         
-                        sprintf(buffer, PUB_AZURE_REPORTED_PAYLODAD, "led_b", version, BLUE_LED_Get() == 0 ? 2 : 1);
+                        if (JsonRespStarted)
+                            strcat(jsonPayloadResponse, ",");
+
+                        sprintf(buffer, PUB_AZURE_REPORTED_PAYLOAD, "rgb_led_blue", version, BLUE_LED_Get() == 0 ? 0 : 100);
                         strcat(jsonPayloadResponse, buffer);
-                        ledRespJsonStart = true;
-                        
+                        JsonRespStarted = true;
+
                     }
-                    if ((ptr = strstr(messPtr, "\"led_r\":"))) {
-                        ptr += strlen("\"led_r\":");
+                    if ((ptr = strstr(messPtr, "\"rgb_led_red\":"))) {
+                        ptr += strlen("\"rgb_led_red\":");
                         if (*ptr == '1')
                             RED_LED_Set();
                         else
                             RED_LED_Clear();
 
-                        if (ledRespJsonStart)
+                        if (JsonRespStarted)
                             strcat(jsonPayloadResponse, ",");
-                        sprintf(buffer, PUB_AZURE_REPORTED_PAYLODAD, "led_r", version, RED_LED_Get() == 0 ? 2 : 1);
+                        sprintf(buffer, PUB_AZURE_REPORTED_PAYLOAD, "rgb_led_red", version, RED_LED_Get() == 0 ? 0 : 100);
                         strcat(jsonPayloadResponse, buffer);
-                        
-                        ledRespJsonStart = true;
-                        
+
+                        JsonRespStarted = true;
+
                     }
-                    if ((ptr = strstr(messPtr, "\"led_g\":"))) {
-                        ptr += strlen("\"led_g\":");
+                    if ((ptr = strstr(messPtr, "\"rgb_led_green\":"))) {
+                        ptr += strlen("\"rgb_led_green\":");
                         if (*ptr == '1')
                             GREEN_LED_Set();
                         else
                             GREEN_LED_Clear();
 
 
-                        if (ledRespJsonStart)
+                        if (JsonRespStarted)
                             strcat(jsonPayloadResponse, ",");
-                        sprintf(buffer, PUB_AZURE_REPORTED_PAYLODAD, "led_g", version, GREEN_LED_Get() == 0 ? 2 : 1);
+                        sprintf(buffer, PUB_AZURE_REPORTED_PAYLOAD, "rgb_led_green", version, GREEN_LED_Get() == 0 ? 0 : 100);
                         strcat(jsonPayloadResponse, buffer);
-                        ledRespJsonStart = true;
-                        
+                        JsonRespStarted = true;
+
                     }
+                    
+                    //Do that last since you are replacing "," by NULL
+                    if ((ptr = strstr(messPtr, "\"telemetryInterval\":"))) {
+                        ptr += strlen("\"telemetryInterval\":");
+                        *strstr(ptr,",") = 0;  //
+                        
+                        
+                        telemetryInterval = atoi(ptr);
+                        if (telemetryInterval < 1)
+                            telemetryInterval = 1;
+                        if (JsonRespStarted)
+                            strcat(jsonPayloadResponse, ",");
+                        sprintf(buffer, PUB_AZURE_REPORTED_PAYLOAD, "telemetryInterval", version, telemetryInterval);
+                        strcat(jsonPayloadResponse, buffer);
+                        JsonRespStarted = true;
+
+                    }
+
                     //strcat(jsonPayloadResponse,",\\\"telemetryInterval\\\":{\\\"ac\\\":200,\\\"av\\\":5,\\\"ad\\\":\\\"success\\\",\\\"value\\\":5}");
 
                     strcat(jsonPayloadResponse, "}\"\r\n");
@@ -1661,8 +1732,120 @@ void APP_RIO2_Tasks(void) {
                     app_rio2Data.state = APP_MQTT_STATE_PUB_RESPONSE;
                     break;
                 }
+                //Update TWIN GET desired state
                 
+                //+MQTTPUB:31,"$iothub/twin/res/200/?$rid=1234",355,
+                //"{"desired":{"led_b":2,"led_g":2,"led_r":2,"telemetryInterval":60,"$version":447},
+                //"reported":{
+                //"ipAddress":"192.168.1.103",
+                //"led_b":2,"led_g":2,"led_r":2,
+                //"telemetryInterval":{"ac":200,"av":447,"ad":"success","value":60},
+                //"temperature":{"ac":200,"av":5,"ad":"success","value":25},
+                //"WBZ451Message":"WBZ451 multimeter Voltage is -2953.5 mVolt!","$version":68679}}"
+
                 
+                /* This is in response of  MQTTPUB get TWIN value  
+                 AT+MQTTPUB=0,0,0,\"$iothub/twin/GET/?$rid=1234
+                 Notice same rid value 1234
+                 */
+                char *ptrReported;
+                ptrReported = strstr (messPtr, "\"reported\"");
+                
+                if ((ptr = strstr(messPtr, "\"desired\"")) && strstr(topicPtr, "$iothub/twin/res/200/?$rid=1234")) {
+                    memset(jsonPayloadResponse, 0, sizeof (jsonPayloadResponse));
+
+                    strcpy(jsonPayloadResponse, "AT+MQTTPUB=0,0,0,\"$iothub/twin/PATCH/properties/reported/?rid=55\",\"{");
+                    
+                    
+                    if ((ptr = strstr(messPtr, "\"rgb_led_blue\":"))) {
+                        ptr += strlen("\"rgb_led_blue\":");
+                        if (*ptr == '1')
+                            BLUE_LED_Set();
+                        else
+                            BLUE_LED_Clear();
+
+                        sprintf(buffer, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "rgb_led_blue", BLUE_LED_Get() == 0 ? 0 : 100);
+                        strcat(jsonPayloadResponse, buffer);
+                        JsonRespStarted = true;
+
+                    }
+                    if ((ptr = strstr(messPtr, "\"rgb_led_red\":"))) {
+                        ptr += strlen("\"rgb_led_red\":");
+                        if (*ptr == '1')
+                            RED_LED_Set();
+                        else
+                            RED_LED_Clear();
+
+                        if (JsonRespStarted)
+                            strcat(jsonPayloadResponse, ",");
+                        sprintf(buffer, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "rgb_led_red", RED_LED_Get() == 0 ? 0 : 100);
+                        strcat(jsonPayloadResponse, buffer);
+
+                        JsonRespStarted = true;
+
+                    }
+                    if ((ptr = strstr(messPtr, "\"rgb_led_green\":"))) {
+                        ptr += strlen("\"rgb_led_green\":");
+                        if (*ptr == '1')
+                            GREEN_LED_Set();
+                        else
+                            GREEN_LED_Clear();
+
+
+                        if (JsonRespStarted)
+                            strcat(jsonPayloadResponse, ",");
+                        sprintf(buffer, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "rgb_led_green", GREEN_LED_Get() == 0 ? 0 : 100);
+                        strcat(jsonPayloadResponse, buffer);
+                        JsonRespStarted = true;
+
+                    }
+                   if ((ptr = strstr(messPtr, "\"led_user\":"))) {
+                        ptr += strlen("\"led_user\":");
+                        
+                        if (*ptr == '1')
+                        {
+                            appData.LED_user = LED_STATE_ON;
+                        }
+                        if (*ptr == '2')
+                        {
+                            appData.LED_user = LED_STATE_OFF;
+                        }
+                        if (*ptr == '3')
+                        {
+                            appData.LED_user = LED_STATE_BLINKING;
+                        }
+
+                        if (JsonRespStarted)
+                            strcat(jsonPayloadResponse, ",");
+                        sprintf(buffer, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "led_user", appData.LED_user);
+                        strcat(jsonPayloadResponse, buffer);
+                        JsonRespStarted = true;
+                    }
+                    //Do that last since you are replacing "," by NULL
+                    if ((ptr = strstr(messPtr, "\"telemetryInterval\":")))
+                    {
+                        if (ptr < ptrReported)
+                        {
+                            ptr += strlen("\"telemetryInterval\":");
+                            *strstr(ptr,",") = 0;
+                            telemetryInterval = atoi (ptr);
+                        }
+                        if (JsonRespStarted)
+                            strcat(jsonPayloadResponse, ",");
+                        sprintf(buffer, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "telemetryInterval", telemetryInterval);
+                        strcat(jsonPayloadResponse, buffer);
+                        JsonRespStarted = true;
+                            
+                    }
+                    //strcat(jsonPayloadResponse,",\\\"telemetryInterval\\\":{\\\"ac\\\":200,\\\"av\\\":5,\\\"ad\\\":\\\"success\\\",\\\"value\\\":5}");
+
+                    strcat(jsonPayloadResponse, "}\"\r\n");
+                    sprintf(responseMQTTPUB, jsonPayloadResponse);
+                    app_rio2Data.state = APP_MQTT_STATE_PUB_RESPONSE;
+                    break;
+
+                }
+
                 app_rio2Data.state = APP_RIO2_STATE_SOCKET_IDLE; // APP_MQTT_STATE_PUB_RESPONSE;
 #else  //Mosquitto
                 sprintf(mqttRCVMessage, messPtr);
@@ -1686,9 +1869,9 @@ void APP_RIO2_Tasks(void) {
             //sprintf(buffer,responseMQTTPUB);
 
             SERCOM2_USART_Write((uint8_t*) responseMQTTPUB, strlen(responseMQTTPUB));
-            printf_MQTT(( "%s" , responseMQTTPUB));
+            printf_MQTT(("%s", responseMQTTPUB));
             myDelay = getTick();
-            app_rio2Data.state = APP_MQTT_STATE_WAIT_PUB;
+            app_rio2Data.state = APP_RIO2_STATE_SOCKET_IDLE;//APP_MQTT_STATE_WAIT_PUB;
             break;
         }
         case APP_MQTT_STATE_DISCONNECTED:
@@ -1701,8 +1884,8 @@ void APP_RIO2_Tasks(void) {
 #endif
 #ifdef USE_AZURE
             //reinit MQTT Config
-            strcpy (broker,BROKER);
-            strcpy (brokerUserName, BROKER_USER_NAME);
+            strcpy(broker, BROKER);
+            strcpy(brokerUserName, BROKER_USER_NAME);
 #endif
             app_rio2Data.state = APP_MQTT_STATE_INIT_MQTT;
             gOK = true; // Trigger first MQTT Init packet send;

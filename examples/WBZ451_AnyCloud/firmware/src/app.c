@@ -157,7 +157,13 @@ void APP_Tasks ( void )
             
             if (myTick < getTick())
             {
-                LED_Toggle();
+                switch (appData.LED_user)
+                {
+                    case LED_STATE_ON: LED_Clear(); break;
+                    case LED_STATE_OFF: LED_Set(); break;
+                    case LED_STATE_BLINKING: LED_Toggle(); break;
+                    default: break;
+                }
                 myTick = getTick() + SECOND *2;
 
                 

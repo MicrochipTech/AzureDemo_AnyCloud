@@ -67,7 +67,13 @@ typedef enum
 
 } APP_STATES;
 
-
+typedef enum
+{
+    LED_STATE_INIT=0,
+    LED_STATE_ON=1,
+    LED_STATE_OFF=2,
+    LED_STATE_BLINKING=3,
+} LED_STATE;
 // *****************************************************************************
 /* Application Data
 
@@ -87,6 +93,7 @@ typedef struct
     APP_STATES state;
 
     /* TODO: Define any additional data used by the application. */
+    LED_STATE LED_user;
 
 } APP_DATA;
 

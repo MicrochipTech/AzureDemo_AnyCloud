@@ -155,7 +155,7 @@ Choose either the [Group](./IoT_Central_Group_Enrollment.md) or [Individual](./I
 
 2. Enter your WiFi network's SSID and passphrase as the *WiFi Credentials*
 3. Enter your ID scope and Device ID (Common Name) into the *Azure Application/Device Information* settings.
-4. Enter the model ID of the device template you wish to interact with in IoT Central. For example, we can emulate a device based on the device model *[`dtmi:com:Microchip:SAM_IoT_WM;2`](https://github.com/Azure/iot-plugandplay-models/blob/main/dtmi/com/microchip/sam_iot_wm-2.json)* (which is published in the [IoT Plug and Play Models Repository](https://github.com/Azure/iot-plugandplay-models)). 
+4. Enter the model ID of the device template you wish to interact with in IoT Central. For example, we can emulate a device based on the device model *[`dtmi:com:Microchip:WBZ451_Curiosity;1`](https://github.com/Azure/iot-plugandplay-models/blob/main/dtmi/com/microchip/wbz451-curiosity-1.json)* (which is published in the [IoT Plug and Play Models Repository](https://github.com/Azure/iot-plugandplay-models)). 
 
 The model ID will be announced by the device during the DPS registration process.  If the model has been published in the [Azure Device Model Repository](https://devicemodels.azure.com), IoT Central will automatically download the device model and use it to interact with your device based on the model's characteristics.  You can also create a custom device template in your IoT Central application, which will generate a new model ID that can declared and used with the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) repository on [GitHub](https://github.com) as well.
 
@@ -256,7 +256,7 @@ Finally, the script subscribes to the DPS MQTT notification topic, and publishes
     Event: Subscribed to DPS topics, publish registration request....
 
     publish DPS registration message
-    AT+MQTTPUB=0,0,0,"$dps/registrations/PUT/iotdps-register/?rid=1","{\"payload\" : {\"modelId\" : \"dtmi:com:Microchip:SAM_IoT_WM;2\"}}"
+    AT+MQTTPUB=0,0,0,"$dps/registrations/PUT/iotdps-register/?rid=1","{\"payload\" : {\"modelId\" : \"dtmi:com:Microchip:WBZ451_Curiosity;1\"}}"
     OK
     >
     +MQTTPUB:47,"$dps/registrations/res/202/?$rid=&retry-after=3",94,"{"operationId":"4.65f62b2644c85bb1.331ffb1b-35e2-4b5a-9e68-f1fa7d5efc33","status":"assigning"}"
@@ -457,7 +457,7 @@ The script continues to demonstrate publishing telemetry and a read-only propert
 
 If you login to your application on IoT Central, it is now possible to see the how the script is interacting with the IoT Central application.
 
-Start by looking at the devices registered to the application.  Click **Devices** on the left naviagation pane, and note that the device shows up with the common name from the x.509 certifcate as its *Device ID*.  Also note the *Device Template* selected is now `SAM_IoT_WM;2`.  This device template was configured during the connection to the Device Provisioning Service.
+Start by looking at the devices registered to the application.  Click **Devices** on the left naviagation pane, and note that the device shows up with the common name from the x.509 certifcate as its *Device ID*.  Also note the *Device Template* selected is now `WBZ451_Curiosity;1`.  This device template was configured during the connection to the Device Provisioning Service.
 
 <img src="./media/IOTC_Device_View.png" alt="The IOTC Device list" width = 1000/>
 
@@ -532,7 +532,7 @@ This can be demonstrated directly from IoT Central on the device's commands tab.
 
 After you enter a valid field, the **Run** button can be pressed.
 
-IoT Central will publish to the topic described above with the payload defined in the device twin.  The script parses the command name out of the topic, decodes the delay value in the published payload, and prints the command to be executed.  The python script does reboot the PC, but if you were to run this exercise on a SAM-IoT board the board would be reset in 5 seconds after receiving the command.
+IoT Central will publish to the topic described above with the payload defined in the device twin.  The script parses the command name out of the topic, decodes the delay value in the published payload, and prints the command to be executed.  The python script does reboot the PC, but if you were to run this exercise on a WBZ451 Curiosity Board, the board would be reset within 5 seconds after receiving the command.
 
     +MQTTPUB:35,"$iothub/methods/POST/reboot/?$rid=1",16,"{"delay":"PT5S"}"
     >
@@ -548,7 +548,7 @@ IoT Central will publish to the topic described above with the payload defined i
 
     execute reboot(5)
 
-When the `SAM_IoT_WM;2` device twin was defined, part of that definition included a response packet for the command.  The device twin structure can be viewed in IoT Central, by selecting "Device Templates, then the name and version of the device template being used.
+When the `WBZ451_Curiosity;1` device twin was defined, part of that definition included a response packet for the command.  The device twin structure can be viewed in IoT Central, by selecting "Device Templates, then the name and version of the device template being used.
 
 <img src="./media/IOTC_Navigate_Device_Template.png" alt="The IOTC reboot command" width = 800/>
 

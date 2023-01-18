@@ -60,6 +60,12 @@ dkms.conf
 examples/WBZ451_AnyCloud/firmware/WBZ451_AnyCloud.X/build/
 examples/WBZ451_AnyCloud/firmware/WBZ451_AnyCloud.X/debug/
 examples/WBZ451_AnyCloud/firmware/WBZ451_AnyCloud.X/.generated_files
+examples/WBZ451_AnyCloud/firmware/WBZ451_Curiosity.X/build/
+examples/WBZ451_AnyCloud/firmware/WBZ451_Curiosity.X/debug/
+examples/WBZ451_AnyCloud/firmware/WBZ451_Curiosity.X/.generated_files
+examples/WBZ451_AnyCloud/firmware/WBZ451_AnyCloud_Multimeter.X/build/
+examples/WBZ451_AnyCloud/firmware/WBZ451_AnyCloud_Multimeter.X/debug/
+examples/WBZ451_AnyCloud/firmware/WBZ451_AnyCloud_Multimeter.X/.generated_files
 **/nbproject/private
 **/nbproject/Makefile-*
 **/nbproject/Package-*

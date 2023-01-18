@@ -13,7 +13,7 @@ PASSPHRASE = "your_PASSPHRASE"
 # Azure Application/Device Information
 ID_SCOPE = "your_ID_SCOPE"
 DEVICE_ID = "your_DEVICE_ID"
-MODEL_ID = "dtmi:com:Microchip:SAM_IoT_WM;2"
+MODEL_ID = "dtmi:com:Microchip:WBZ451_Curiosity;1"
 
 # -----------------------------------------------------------------------------
 # Application States
@@ -141,18 +141,16 @@ class AnyCloud:
     
     #IOTC application variables
     self.telemetryInterval = 10          # default telemetry interval (seconds)
-    self.lightSensor = 0                 # default light sensor value
+    self.temperature = 15.0              # default temperature value
     self.ip_addr = None                  # default
 
     self.broker_topics_subs = 0          # keep track if we have subscribed DPS notification topic   
     self.pub_topic = ""                  
     self.pub_payload = ""
 
-
     # initialize event handle to None.  Set by rx_data_process so application can respond to
     # events signaled by AnyCloud serial output
     self.evt_handler = None
-    
 
     self.DEBUG = debug        # if set to True, will print all received data.
     
@@ -163,7 +161,6 @@ class AnyCloud:
     self.ser = serial.Serial(port, baud, timeout = self.SER_TIMEOUT)
     self.delay = Delay_Non_Blocking()
     self.kb = Polling_KB_CMD_Input()
-
 
   # keyboard processing
   def kb_data_process(self, received):
@@ -303,7 +300,6 @@ class AnyCloud:
       self.mqtt_publish(0,0,(TOPIC_IOTC_CMD_RESP + rid),'{\\\"status\\\" : \\\"Success\\\", \\\"delay\\\" : ' + str(delay) +'}')
     self.sub_payload = ""    
 
-  
   def propertyIntResponse(self, propertyName, topic, payload) :
     #(topic,payload) = self.processTopicNotification(self.sub_payload)
     if propertyName in payload:
@@ -318,40 +314,77 @@ class AnyCloud:
       self.mqtt_publish(0,0,(TOPIC_IOTC_WRITE_PROPERTY+str(self.rid)),resp)
       return intVal
     return None
-    
-  
+
   def evt_iotc_property_received(self):
     print("\r\nproperty updated from IoT Central")
     (topic,payload) = self.processTopicNotification(self.sub_payload)
     
-    retVal = self.propertyIntResponse("property_3", topic, payload)
-    if retVal != None :
-      print("\r\nNo property_3 feature implemented in script\r\n")
+    #retVal = self.propertyIntResponse("property_3", topic, payload)
+    #if retVal != None :
+    #  print("\r\nNo property_3 feature implemented in script\r\n")
     
-    retVal = self.propertyIntResponse("property_4", topic, payload)
-    if retVal != None :
-      print("\r\nNo property_4 feature implemented in script\r\n")
+    #retVal = self.propertyIntResponse("property_4", topic, payload)
+    #if retVal != None :
+    #  print("\r\nNo property_4 feature implemented in script\r\n")
     
-    retVal = self.propertyIntResponse("disableTelemetry", topic, payload)
-    if retVal != None :
-      print("\r\nDisable telemetry feature not implemented in script\r\n")
+    #retVal = self.propertyIntResponse("disableTelemetry", topic, payload)
+    #if retVal != None :
+    #  print("\r\nDisable telemetry feature not implemented in script\r\n")
     
     retVal = self.propertyIntResponse("telemetryInterval", topic, payload)
     if retVal != None :
       self.telemetryInterval = retVal
-      print("\r\nLight sensor telemetry updating at the new telemetry interval\r\nCheck Raw Data tab to verify\r\n")
+      print("\r\nTelemetry updating at the new telemetry interval\r\nCheck Raw Data tab to verify\r\n")
     
-    retVal = self.propertyIntResponse("led_y", topic, payload)
+#    retVal = self.propertyIntResponse("led_y", topic, payload)
+#   if retVal != None :
+#     if retVal == 1 :
+#       print("yellow LED is ON\r\n")
+#     elif retVal == 2 :
+#       print("yellow LED is OFF\r\n")
+#     elif retVal == 3 :
+#       print("yellow LED is Blinking\r\n")
+#     else :
+#       print("invalid yellow LED setting received\r\n")
+    
+    retVal = self.propertyIntResponse("led_user", topic, payload)
     if retVal != None :
       if retVal == 1 :
-        print("yellow LED is ON\r\n")
+        print("User LED is ON\r\n")
       elif retVal == 2 :
-        print("yellow LED is OFF\r\n")
+        print("User LED is OFF\r\n")
       elif retVal == 3 :
-        print("yellow LED is Blinking\r\n")
+        print("User LED is Blinking\r\n")
       else :
-        print("invalid yellow LED setting received\r\n")
-    
+        print("Invalid User LED setting received\r\n")
+
+    retVal = self.propertyIntResponse("rgb_led_blue", topic, payload)
+    if retVal != None :
+      if retVal == 1 :
+        print("RGB LED (BLUE PWM Duty Cycle) is 100 percent\r\n")
+      elif retVal == 2 :
+        print("RGB LED (BLUE PWM Duty Cycle) is 0 percent\r\n")
+      else :
+        print("Invalid RGB LED (BLUE PWM Duty Cycle) setting received\r\n")
+
+    retVal = self.propertyIntResponse("rgb_led_green", topic, payload)
+    if retVal != None :
+      if retVal == 1 :
+        print("RGB LED (GREEN PWM Duty Cycle) is 100 percent\r\n")
+      elif retVal == 2 :
+        print("RGB LED (GREEN PWM Duty Cycle) is 0 percent\r\n")
+      else :
+        print("Invalid RGB LED (GREEN PWM Duty Cycle) setting received\r\n")
+
+    retVal = self.propertyIntResponse("rgb_led_red", topic, payload)
+    if retVal != None :
+      if retVal == 1 :
+        print("RGB LED (RED PWM Duty Cycle) is 100 percent\r\n")
+      elif retVal == 2 :
+        print("RGB LED (RED PWM Duty Cycle) is 0 percent\r\n")
+      else :
+        print("Invalid RGB LED (RED PWM Duty Cycle) setting received\r\n")
+
     self.sub_payload = ""  
     
   def evt_iotc_property_download(self):
@@ -425,7 +458,6 @@ class AnyCloud:
       else:
         return 0
 
-    
   def sm_dps_register(self):
     #check if connected to MQTT broker
     if self.dps_state == 0:
@@ -500,6 +532,11 @@ class AnyCloud:
     payload = '{\\\"' + Parameter + '\\\" : \\\"' +strVal +'\\\"}'
     self.mqtt_publish(0,0,TOPIC_IOTC_TELEMETRY,payload)
 
+  def iotc_double_telemetry_send(self,Parameter, dVal):
+   print("Sending [" +Parameter+ "] telemetry value of: " +str(dVal)+"\r\n");
+   payload = '{\\\"' + Parameter + '\\\" : ' +str(dVal) +'}'
+   self.mqtt_publish(0,0,TOPIC_IOTC_TELEMETRY,payload)
+
   def iotc_int_property_send(self,Parameter,iVal):
     print("Sending " +Parameter+ " property value of: " +str(iVal)+"\r\n");
     self.rid = self.rid + 1
@@ -513,12 +550,11 @@ class AnyCloud:
   def sm_iotc_app(self):
     self.delay.delay_time_start()
     if self.delay.delay_sec_poll(self.telemetryInterval):
-      self.lightSensor = self.lightSensor + 10
-      if self.lightSensor >100 :
-        self.lightSensor = 10
+      self.temperature = self.temperature + 0.25
+      if self.temperature > 25.0 :
+        self.temperature = 15.0;
       print("\r\nTelemetry Interval = " +str(self.telemetryInterval)+ " seconds\r\n");
-      self.iotc_int_telemetry_send("light", self.lightSensor)
-      self.iotc_int_telemetry_send("temperature", 22)
+      self.iotc_double_telemetry_send("temperature", self.temperature)
     
   def sm_iotc_connect(self):
     # configure and connect to iotc MQTT broker
@@ -674,60 +710,28 @@ class AnyCloud:
     self.delay.delay_time_start()
     if self.delay.delay_sec_poll(1) :
       if self.hw_state == 0:
-        print("\r\nPublish Hello World telemetry")
-        self.iotc_str_telemetry_send("telemetry_Str_1", "Hello Azure IoT Central")
-        self.hw_state = self.hw_state + 1
-      elif self.hw_state == 1:
-        print("\r\nReport Read-Only Property: Blue LED = On")
-        self.iotc_int_property_send("led_b", 1)
-        self.hw_state = self.hw_state + 1
-      elif self.hw_state == 2:
-        print("\r\nReport Read-Only Property: Green LED = On")
-        self.iotc_int_property_send("led_g", 1)
-        self.hw_state = self.hw_state + 1
-      elif self.hw_state == 3:
-        print("\r\nReport Writable Property: Yellow LED = Blinking")
-        self.iotc_int_property_send("led_r", 3)
-        self.hw_state = self.hw_state + 1
-      elif self.hw_state == 4:
-        print("\r\nReport Read-Only Property: Red LED = Off")
-        self.iotc_int_property_send("led_r", 2)
-        self.hw_state = self.hw_state + 1
-      elif self.hw_state == 5:
         print("\r\nReport Read-Only Property: IP Address = " + self.ip_addr)
         type(self.ip_addr)
         self.iotc_str_property_send("ipAddress", self.ip_addr)
         self.hw_state = self.hw_state + 1
-      elif self.hw_state == 6:
-        print("\r\nReport Read-Only Property: ATWINC1510 Firmware Version = 19.7.3.0")
-        self.iotc_str_property_send("firmwareVersion", "19.7.3.0")
+      elif self.hw_state == 1:
+        print("\r\nReport Writable Property: RGB LED (BLUE PWM Duty Cycle) = 100 percent")
+        self.iotc_int_property_send("rgb_led_blue", 1)
         self.hw_state = self.hw_state + 1
-      elif self.hw_state == 7:
-        print("\r\nReport Read-Only Property: APP MCU Property 1 = 1")
-        self.iotc_int_property_send("property_1", 1)
+      elif self.hw_state == 2:
+        print("\r\nReport Writable Property: RGB LED (GREEN PWM Duty Cycle) = 0 percent")
+        self.iotc_int_property_send("rgb_led_green", 2)
         self.hw_state = self.hw_state + 1
-      elif self.hw_state == 8:
-        print("\r\nReport Read-Only Property: APP MCU Property 2 = 2")
-        self.iotc_int_property_send("property_2", 2)
+      elif self.hw_state == 3:
+        print("\r\nReport Writable Property: RGB LED (RED PWM Duty Cycle) = 100 percent")
+        self.iotc_int_property_send("rgb_led_red", 1)
         self.hw_state = self.hw_state + 1
-      elif self.hw_state == 9:
-        print("\r\nReport Writable Property: APP MCU Property 3 = 3")
-        self.iotc_int_property_send("property_3", 3)
+      elif self.hw_state == 4:
+        print("\r\nReport Writable Property: User LED = Blinking")
+        self.iotc_int_property_send("led_user", 3)
         self.hw_state = self.hw_state + 1
-      elif self.hw_state == 10:
-        print("\r\nReport Writable Property: APP MCU Property 4 = 4")
-        self.iotc_int_property_send("property_4", 4)
-        self.hw_state = self.hw_state + 1
-      elif self.hw_state == 11:
-        print("\r\nReport Writable Property: Disable Telemetry = 0")
-        self.iotc_int_property_send("disableTelemetry", 0)
-        self.hw_state = self.hw_state + 1
-      elif self.hw_state == 12:
-        print("\r\nReport Writable Property: Debug Level = INFO")
-        self.iotc_int_property_send("debugLevel", 4)
-        self.hw_state = self.hw_state + 1
-      elif self.hw_state == 13:
-        print("\r\nStart sending periodic telemetry and properties. Press ESC to end script\r\n")
+      elif self.hw_state == 5:
+        print("\r\nStart sending periodic telemetry and properties. Press <ESC> to end script execution\r\n")
         self.app_state = APP_STATE_IOTC_DEMO
   
   def runApp(self):
@@ -765,7 +769,7 @@ class AnyCloud:
       print("\r\nRead current device twin settings from IOTC\r\n")
       self.iotc_get_device_twin_state()
             
-      print("\r\nSending Telemetry and Properties.\r\n    Press ESC to end script\r\n")
+      print("\r\nSending Telemetry and Properties.\r\n    Press <ESC> to end script execution\r\n")
       self.app_state = APP_STATE_IOTC_HELLO_AZURE
 
     elif self.app_state == APP_STATE_IOTC_HELLO_AZURE:
