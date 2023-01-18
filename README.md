@@ -577,8 +577,7 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
 <br>
 
     **Note** The WBZ451 Curiosity Board creates two Virtual COM Ports; the correct one to select will most likely be the one that is shorter in length and does not contain the RYN digits, e.g.
-
-    <img src=".//media/image17.png" width=200 />
+<img src=".//media/image17.png" width=200 />
 
 4. Launch the `MPLAB X` IDE (this tool should have been previously installed and most likely resides in the \Program Files\Microchip\ folder)
 
