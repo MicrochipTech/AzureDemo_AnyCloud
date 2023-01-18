@@ -440,9 +440,9 @@ Once the topics are subcribed, the script requests the current status of the dev
 
 If you login to your application on IoT Central, it is now possible to see how the script is interacting with the IoT Central application.
 
-Start by looking at the devices registered to the application.  Click **Devices** on the left naviagation pane, and note that the device shows up with the common name from the x.509 certifcate as its *Device ID*.  Also note the *Device Template* selected is now `WBZ451_Curiosity;1`.  This device template was configured during the connection to the Device Provisioning Service.
+Start by looking at the devices registered to the application.  Click **Devices** on the left naviagation pane, and note that the device shows up with the Common Name (CN) from the X.509 certifcate as its *Device ID*.  Also note the *Device Template* selected is now `WBZ451_Curiosity;1`. This device template was configured during the connection to the Device Provisioning Service because it is published in the [IoT Plug and Play Models Repository](https://github.com/Azure/iot-plugandplay-models).
 
-<img src="./media/IOTC_Device_View.png" alt="The IOTC Device list" width = 1000/>
+<img src="./media/IOTC_Device_View.png" alt="The IOTC Device list" width = 800/>
 
 If you click the device name shown on the devices screen, IoT Central will show you are currently connected. You will also have the ability to click on a selection of device views that allow you to inspect the device state and data from recent transactions; the **Raw data** view is typically the most convenient place to see all received messages.
 
@@ -450,15 +450,16 @@ If you click the device name shown on the devices screen, IoT Central will show 
 
 Scrolling down to the first two transactions sent after the connection to IoT Central was established, you can expand them to see the values written by the script.
 
-<img src="./media/IOTC_Raw_Data.png" alt="The IOTC Raw Data view for Hello World Message" width = 400/>
+<img src="./media/IOTC_Raw_Data.png" alt="The IOTC Raw Data view for Hello World Message" width = 300/>
 
 After these initial values are sent, the script begins publishing spoofed temperature sensor telemetry at the "telemetryInterval" rate.  The telemetry interval defaults to 10 seconds, but this is a writeable property that can be updated from IoT Central.
 
-<img src="./media/IOTC_Temperature_Telemetry.png" alt="The IOTC Raw Data view of light sensor data" width = 800/>
+<img src="./media/IOTC_Temperature_Telemetry.png" alt="The IOTC Raw Data view of light sensor data" width = 400/>
 
-Leveraging a view that allows editting writeable properties, type a new value for the telemetryInterval and save it.
+Leveraging a view that allows editting writable properties, type a new value for the Telemetry Interval and click on the **Save** icon.
 **Note** Configuring additional device views is beyond the scope of this documentation
-<img src="./media/IOTC_WriteTelemetryInterval.png" alt="The IOTC Raw Data view of light sensor data" width = 800/>
+
+<img src="./media/IOTC_WriteTelemetryInterval.png" alt="The IOTC Raw Data view of light sensor data" width = 400/>
 
 IoT Central will publish a message to the property PATCH topic.  The message will contain the new telemetry interval value, as well as a version field.
 
@@ -502,9 +503,9 @@ The last item the script demonstrates is receiving Cloud to Device (C2D) command
 
     $iothub/methods/POST/reboot/
 
-This can be demonstrated directly from IoT Central on the device's commands tab.
+This can be demonstrated directly from IoT Central on the device's **Commands** tab.
 
-<img src="./media/IOTC_CommandReboot.png" alt="The IOTC reboot command" width = 800/>
+<img src="./media/IOTC_CommandReboot.png" alt="The IOTC reboot command" width = 400/>
 
 "PT5S" is an [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) period designator, which decodes to 5 seconds following the standard's definition.  The script only supports periods in seconds, but the standard covers durations years, months, days, etc.
 
@@ -533,15 +534,15 @@ IoT Central will publish to the topic described above with the payload defined i
 
 When the `WBZ451_Curiosity;1` device twin model interface (DTMI) was originally defined, part of that definition included a response packet for the command.  The device twin structure can be viewed in IoT Central, by selecting "Device Templates" using the left-hand side navigation pane, then the name and version of the device template being used.
 
-<img src="./media/IOTC_Navigate_Device_Template.png" alt="The IOTC reboot command" width = 800/>
+<img src="./media/IOTC_Navigate_Device_Template.png" alt="The IOTC reboot command" width = 400/>
 
 When the device template opens, expand the reboot command with the drop down control.  
 
-<img src="./media/IOTC_Navigate_Command_Objects.png" alt="Navigate to the reboot command in the Device Template" width = 800/>
+<img src="./media/IOTC_Navigate_Command_Objects.png" alt="Navigate to the reboot command in the Device Template" width = 400/>
 
 Notice the command is enabled, and a response is expected.  There are also two objects being defined: one for the command payload, and one for the response payload. Click the Define button for the response payload, to view the object that is expected to be returned by the embedded device when the reboot command is received. 
 
-<img src="./media/IOTC_Reboot_Response_Object.png" alt="The reboot command Response Object" width = 600/>
+<img src="./media/IOTC_Reboot_Response_Object.png" alt="The reboot command Response Object" width = 400/>
 
 From here, notice two items are expected in the response payload, a "status" string, and a "delay" integer, that should match the reboot delay.  
 

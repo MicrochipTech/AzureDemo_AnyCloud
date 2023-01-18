@@ -260,8 +260,8 @@
         <platform>4</platform>
       </toolsSet>
       <packs>
-        <pack name="CMSIS" vendor="ARM" version="5.4.0"/>
         <pack name="PIC32CX-BZ_DFP" vendor="Microchip" version="1.0.107"/>
+        <pack name="CMSIS" vendor="ARM" version="5.8.0"/>
       </packs>
       <ScriptingSettings>
       </ScriptingSettings>
@@ -509,8 +509,6 @@
                   value="${memories.instruction.ram.ranges}"/>
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="1000000-2001ffff"/>
-        <property key="programmerToGoFilePath"
-                  value="/Users/c11876/_Project/AT_CMD_WBZ451/firmware/AT_CMD_WBZ451.X/debug/default/AT_CMD_WBZ451_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.pgmentry.voltage" value="low"/>

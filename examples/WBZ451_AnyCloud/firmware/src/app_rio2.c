@@ -1457,8 +1457,8 @@ void APP_RIO2_Tasks(void) {
                 }
                 case 1:
                 { //PUB Volt ONLY
-                    extern float fVoltage;
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC"\",\""PUB_REPORTED_VOLTAGE"\"\r\n", thingID, (float) fVoltage);
+                    extern float multimeterVolage;
+                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC"\",\""PUB_REPORTED_VOLTAGE"\"\r\n", thingID, (float) multimeterVolage);
                     pubState = 1;
                     pubState = 2;
                     break;
@@ -1472,9 +1472,9 @@ void APP_RIO2_Tasks(void) {
                 case 4:
                 {//PUB Volt and Count
                     char tempBuffer[50];
-                    extern float fVoltage;
+                    extern float multimeterVolage;
                     sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC"\",\""PUB_REPORTED_START, thingID);
-                    sprintf(tempBuffer, JSON_VOLTAGE, (float) fVoltage);
+                    sprintf(tempBuffer, JSON_VOLTAGE, (float) multimeterVolage);
                     strcat(buffer, tempBuffer);
                     strcat(buffer, ",");
                     sprintf(tempBuffer, JSON_COUNT, (int) pubCount++);
@@ -1504,7 +1504,7 @@ void APP_RIO2_Tasks(void) {
 
 #endif
             SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
-            printf_MQTT(("%s", buffer));
+            printf_2RIO(("%s", buffer));
             myDelay = getTick();
             
          
@@ -1846,7 +1846,7 @@ void APP_RIO2_Tasks(void) {
 
                 }
 
-                app_rio2Data.state = APP_RIO2_STATE_SOCKET_IDLE; // APP_MQTT_STATE_PUB_RESPONSE;
+                app_rio2Data.state = APP_MQTT_STATE_PUB_RESPONSE;//APP_RIO2_STATE_SOCKET_IDLE; // APP_MQTT_STATE_PUB_RESPONSE;
 #else  //Mosquitto
                 sprintf(mqttRCVMessage, messPtr);
                 printf_MQTT((mqttRCVMessage));
@@ -1871,7 +1871,7 @@ void APP_RIO2_Tasks(void) {
             SERCOM2_USART_Write((uint8_t*) responseMQTTPUB, strlen(responseMQTTPUB));
             printf_MQTT(("%s", responseMQTTPUB));
             myDelay = getTick();
-            app_rio2Data.state = APP_RIO2_STATE_SOCKET_IDLE;//APP_MQTT_STATE_WAIT_PUB;
+            app_rio2Data.state = APP_MQTT_STATE_WAIT_PUB;//APP_RIO2_STATE_SOCKET_IDLE;//APP_MQTT_STATE_WAIT_PUB;
             break;
         }
         case APP_MQTT_STATE_DISCONNECTED:
