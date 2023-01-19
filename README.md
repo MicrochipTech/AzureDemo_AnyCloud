@@ -456,8 +456,7 @@ After these initial values are sent, the script begins publishing spoofed temper
 
 <img src="./media/IOTC_Temperature_Telemetry.png" alt="The IOTC Raw Data view of light sensor data" width = 400/>
 
-Leveraging a view that allows editting writable properties, type a new value for the Telemetry Interval and click on the **Save** icon.
-**Note** Configuring additional device views is beyond the scope of this documentation
+[Click here](./DeviceTemplate_CreatingViews.md) to create a "Properties" view that allows you to change any of the Cloud-writable properties. Once this new view has been added to the device template, click on the Properties view and type in a new value for the Telemetry Interval. Click on the **Save** icon to send the property update request to the physical device. You should see the status of the property listed as "Pending" until a confirmation has been received from the physical device that the property was successfully updated. At this point in time, the status of the property should revert back to the "Accepted" state.
 
 <img src="./media/IOTC_WriteTelemetryInterval.png" alt="The IOTC Raw Data view of light sensor data" width = 400/>
 
