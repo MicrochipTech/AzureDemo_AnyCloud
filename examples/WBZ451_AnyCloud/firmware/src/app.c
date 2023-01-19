@@ -146,6 +146,7 @@ void APP_Tasks ( void )
             {
 
                 appData.state = APP_STATE_SERVICE_TASKS;
+                appData.LED_user = LED_STATE_ON;
             }
             break;
         }
