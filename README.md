@@ -15,6 +15,7 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 
     <img src=".//media/WBZ451_Curiosity.png" width=300/>
 * AnyCloud™ Serial Bridge: [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a) **or** [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A)
+
     <img src=".//media/AnyCloud_Boards.png" width=500/>
 
 ## Software Prerequisites / Tools Installation
@@ -40,7 +41,14 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 
 Follow the section titled "Re-Flashing the device" in the [AnyCloud™ Getting Started Guide](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud/blob/main/README.md) to program the AnyCloud™ firmware onto one of the WFI32E01 development boards (if using WFI32-IoT, skip the step regarding a jumper setting).
 
-After the AnyCloud™ firmware has been programmed, proceed with connecting a [USB-to-UART converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter) between the PC and the specified header for the specific WFI32E01 development board being used:
+After the AnyCloud™ firmware has been programmed, create a clone of this repository using [Git](https://git-scm.com) or download a ZIP file of this repository.
+
+```bash
+git clone https://github.com/MicrochipTech/AzureDemo_AnyCloud
+```
+<img src=".//media/Download_ZIP.png" width=400/>
+
+Connect a [USB-to-UART converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter) between the PC and the specified header for the specific WFI32E01 development board being used:
 
 - [WFI32-IoT](https://www.microchip.com/en-us/development-tool/ev36w50a): Connect the USB-to-UART converter's TXD & RXD pins to the `RX` & `TX` pins of the mikroBUS Header (`J402`), respectively
 
