@@ -51,8 +51,8 @@
 #include <stdio.h>
 #include "peripheral/sercom/usart/plib_sercom2_usart.h"
 #include "peripheral/sercom/spi_master/plib_sercom1_spi_master.h"
-#include "peripheral/sercom/usart/plib_sercom0_usart.h"
 #include "peripheral/evsys/plib_evsys.h"
+#include "peripheral/sercom/usart/plib_sercom0_usart.h"
 #include "peripheral/clk/plib_clk.h"
 #include "peripheral/gpio/plib_gpio.h"
 #include "peripheral/nvic/plib_nvic.h"

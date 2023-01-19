@@ -139,7 +139,7 @@ void APP_Tasks ( void )
         {
             bool appInitialized = true;
             
-            printf("Hello from WBZ451\r\n");
+            printf("\r\nWelcome to the AnyCloud Host MCU Example for the WBZ451 Curiosity Board!!!\r\n\r\n");
 
 
             if (appInitialized)
@@ -165,7 +165,7 @@ void APP_Tasks ( void )
                     case LED_STATE_BLINKING: LED_Toggle(); break;
                     default: break;
                 }
-                myTick = getTick() + SECOND *2;
+                myTick = getTick() + (SECOND * 1);
 
                 
             }

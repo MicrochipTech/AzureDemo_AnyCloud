@@ -1380,7 +1380,7 @@ void APP_RIO2_Tasks(void) {
                 case 0:
                 {//Get TWIN state   !!!!!!!!
                     //char buffer1[50];
-                    strcpy(buffer, "AT+MQTTPUB=0,0,0,\"$iothub/twin/GET/?$rid=1234\",\"\"\n\r");
+                    strcpy(buffer, "AT+MQTTPUB=0,0,0,\"$iothub/twin/GET/?$rid=getTwin\",\"\"\n\r");
 
                     pubState++;
                     break;
@@ -1619,8 +1619,9 @@ void APP_RIO2_Tasks(void) {
                         ptr += strlen("$rid=");
                         sprintf(requestID, ptr);
                     }
-                    //prepare response TOPIC and PAYLAOD
-                    sprintf(responseMQTTPUB, "AT+MQTTPUB=0,0,0,\"$iothub/methods/res/200/?$rid=%s\",\"{\\\"status\\\":\\\"Success\\\"}\"\r\n", requestID);
+                    // Prepare response TOPIC and PAYLOAD
+                    sprintf(responseMQTTPUB, "AT+MQTTPUB=0,0,0,\"$iothub/methods/res/200/?$rid=%s\",\"{\\\"status\\\":\\\"Success\\\",\\\"echo\\\":\\\"%s\\\"}\"\r\n", requestID, mqttRCVMessage);
+
                     app_rio2Data.state = APP_MQTT_STATE_PUB_RESPONSE;
                     break;
                 }
@@ -1736,7 +1737,7 @@ void APP_RIO2_Tasks(void) {
                 }
                 //Update TWIN GET desired state
                 
-                //+MQTTPUB:31,"$iothub/twin/res/200/?$rid=1234",355,
+                //+MQTTPUB:31,"$iothub/twin/res/200/?$rid=getTwin",355,
                 //"{"desired":{"led_b":2,"led_g":2,"led_r":2,"telemetryInterval":60,"$version":447},
                 //"reported":{
                 //"ipAddress":"192.168.1.103",
@@ -1747,13 +1748,13 @@ void APP_RIO2_Tasks(void) {
 
                 
                 /* This is in response of  MQTTPUB get TWIN value  
-                 AT+MQTTPUB=0,0,0,\"$iothub/twin/GET/?$rid=1234
-                 Notice same rid value 1234
+                 AT+MQTTPUB=0,0,0,\"$iothub/twin/GET/?$rid=getTwin
+                 Notice same rid value getTwin
                  */
                 char *ptrReported;
                 ptrReported = strstr (messPtr, "\"reported\"");
                 
-                if ((ptr = strstr(messPtr, "\"desired\"")) && strstr(topicPtr, "$iothub/twin/res/200/?$rid=1234")) {
+                if ((ptr = strstr(messPtr, "\"desired\"")) && strstr(topicPtr, "$iothub/twin/res/200/?$rid=getTwin")) {
                     memset(jsonPayloadResponse, 0, sizeof (jsonPayloadResponse));
 
                     strcpy(jsonPayloadResponse, "AT+MQTTPUB=0,0,0,\"$iothub/twin/PATCH/properties/reported/?rid=55\",\"{");
