@@ -60,7 +60,7 @@ Connect a [USB-to-UART converter](https://www.newark.com/c/cable-wire-cable-asse
 
 **Note** After the MPLAB IPE has completed the programming of the AnyCloud firmware image (HEX file), the IPE program holds the WFI32 module in reset, so the board should be disconnected from the USB cable and then reconnected in order for the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) firmware to run after it has been programmed.
 
- You will need to discover the Virtual COM port number that is associated with your USB-to-UART converter's serial connection with your PC. For example, with the help of the the Windows `Device Manager`, under the category `Ports (COM & LPT)`, the Virtual COM port may show up as a "USB Serial Device" as illustrated here:
+ You will need to discover the Virtual COM port number that is associated with your USB-to-UART converter's serial connection with your PC. For example, with the help of the the Windows `Device Manager`, under the category `Ports (COM & LPT)`, the Virtual COM port may show up as a generic "USB Serial Device" as illustrated here:
 
 <img src="./media/WindowsDeviceManager.png" alt="A screenshot of a new Device button" width = 300/>
 
@@ -95,8 +95,6 @@ COM_PORT = "/dev/tty.usbserial-A51MXHIL"
 #### 1.4 Navigate to the [/certificates](./certificates/) directory. Open the `WFI32_RootCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated.
 
 #### 1.5 Cycle power to the board by disconnecting and reconnecting the USB cable. For good measure, press the `RESET` button on the WFI32-IoT development board (for the WFI32E Curiosity development board, the reset button is the `MCLR` button)
-
-<br>
 
 ### Step 2 - Read the Device and Root Certificates from the Module
 
@@ -581,15 +579,17 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
 
     <img src=".//media/WBZ451_WFI32E-Curiosity.png"/>
 
-3. Connect the `WBZ451 Curiosity Board` to the PC using the supplied micro-USB cable. Launch a [Terminal Emulator](https://en.wikipedia.org/wiki/List_of_terminal_emulators) program of your choice and connect to the WBZ451 Curiosity Board's Virtual COM Port at 115200 baud. The WBZ451 Curiosity Board creates two Virtual COM Ports; the correct one to select will most likely be the one that is shorter in length and does not contain the RYN digits, e.g.
+3. Connect the `WBZ451 Curiosity Board` to the PC using the supplied micro-USB cable. Launch a [Terminal Emulator](https://en.wikipedia.org/wiki/List_of_terminal_emulators) program of your choice and connect to the WBZ451 Curiosity Board's Virtual COM Port at 115200 baud. The WBZ451 Curiosity Board creates two Virtual COM Ports
 
-    <img src=".//media/image17.png" width=200 />
+    - Windows: The correct one to select will most likely be the one that shows up as a generic "USB Serial Port"
 
-4. Launch the `MPLAB X` IDE (this tool should have been previously installed and most likely resides in the \Program Files\Microchip\ folder)
+        <img src=".//media/image17a.png" width=400 />
 
-    <img src=".//media/image18a.png" width=200 />
+    - MacOS: The correct one to select will most likely be the one that is shorter in length and does not contain the `RYN` characters
 
-    Once the MPLAB X IDE has finished its initialization routines, you should notice the "Kit Window" that acknowledges an active connection to the WBZ451 Curiosity Board
+        <img src=".//media/image17b.png" width=200 />
+
+4. Launch the `MPLAB X` IDE (this tool should have been previously installed and most likely resides in the \Program Files\Microchip\ folder. Once the MPLAB X IDE has finished its initialization routines, you should notice the "Kit Window" that acknowledges an active connection to the WBZ451 Curiosity Board
 
     <img src=".//media/image18b.png"  />
 
@@ -627,7 +627,7 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
     - select the latest version for `PIC32CX-BZ_DFP`
     - select the latest XC32 version for `Compiler Toolchain`
 
-        <img src=".//media/image42.png" width=375 />
+        <img src=".//media/image42.png" width=450 />
 
         **Note** If any changes were made in the project properties window, the `Apply` button should become enabled.  Make sure to hit the `Apply` button before hitting `OK`
 
