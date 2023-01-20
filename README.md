@@ -41,7 +41,7 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 
 Follow the section titled "Re-Flashing the device" in the [AnyCloud™ Getting Started Guide](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud/blob/main/README.md) to program the AnyCloud™ firmware onto one of the WFI32E01 development boards (if using WFI32-IoT, skip the step regarding a jumper setting).
 
-After the AnyCloud™ firmware has been programmed, create a clone of this repository using [Git](https://git-scm.com) or download a ZIP file of this repository.
+After the AnyCloud™ firmware has been programmed, create a clone of this repository using [Git](https://git-scm.com) or scroll up towards the top of this page, click on the **Code** button, and download a ZIP file of this repository.
 
 ```bash
 git clone https://github.com/MicrochipTech/AzureDemo_AnyCloud
@@ -652,7 +652,7 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
 
 15. Using the left-hand navigation pane, click on `Devices` under **Connect**, and then click on your device name
 
-    <img src=".//media/image90.png" width=600 />
+    <img src=".//media/image90.png" width=800 />
 
 16. Click on the **Properties** view. Select "100% Duty Cycle" for the property "RGB LED (**BLUE** PWM Duty Cycle)" and click on the **Save** icon. Observe that the RGB LED on the WBZ451 Curiosity Board emits an extremely bright "true blue" color
 
