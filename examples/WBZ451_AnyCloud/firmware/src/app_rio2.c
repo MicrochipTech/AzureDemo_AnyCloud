@@ -30,7 +30,8 @@
 #include "app_rio2_config.h"
 #include "string.h"
 #include "definitions.h"
-#include "config/default/peripheral/gpio/plib_gpio.h"                // SYS function prototypes
+#include "config/default/peripheral/gpio/plib_gpio.h"
+#include "sensors/inc/temp_sensor.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -1369,7 +1370,7 @@ void APP_RIO2_Tasks(void) {
         
         case APP_MQTT_STATE_PUBLISH:
         {
-            static double pubCount;
+            //static double pubCount;
             char buffer[512];
             
             app_rio2Data.state = APP_MQTT_STATE_WAIT_PUB;
@@ -1416,7 +1417,7 @@ void APP_RIO2_Tasks(void) {
                 }
                 case (PUBSTATESNUM_TOTAL-2):
                 {
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\""PUB_AZURE_PAYLOAD_TELEMETRY_TEMPERATURE"\"\r\n", thingID, pubCount++);
+                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\""PUB_AZURE_PAYLOAD_TELEMETRY_TEMPERATURE"\"\r\n", thingID, MCP9700_Temp_Celsius());
                     pubState++;
                     break;
                 }

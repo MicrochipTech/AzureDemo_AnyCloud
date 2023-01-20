@@ -627,7 +627,7 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
     - select the latest version for `PIC32CX-BZ_DFP`
     - select the latest XC32 version for `Compiler Toolchain`
 
-        <img src=".//media/image42.png" width=450 />
+        <img src=".//media/image42.png" width=550 />
 
         **Note** If any changes were made in the project properties window, the `Apply` button should become enabled.  Make sure to hit the `Apply` button before hitting `OK`
 
@@ -656,13 +656,13 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
 
 16. Click on the **Properties** view. Select "100% Duty Cycle" for the property "RGB LED (**BLUE** PWM Duty Cycle)" and click on the **Save** icon. Observe that the RGB LED on the WBZ451 Curiosity Board emits an extremely bright "true blue" color
 
-    <img src=".//media/image91.png" width=300 />
+    <img src=".//media/image91.png" width=350 />
 
 17. Try multiple combinations of various settings for each of the blue, green, and red PWM duty cycles and observe the different color states emitted by the powerful RGB LED. In addition, try changing the state of the User LED to switch between the off, on, and blinking modes.
 
 18. Click on the **Commands** view. Type any message in the "String to send" box and click on the **Run** button. To see the response from the device, click on the **command history** link (located just underneath the **Run** button). You should see that the response was received "now" (within the last 60 seconds) and that the correct message was echoed from the device.
 
-    <img src=".//media/image92.png" width=250 />
+    <img src=".//media/image92.png" width=299 />
     <img src=".//media/image93.png" width=250 />
 
 ## Adding Extra Sensors to the Embedded Firmware Example

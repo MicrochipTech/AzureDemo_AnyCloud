@@ -172,20 +172,17 @@ void CLK_Initialize( void )
     /* Enable oscillator (ON bit) */
     CRU_REGS->CRU_REFO1CONSET = 0x00008000;
 
-
     /* Peripheral Clock Generators */
-    CFG_REGS->CFG_CFGPCLKGEN1 = 0x9099000;
-    CFG_REGS->CFG_CFGPCLKGEN2 = 0x0;
-    CFG_REGS->CFG_CFGPCLKGEN3 = 0x0;
+    CFG_REGS->CFG_CFGPCLKGEN1 = 0x9099000U;
+    CFG_REGS->CFG_CFGPCLKGEN2 = 0x0U;
+    CFG_REGS->CFG_CFGPCLKGEN3 = 0x0U;
 
     /* Peripheral Module Disable Configuration */
-
-
-    CFG_REGS->CFG_PMD1 = 0x200101cf;
-    CFG_REGS->CFG_PMD2 = 0xf3000000;
+    CFG_REGS->CFG_PMD1 = 0x2000004d;
+    CFG_REGS->CFG_PMD2 = 0xd3000000;
+    //CFG_REGS->CFG_PMD3 = 0x737e;
     CFG_REGS->CFG_PMD3 = 0x77f8;
-
-
+    
     /* Lock system since done with clock configuration */
     CFG_REGS->CFG_SYSKEY = 0x33333333;
 
