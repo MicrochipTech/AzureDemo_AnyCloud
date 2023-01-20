@@ -95,7 +95,7 @@ APP_RIO2_DATA app_rio2Data;
 
 #define MQTTCLIENT
 //AWS IoT account alexa.mchp1@gmail.com  Ohio us-east-2
-#define BROKER "a3csywf8mmivy-ats.iot.us-east-2.amazonaws.com"
+#define BROKER "yvimm8fwysc3a-ats.iot.us-east-2.amazonaws.com"
 #define PORT "8883"  //TLS PORT 8886 uses ISRGRootX1.pem from Free CA signer "Let's Encrypt"  https://letsencrypt.org/certificates/
 #define TLSENABLE "1"
 #define HOSTNAME "RIO2-AWS-LucA" /* HostName KEEP it SHORT*/ 
