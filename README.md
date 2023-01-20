@@ -563,7 +563,7 @@ Putting it all together for for the example reboot command received above, the r
     OK
     >
 
-## Setting Up and Actual Embedded Firmware Example
+## Setting Up the Actual Embedded Firmware Example
 
 Now that we've successfully run Python scripts on a PC to emulate all of the necessary transactions an IoT device would need to emulate a WBZ451 Curiosity device model, we can now run an embedded firmware example that's programmed onto the actual [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A).
 
@@ -648,8 +648,23 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
 
         <img src=".//media/WBZ451_RESET.png" width=400 />
 
-14. Access your IoT Central application and confirm that telemetry messages are being received and that all other IoT Central functions are working like before when the Python script was running on the PC. The WBZ451 Curiosity Board should be interacting with IoT Central just like the main Python script was doing earlier. At this point, you have a working embedded firmware project to use as a starting point for a new proof-of-concept and/or IoT device design!
+14. Access your IoT Central application and confirm that telemetry messages are being received and that all other IoT Central functions are working like before when the Python script was running on the PC. The WBZ451 Curiosity Board should be interacting with IoT Central just like the main Python script was doing earlier.
+
+15. Using the left-hand navigation pane, click on `Devices` under **Connect**, and then click on your device name
+
+    <img src=".//media/image90.png" width=600 />
+
+16. Click on the **Properties** view. Select "100% Duty Cycle" for the property "RGB LED (**BLUE** PWM Duty Cycle)" and click on the **Save** icon. Observe that the RGB LED on the WBZ451 Curiosity Board emits an extremely bright "true blue" color
+
+    <img src=".//media/image91.png" width=300 />
+
+17. Try multiple combinations of various settings for each of the blue, green, and red PWM duty cycles and observe the different color states emitted by the powerful RGB LED. In addition, try changing the state of the User LED to switch between the off, on, and blinking modes.
+
+18. Click on the **Commands** view. Type any message in the "String to send" box and click on the **Run** button. To see the response from the device, click on the **command history** link (located just underneath the **Run** button). You should see that the response was received "now" (within the last 60 seconds) and that the correct message was echoed from the device.
+
+    <img src=".//media/image92.png" width=250 />
+    <img src=".//media/image93.png" width=250 />
 
 ## Adding Extra Sensors to the Embedded Firmware Example
 
-For additional guidance on how to add extra sensors to the WBZ451 Curiosity Board embedded firmware example, [click here](./exercises/WBZ451_Curiosity_Multimeter/) to find a document (in a lab manual format) outlining the necessary off-the-shelf hardware and corresponding procedures.
+At this point, you have a working embedded firmware project to use as a starting point for a new proof-of-concept and/or IoT device design! For additional guidance on how to add extra sensors to the WBZ451 Curiosity Board embedded firmware example, [click here](./exercises/WBZ451_Curiosity_Multimeter/) to find a document (in a lab manual-type format) outlining the necessary off-the-shelf hardware and corresponding procedures.
