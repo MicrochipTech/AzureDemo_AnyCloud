@@ -192,8 +192,10 @@ void APP_MULTIMETER_Tasks(void) {
             voltage_cal = (float)value/2;
             
             SPI_CS_Set();
-            //printf("voltage_cal in hex= %lx\r",value);
-            //printf("voltage_cal in float = %f\r",voltage_cal);
+            printf("*** Make sure the +5V jumper is set on the mikroBUS Xplained Pro board ***\r\n");
+            printf("*** (With no voltage across the Multimeter click's voltage measurement terminals, the voltage calibration value should be around 0x7ff or 1023.00) ***\r\n\r\n");
+            printf("Voltage calibration value (hex)   = 0x%x\r\n", value);
+            printf("Voltage calibration value (float) = %f\r\n", voltage_cal);
             app_multimeterData.state = APP_MULTIMETER_STATE_SERVICE_TASKS;
             
             
