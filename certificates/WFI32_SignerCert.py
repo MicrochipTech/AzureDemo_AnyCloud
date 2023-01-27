@@ -64,16 +64,14 @@ class AnyCloud:
           self.cmd_issue('ATE1\r\n')
           self.init_state = self.init_state + 1
           return self.init_state
-                        
         if self.init_state == 2:
-          self.cmd_issue('AT+READCERT=1\r\n')
+          self.cmd_issue('AT+READCERT=4\r\n')
           self.init_state = 10
           return self.init_state
         #delay until event changes init_state
         elif self.init_state == 10: 
           # don't advance state automatically, do it from evt_handler
           pass
-        
         # init complete        
         elif self.init_state == 254:
           return self.init_state          
@@ -81,21 +79,6 @@ class AnyCloud:
           return 255
       else:
         return 0
-  
-  
-  def mqtt_subscribe(self, topic, iQOS):
-    cmd = "AT+MQTTSUB=" + topic +","+str(iQOS) +'\r\n'
-    self.cmd_issue(cmd)
-  
-  def mqtt_publish(self, iQoS, iRetain, strTopic, strPayload):
-    try:  #try blick looks for CR, and removes it if present before joining CMD
-      loc = strPayload.index('\r')
-    except ValueError:
-      pass
-    else:
-      strPayload = strPayload[0:loc]
-    cmd = "AT+MQTTPUB=0," + str(iQoS)+','+ str(iRetain)+ ',\"' + strTopic + '\",\"' + strPayload + '\"\r\n'
-    self.cmd_issue(cmd)
     
   def evt_init_error(self):
     self.init_state = 254
@@ -113,12 +96,12 @@ class AnyCloud:
     for i in cert_list:
       cert = cert + i +'\r\n'
     #print(cert)
-    f = open("Cert.PEM", "w")
+    f = open("SignerCA.PEM", "w")
     f.write(cert)
     f.close()
 
-    #openssl x509 -in AnyCloud.PEM -text
-    cmd_line = "openssl x509 -in Cert.PEM -text"
+    #openssl x509 -in <certificate> -text
+    cmd_line = "openssl x509 -in SignerCA.PEM -text"
     p = subprocess.Popen(cmd_line, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
       if "Subject: O = Microchip Technology Inc," in line.decode():
@@ -131,20 +114,8 @@ class AnyCloud:
         cn = cn.rstrip()
       print(line.rstrip().decode())
 
-    print("\r\n\r\nThe common name in the WFI32's ECC608 certificate is: " + cn + "\r\n")
-    
-    if os.name == 'posix' :
-      cmd_line = "mv Cert.PEM " + cn + ".PEM"
-    else:
-      cmd_line = "rename Cert.PEM " + cn + ".PEM"
-    print(cmd_line)
-    p = subprocess.Popen(cmd_line, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    for line in p.stdout.readlines():
-      print(line.rstrip().decode())
-    
-    print("\r\nPlease add a device into IoT Central using the common name as the device ID")
-    print("For the connection parameters, select individual enrollement -> x.509 Certificate")
-    print("Upload " + cn + ".PEM for both the primary and secondary certificate")    
+    print("\r\nThe Common Name in the signer certificate is: " + cn)  
+    print("\r\n[*** The signer certificate has been saved into the file 'SignerCA.PEM' ***]")   
     self.init_state = 254 # end initialization.
   
   def rx_data_process(self, received):
@@ -153,25 +124,23 @@ class AnyCloud:
       self.evt_handler = self.evt_init_error
       retval = 0 #error state
     
-    if ("+READCERT:1," in received):
+    if ("+READCERT:4," in received):
       self.dev_cert = received
       self.evt_handler = self.evt_read_certificate
         
-      
   def runApp(self):
 
     #top level app state machine
     if self.app_state == 0:  # start of application
       print("\r\n--------------------------------------------------------------------------------")
-      print("Reading WFI32 Device Cert")
-      print("--------------------------------------------------------------------------------\r\n")
+      print("Reading WFI32 Signer Certificate")
+      print("--------------------------------------------------------------------------------")
       self.app_state = 1
     
     elif self.app_state == 1:  # init AnyCloud
       init_resp = self.sm_initialize()
       if init_resp == 254 :
         self.app_state = 254
-    
     
     elif self.app_state == 254:
       exit()
@@ -187,17 +156,9 @@ class AnyCloud:
   
   def __del__(self):
     self.ser.close()
-  
-
 
 ac = AnyCloud(COM_PORT, 230400, False)
 
 while True:
   
   ac.runApp()
-   
-  
-  
-  
-  
-      

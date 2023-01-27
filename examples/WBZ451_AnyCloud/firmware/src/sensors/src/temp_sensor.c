@@ -50,19 +50,14 @@
 #include <stdint.h>
 #include "math.h"
 #include "peripheral/adchs/plib_adchs.h"
+#include "sensors/inc/temp_sensor.h"
 
 // *****************************************************************************
 // *****************************************************************************
 // Section: Macros
 // *****************************************************************************
 // *****************************************************************************
-#define ADC_VREF  (3.00)
 
-#define ADC_MAX    4096
-
-#define MCP9700_V0C  (0.5)
-
-#define MCP9700_TC   (0.01)
 
 // *****************************************************************************
 // *****************************************************************************
@@ -82,34 +77,29 @@
 ******************************************************************************/
 float MCP9700_Temp_Celsius(void)
 {
-	uint16_t adc_read=0, adc_read1=0;
+	uint16_t adc_read = 0, adc_read1 = 0;
     volatile float temperature = 0, vout;
-    uint8_t i=0;
+    uint8_t i = 0;
     
     /* Take 4 Samples and take the average*/
-	for(i=0; i<5; i++)
+	for(i = 0; i < 5; i++)
     {
         ADCHS_GlobalEdgeConversionStart();
-    
         while(!ADCHS_ChannelResultIsReady(ADCHS_CH2));
-        
         adc_read1 = ADCHS_ChannelResultGet(ADCHS_CH2);
-        
-        if(i!=0)
-            adc_read = adc_read + adc_read1;
+        if (i != 0)
+        {
+            adc_read = (adc_read + adc_read1);
+        }
     }
-    adc_read = adc_read/4;
-    
-    vout =  ((float)adc_read)/((float) ADC_MAX);
-        
-    vout = vout * ADC_VREF;  // Convert to voltage with 3.25 V is reference
-              
-    // TA = (VOUT - V0°C )/TC  TC = 0.01, V0°C = 0.5v as per MCP9700/9700A datasheet
-	temperature = (vout - MCP9700_V0C)/MCP9700_TC;
+    adc_read = (adc_read / 4);
+    vout =  ((float)adc_read) / ((float) ADC_MAX);
+    vout = (vout * ADC_VREF);  // Convert to voltage using the reference
+    // TA = [(VOUT - V0°C ) / TC]  TC = 0.01, V0°C = 0.5V as per MCP9700/9700A datasheet
+	temperature = ((vout - MCP9700_V0C) / MCP9700_TC);
 	
 	return (temperature);
 }
-
 
 /**************************************************************************//**
 \brief Reads the ADC input and converts to temperature in Fahrenheit
