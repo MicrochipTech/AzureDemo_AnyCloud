@@ -20,6 +20,6 @@
 
    <img src=".//media/image77.png" width = 400 />
 
-6. Click on the `Save` icon at the top of the page, and note the ID Scope which was created for the enrollment group. Now, any leaf certificate that was derived from the signer certificate will be allowed to automatically enroll with the DPS associated with the IoT Central application. The X.509 enrollment group has been successfully created and should be ready to go!
+6. Click on the `Save` icon at the top of the page, and note the ID Scope which was created for the enrollment group. Now, any leaf certificate that was derived from the signer certificate will be allowed to automatically enroll with the DPS ID scope associated with the IoT Central application. The X.509 enrollment group has been successfully created and should be ready to go!
 
     <img src=".//media/image78.png" width = 400 />
