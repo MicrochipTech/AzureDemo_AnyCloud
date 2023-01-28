@@ -46,7 +46,11 @@ extern "C" {
 // Section: Type Definitions
 // *****************************************************************************
 // *****************************************************************************
-
+#define MULTIMETER_I_CHANNEL   0x00
+#define MULTIMETER_U_CHANNEL   0x01
+#define MULTIMETER_R_CHANNEL   0x02
+#define MULTIMETER_C_CHANNEL   0x03
+    
 // *****************************************************************************
 /* Application states
 
@@ -63,7 +67,9 @@ typedef enum
     /* Application's state machine's initial state. */
     APP_MULTIMETER_STATE_INIT=0,
             APP_MULTIMETER_CONVERT_DUMMY,
-            APP_MULTIMETER_CALIB_VOLTAGE,
+            APP_MULTIMETER_CALIBRATE_VOLTAGE,
+            APP_MULTIMETER_CALIBRATE_CURRENT,
+            APP_MULTIMETER_CALIBRATE_CAPACITANCE,
     APP_MULTIMETER_STATE_SERVICE_TASKS,
     /* TODO: Define states used by the application state machine. */
 
@@ -89,7 +95,15 @@ typedef struct
     APP_MULTIMETER_STATES state;
 
     /* TODO: Define any additional data used by the application. */
-
+    float capacitance_cal;
+    float voltage_cal;
+    float current_cal;
+    uint8_t scan_range;
+            
+    float capacitance;
+    float voltage;
+    float current;
+    
 } APP_MULTIMETER_DATA;
 
 // *****************************************************************************
@@ -105,6 +119,12 @@ typedef struct
 // Section: Application Initialization and State Machine Functions
 // *****************************************************************************
 // *****************************************************************************
+
+float MULTIMETER_getVoltage(void);
+
+float MULTIMETER_getCurrent(void);
+
+float MULTIMETER_getCapacitance(void);
 
 /*******************************************************************************
   Function:

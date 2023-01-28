@@ -112,20 +112,78 @@ void APP_MULTIMETER_Initialize(void) {
  */
 uint64_t getTick(void);
 uint64_t time;
-uint8_t txByte,rxByte,numberOfTime;
-float fVoltage,voltage_cal;
-float multimeterVolage;
 
-float getVoltage( void) 
+float MULTIMETER_getVoltage(void) 
 {
-    return multimeterVolage;
+    return (app_multimeterData.voltage);
 }
 
-#define MULTIMETER_I_CHANNEL   0x00
-#define MULTIMETER_U_CHANNEL   0x01
-#define MULTIMETER_R_CHANNEL   0x02
-#define MULTIMETER_C_CHANNEL   0x03
-void APP_MULTIMETER_Tasks(void) {
+float MULTIMETER_getCurrent(void) 
+{
+    return (app_multimeterData.current);
+}
+
+float MULTIMETER_getCapacitance(void) 
+{
+    return (app_multimeterData.capacitance);
+}
+
+uint16_t MULTIMETER_readChannel(uint8_t channel)
+{
+    uint8_t rxByte, txByte = 0x06;
+    uint16_t value;
+    
+    SPI_CS_Clear();
+    SERCOM1_SPI_Write(&txByte, 1);
+    while (SERCOM1_SPI_IsBusy());
+    txByte = ((channel & 0x03) << 6);
+    SERCOM1_SPI_WriteRead(&txByte, 1, &rxByte, 1);
+    while (SERCOM1_SPI_IsBusy());
+    value = ((uint16_t)(rxByte & 0x0F) << 8);
+    SERCOM1_SPI_Read(&rxByte, 1);
+    while (SERCOM1_SPI_IsBusy());
+    value |= rxByte;
+    SPI_CS_Set();
+    return (value);
+}
+
+float MULTIMETER_readCapacitance (void)
+{
+    float value;
+
+    value = ( float ) MULTIMETER_readChannel(MULTIMETER_C_CHANNEL) * 2;
+    value = (  64285 / value - app_multimeterData.capacitance_cal ) * 2;
+
+    if ( value < 1 )
+    {
+        return 0;
+    }
+
+    return value;
+}
+
+float MULTIMETER_readVoltage (void)
+{
+    float value;
+
+    value = ( float ) MULTIMETER_readChannel(MULTIMETER_U_CHANNEL) / 2;
+    value = ( value - app_multimeterData.voltage_cal ) * 33 / 2;
+
+    return value;
+}
+
+float MULTIMETER_readCurrent (void)
+{
+    float value;
+
+    value = ( float ) MULTIMETER_readChannel(MULTIMETER_I_CHANNEL) / 2;
+    value -= app_multimeterData.current_cal;
+
+    return value;
+}
+
+void APP_MULTIMETER_Tasks(void)
+{
     static uint64_t delay;
 
     /* Check the application's current state. */
@@ -135,103 +193,77 @@ void APP_MULTIMETER_Tasks(void) {
         {
             bool appInitialized = true;
 
-
             if (appInitialized) {
 
-                numberOfTime = 5;
                 app_multimeterData.state = APP_MULTIMETER_CONVERT_DUMMY;
             }
-
             break;
         }
         case APP_MULTIMETER_CONVERT_DUMMY:
         {
-            uint16_t value;
+            uint16_t data;
             
-                app_multimeterData.state = APP_MULTIMETER_CALIB_VOLTAGE;
-            SPI_CS_Clear();
-            txByte = 0x6;
-            SERCOM1_SPI_Write(&txByte, 1);
-            while (SERCOM1_SPI_IsBusy());
-            
-            txByte = ( MULTIMETER_U_CHANNEL & 0x03 ) << 6;
-            SERCOM1_SPI_WriteRead(&txByte, 1, &rxByte, 1);
-            while (SERCOM1_SPI_IsBusy());
-            value = (uint16_t)(rxByte & 0x0f)<<8;
-            
-            SERCOM1_SPI_Read(&rxByte, 1);
-            while (SERCOM1_SPI_IsBusy());
-            value = value | rxByte;
-            
-            
-            SPI_CS_Set();
-            
-            
+            data = MULTIMETER_readChannel(MULTIMETER_U_CHANNEL);
+            app_multimeterData.state = APP_MULTIMETER_CALIBRATE_VOLTAGE;
             break;
-            
         }
-        case APP_MULTIMETER_CALIB_VOLTAGE:
+        case APP_MULTIMETER_CALIBRATE_VOLTAGE:
         {
-            uint16_t value;
+            uint16_t data;
             
             if ((getTick() < delay))
                 break;
-            SPI_CS_Clear();
-            txByte = 0x6;
-            SERCOM1_SPI_Write(&txByte, 1);
-            while (SERCOM1_SPI_IsBusy());
+
+            data = MULTIMETER_readChannel(MULTIMETER_U_CHANNEL);
+            app_multimeterData.voltage_cal = (float)data/2;
             
-            txByte = ( MULTIMETER_U_CHANNEL & 0x03 ) << 6;
-            SERCOM1_SPI_WriteRead(&txByte, 1, &rxByte, 1);
-            while (SERCOM1_SPI_IsBusy());
-            value = (uint16_t)(rxByte & 0x0f)<<8;
-            
-            SERCOM1_SPI_Read(&rxByte, 1);
-            while (SERCOM1_SPI_IsBusy());
-            value = value | rxByte;
-            voltage_cal = (float)value/2;
-            
-            SPI_CS_Set();
             printf("*** Make sure the +5V jumper is set on the mikroBUS Xplained Pro board ***\r\n");
             printf("*** (With no voltage across the Multimeter click's voltage measurement terminals, the voltage calibration value should be around 0x7ff or 1023.00) ***\r\n\r\n");
-            printf("Voltage calibration value (hex)   = 0x%x\r\n", value);
-            printf("Voltage calibration value (float) = %f\r\n", voltage_cal);
+            printf("Voltage calibration value (hex)   = 0x%x\r\n", data);
+            printf("Voltage calibration value (float) = %f\r\n", app_multimeterData.voltage_cal);
+            
+            app_multimeterData.state = APP_MULTIMETER_CALIBRATE_CURRENT;
+        }
+        case APP_MULTIMETER_CALIBRATE_CURRENT:
+        {
+            uint16_t data;
+            
+            if ((getTick() < delay))
+                break;
+
+            data = MULTIMETER_readChannel(MULTIMETER_I_CHANNEL);
+            app_multimeterData.current_cal = (float)data/2;
+            
+            printf("Current calibration value (hex)   = 0x%x\r\n", data);
+            printf("Current calibration value (float) = %f\r\n", app_multimeterData.current_cal);
+            
+            app_multimeterData.state = APP_MULTIMETER_CALIBRATE_CAPACITANCE;
+        }
+        case APP_MULTIMETER_CALIBRATE_CAPACITANCE:
+        {
+            uint16_t data;
+            
+            if ((getTick() < delay))
+                break;
+
+            data = MULTIMETER_readChannel(MULTIMETER_C_CHANNEL);
+            app_multimeterData.capacitance_cal = (64285.0 /((float)data * 2));
+            
+            printf("Capacitance calibration value (hex)   = 0x%x\r\n", data);
+            printf("Capacitance calibration value (float) = %f\r\n", app_multimeterData.capacitance_cal);
+            
             app_multimeterData.state = APP_MULTIMETER_STATE_SERVICE_TASKS;
-            
-            
         }
         case APP_MULTIMETER_STATE_SERVICE_TASKS:
         {
-            uint16_t value;
-
             time = getTick();
             if ((getTick() < delay))
                 break;
-            delay = getTick() + 1000;
-//Blocking code during 3 bytes transfer !!!! Just for TEST :p            
-            SPI_CS_Clear();
-            txByte = 0x6;
-            SERCOM1_SPI_Write(&txByte, 1);
-            while (SERCOM1_SPI_IsBusy());
-            
-            txByte = ( MULTIMETER_U_CHANNEL & 0x03 ) << 6;
-            SERCOM1_SPI_WriteRead(&txByte, 1, &rxByte, 1);
-            while (SERCOM1_SPI_IsBusy());
-            
-            value = (uint16_t)(rxByte & 0x0f)<<8;
-            SERCOM1_SPI_Read(&rxByte, 1);
-            while (SERCOM1_SPI_IsBusy());
-            
-            value = value | rxByte;
-            fVoltage = (float)value/2;
-            SPI_CS_Set();
+            delay = (getTick() + 1000);         
 
-//            printf("value = %x\r",value);
-//            printf("fVoltage = %f\r",fVoltage);
-//            printf ("Voltage = %.1f mV\r", ( fVoltage - voltage_cal ) * 33 / 2);
-                               
-//            sprintf (multimeterVolage,"Multimeter Voltage is  = %.1f mV", ( fVoltage - voltage_cal ) * 33 / 2);
-            multimeterVolage = ( fVoltage - voltage_cal ) * 33 / 2 ;
+            app_multimeterData.voltage = MULTIMETER_readVoltage();
+            app_multimeterData.current = MULTIMETER_readCurrent();
+            app_multimeterData.capacitance = MULTIMETER_readCapacitance();            
             break;
         }
 

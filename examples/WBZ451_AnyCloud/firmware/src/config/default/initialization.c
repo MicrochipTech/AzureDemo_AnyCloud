@@ -227,7 +227,7 @@ void SYS_Initialize ( void* data )
 
     //TC3_CompareInitialize();
 
-    TC2_CompareInitialize();
+    //TC2_CompareInitialize();
 
 
     APP_Initialize();

@@ -21,6 +21,38 @@
         {
             "@type": [
                 "Telemetry",
+                "Current",
+                "NumberValue"
+            ],
+            "description": {
+                "en": "Current reading in mA from the Multimeter click"
+            },
+            "displayName": {
+                "en": "MULTIMETER_current"
+            },
+            "name": "MULTIMETER_current",
+            "schema": "double",
+            "unit": "milliampere"
+        },
+        {
+            "@type": [
+                "Telemetry",
+                "Capacitance",
+                "NumberValue"
+            ],
+            "description": {
+                "en": "Capacitance reading in nF from the Multimeter click"
+            },
+            "displayName": {
+                "en": "MULTIMETER_capacitance"
+            },
+            "name": "MULTIMETER_capacitance",
+            "schema": "double",
+            "unit": "nanofarad"
+        },
+        {
+            "@type": [
+                "Telemetry",
                 "NumberValue",
                 "Temperature"
             ],

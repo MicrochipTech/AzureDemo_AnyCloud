@@ -1418,14 +1418,16 @@ void APP_RIO2_Tasks(void) {
                 case (PUBSTATESNUM_TOTAL-2):
                 {
                     sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\""PUB_AZURE_PAYLOAD_TELEMETRY_TEMPERATURE"\"\r\n", thingID, MCP9700_Temp_Celsius());
+                    
                     pubState++;
                     break;
                 }
                 case (PUBSTATESNUM_TOTAL-1): /* Only this state (just before the final state) can be empty */
                 {
 #ifdef MULTIMETER_CLICK
-                    float getVoltage( void);
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\"{\\\"MULTIMETER_voltage\\\":%f}\"\r\n", thingID, getVoltage());
+                    //sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\"{\\\"MULTIMETER_voltage\\\":%f}\"\r\n", thingID, MULTIMETER_getVoltage());
+                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\"{\\\"MULTIMETER_voltage\\\":%2.2f,\\\"MULTIMETER_current\\\":%2.2f,\\\"MULTIMETER_capacitance\\\":%2.2f}\"\r\n", 
+                            thingID, MULTIMETER_getVoltage(), MULTIMETER_getCurrent(), MULTIMETER_getCapacitance());
                     
                     pubState++;
                     break;
