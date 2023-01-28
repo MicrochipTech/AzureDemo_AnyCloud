@@ -154,7 +154,7 @@ float MULTIMETER_readCapacitance (void)
     value = ( float ) MULTIMETER_readChannel(MULTIMETER_C_CHANNEL) * 2;
     if (value == 0)
     {
-        value = 1;
+        return 0;
     }
     value = (  64285 / value - app_multimeterData.capacitance_cal ) * 2;
 
@@ -253,10 +253,17 @@ void APP_MULTIMETER_Tasks(void)
             data = MULTIMETER_readChannel(MULTIMETER_C_CHANNEL);
             if (data == 0)
             {
-                data = 1;
+                app_multimeterData.capacitance_cal = 0;
             }
-            app_multimeterData.capacitance_cal = (64285.0 /((float)data * 2));
-            
+            else
+            {
+                app_multimeterData.capacitance_cal = (64285.0 /((float)data * 2));
+                if (app_multimeterData.capacitance_cal < 1)
+                { 
+                    app_multimeterData.capacitance_cal = 0;
+                }
+            }
+
             printf("Capacitance calibration value (hex)   = 0x%x\r\n", data);
             printf("Capacitance calibration value (float) = %2.2f\r\n", app_multimeterData.capacitance_cal);
             
