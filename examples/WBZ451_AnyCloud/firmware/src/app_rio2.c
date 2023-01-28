@@ -1426,8 +1426,8 @@ void APP_RIO2_Tasks(void) {
                 {
 #ifdef MULTIMETER_CLICK
                     //sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\"{\\\"MULTIMETER_voltage\\\":%f}\"\r\n", thingID, MULTIMETER_getVoltage());
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\"{\\\"MULTIMETER_voltage\\\":%2.2f,\\\"MULTIMETER_current\\\":%2.2f,\\\"MULTIMETER_capacitance\\\":%2.2f}\"\r\n", 
-                            thingID, MULTIMETER_getVoltage(), MULTIMETER_getCurrent(), MULTIMETER_getCapacitance());
+                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\"{\\\"MULTIMETER_voltage\\\":%2.2f,\\\"MULTIMETER_current\\\":%2.2f,\\\"MULTIMETER_capacitance\\\":%2.2f,\\\"MULTIMETER_resistance\\\":%2.2f}\"\r\n", 
+                            thingID, MULTIMETER_getVoltage(), MULTIMETER_getCurrent(), MULTIMETER_getCapacitance(), MULTIMETER_getResistance());
                     
                     pubState++;
                     break;

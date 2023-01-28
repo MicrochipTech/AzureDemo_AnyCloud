@@ -39,6 +39,8 @@
 // Section: Global Data Definitions
 // *****************************************************************************
 // *****************************************************************************
+static const float resolution_select[ 6 ] = { 100.0, 1000.0, 10000.0,
+                                              100000.0, 470000.0, 1000000.0 };
 
 // *****************************************************************************
 /* Application Data
@@ -128,6 +130,11 @@ float MULTIMETER_getCapacitance(void)
     return (app_multimeterData.capacitance);
 }
 
+float MULTIMETER_getResistance(void) 
+{
+    return (app_multimeterData.resistance);
+}
+
 uint16_t MULTIMETER_readChannel(uint8_t channel)
 {
     uint8_t rxByte, txByte = 0x06;
@@ -184,6 +191,63 @@ float MULTIMETER_readCurrent (void)
     value -= app_multimeterData.current_cal;
 
     return value;
+}
+
+float MULTIMETER_readResistance (void)
+{
+    float value;
+    uint16_t range;
+
+    range = MULTIMETER_getResistanceRange(app_multimeterData.scan_range);
+
+    if (range == 0)
+    {
+        return 0;
+    }
+
+    if (app_multimeterData.scan_range >= 5 )
+    {
+        app_multimeterData.scan_range = 0;
+    }
+
+    if (range > 4090)
+    {
+        value = ( float ) ( ( resolution_select[app_multimeterData.scan_range] *
+                              MULTIMETER_MAX_VOLTAGE ) / range ) - 
+                              resolution_select[app_multimeterData.scan_range];
+        app_multimeterData.scan_range--;
+        return value;
+    }
+    else if ( (range < 100) && (app_multimeterData.scan_range < 5) )
+    {
+        app_multimeterData.scan_range++;
+    }
+
+    value = ( float ) ( ( resolution_select[app_multimeterData.scan_range] *
+                          MULTIMETER_MAX_VOLTAGE ) / range ) -
+                          resolution_select[app_multimeterData.scan_range];
+    return value;
+}
+
+uint16_t MULTIMETER_getResistanceRange (uint8_t range)
+{
+    if ( range > 5 )
+    {
+        range = 5;
+    }
+
+    MULTIMETER_setResistanceRange(range);
+    //Delay_100ms( );
+
+    return MULTIMETER_readChannel(MULTIMETER_R_CHANNEL);
+}
+
+void MULTIMETER_setResistanceRange (uint8_t range)
+{
+    //digital_out_write( &multimeter->a, range & 0x01 );
+    //digital_out_write( &multimeter->b, ( range >> 1 ) & 0x01 );
+    //digital_out_write( &multimeter->c, ( range >> 2 ) & 0x01 );
+    //Delay_100ms( );
 }
 
 void APP_MULTIMETER_Tasks(void)
@@ -278,7 +342,8 @@ void APP_MULTIMETER_Tasks(void)
 
             app_multimeterData.voltage = MULTIMETER_readVoltage();
             app_multimeterData.current = MULTIMETER_readCurrent();
-            app_multimeterData.capacitance = MULTIMETER_readCapacitance();            
+            app_multimeterData.capacitance = MULTIMETER_readCapacitance();
+            app_multimeterData.resistance = MULTIMETER_readResistance();            
             break;
         }
 

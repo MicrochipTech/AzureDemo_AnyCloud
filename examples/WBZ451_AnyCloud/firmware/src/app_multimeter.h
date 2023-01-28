@@ -50,6 +50,8 @@ extern "C" {
 #define MULTIMETER_U_CHANNEL   0x01
 #define MULTIMETER_R_CHANNEL   0x02
 #define MULTIMETER_C_CHANNEL   0x03
+
+#define MULTIMETER_MAX_VOLTAGE 4095.0
     
 // *****************************************************************************
 /* Application states
@@ -103,6 +105,7 @@ typedef struct
     float capacitance;
     float voltage;
     float current;
+    float resistance;
     
 } APP_MULTIMETER_DATA;
 
@@ -125,6 +128,12 @@ float MULTIMETER_getVoltage(void);
 float MULTIMETER_getCurrent(void);
 
 float MULTIMETER_getCapacitance(void);
+
+float MULTIMETER_getResistance(void);
+
+uint16_t MULTIMETER_getResistanceRange (uint8_t range);
+
+void MULTIMETER_setResistanceRange (uint8_t range);
 
 /*******************************************************************************
   Function:

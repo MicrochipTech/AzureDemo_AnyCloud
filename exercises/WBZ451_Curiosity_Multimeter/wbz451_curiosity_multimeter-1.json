@@ -53,6 +53,22 @@
         {
             "@type": [
                 "Telemetry",
+                "Resistance",
+                "NumberValue"
+            ],
+            "description": {
+                "en": "Resistance reading in ohms from the Multimeter click"
+            },
+            "displayName": {
+                "en": "MULTIMETER_resistance"
+            },
+            "name": "MULTIMETER_resistance",
+            "schema": "double",
+            "unit": "ohm"
+        },
+        {
+            "@type": [
+                "Telemetry",
                 "NumberValue",
                 "Temperature"
             ],
