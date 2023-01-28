@@ -152,6 +152,10 @@ float MULTIMETER_readCapacitance (void)
     float value;
 
     value = ( float ) MULTIMETER_readChannel(MULTIMETER_C_CHANNEL) * 2;
+    if (value == 0)
+    {
+        value = 1;
+    }
     value = (  64285 / value - app_multimeterData.capacitance_cal ) * 2;
 
     if ( value < 1 )
@@ -220,7 +224,7 @@ void APP_MULTIMETER_Tasks(void)
             printf("*** Make sure the +5V jumper is set on the mikroBUS Xplained Pro board ***\r\n");
             printf("*** (With no voltage across the Multimeter click's voltage measurement terminals, the voltage calibration value should be around 0x7ff or 1023.00) ***\r\n\r\n");
             printf("Voltage calibration value (hex)   = 0x%x\r\n", data);
-            printf("Voltage calibration value (float) = %f\r\n", app_multimeterData.voltage_cal);
+            printf("Voltage calibration value (float) = %2.2f\r\n", app_multimeterData.voltage_cal);
             
             app_multimeterData.state = APP_MULTIMETER_CALIBRATE_CURRENT;
         }
@@ -235,7 +239,7 @@ void APP_MULTIMETER_Tasks(void)
             app_multimeterData.current_cal = (float)data/2;
             
             printf("Current calibration value (hex)   = 0x%x\r\n", data);
-            printf("Current calibration value (float) = %f\r\n", app_multimeterData.current_cal);
+            printf("Current calibration value (float) = %2.2f\r\n", app_multimeterData.current_cal);
             
             app_multimeterData.state = APP_MULTIMETER_CALIBRATE_CAPACITANCE;
         }
@@ -247,10 +251,14 @@ void APP_MULTIMETER_Tasks(void)
                 break;
 
             data = MULTIMETER_readChannel(MULTIMETER_C_CHANNEL);
+            if (data == 0)
+            {
+                data = 1;
+            }
             app_multimeterData.capacitance_cal = (64285.0 /((float)data * 2));
             
             printf("Capacitance calibration value (hex)   = 0x%x\r\n", data);
-            printf("Capacitance calibration value (float) = %f\r\n", app_multimeterData.capacitance_cal);
+            printf("Capacitance calibration value (float) = %2.2f\r\n", app_multimeterData.capacitance_cal);
             
             app_multimeterData.state = APP_MULTIMETER_STATE_SERVICE_TASKS;
         }
