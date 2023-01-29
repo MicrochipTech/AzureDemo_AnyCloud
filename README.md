@@ -4,7 +4,7 @@
 
 [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) is a Cloud connectivity embedded firmware package for Microchip's [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) IoT module that runs on the [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A) or the [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a). The [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) solution includes a full set of firmware source code to enable custom modifications and the default binary image that can be used straight "out of the box". The solution is publicly available on [Microchip Technology's GitHub account](https://github.com/MicrochipTech). To review the software, clone the repository, download a ZIP file, or just get the latest release of the AnyCloud™ binary file, access the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) repository on [GitHub](https://github.com).
 
-The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (which has been provisioned with the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) firmware) is meant to act as a "UART to Cloud" bridge to enable the Host MCU of an IoT device to easily connect to (and communicate with) a cloud application. In this example, we first use a PC to run Python scripts to emulate the operations that a Host MCU would need to execute in order to authenticate, connect, and communicate with a Microsoft Azure IoT Central application. For a more real-world case, the second part of this example uses an actual Host MCU development board which performs the same operations as the Python scripts. The full set of source code for the embedded application is provided to use as a baseline for an actual production designs!
+The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (which has been provisioned with the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) firmware) is meant to act as a "UART to Cloud" bridge to enable the Host MCU of an IoT device to easily connect to (and communicate with) a cloud application. In this example, we first use a PC to run Python scripts to emulate the operations that a Host MCU would need to execute in order to authenticate, connect, and communicate with a Microsoft Azure IoT Central application. For a more real-world case, the second part of this example uses an actual Host MCU development board which performs the same operations as the Python scripts. The full set of source code for the embedded application is provided to use as a baseline for actual production designs!
 
 <img src="./media/SolutionBlockDiagram.png" alt="A screenshot of a new Device button" width = 700/>
 
@@ -41,20 +41,23 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 
 Follow the section titled "Re-Flashing the device" in the [AnyCloud™ Getting Started Guide](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud/blob/main/README.md) to program the AnyCloud™ firmware onto one of the WFI32E01 development boards (if using WFI32-IoT, skip the step regarding a jumper setting).
 
-After the AnyCloud™ firmware has been programmed, create a clone of this repository using [Git](https://git-scm.com) or scroll up towards the top of this page, click on the **Code** button, and download a ZIP file of this repository.
+After the AnyCloud™ firmware has been programmed, create a clone of this repository using [Git](https://git-scm.com)
 
 ```bash
 git clone https://github.com/MicrochipTech/AzureDemo_AnyCloud
 ```
+
+...or do the following: scroll up towards the top of this page, click on the **Code** button, and download a ZIP file of this repository
+
 <img src=".//media/Download_ZIP.png" width=400/>
 
 Connect a [USB-to-UART converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter) between the PC and the specified header for the specific WFI32E01 development board being used:
 
-- [WFI32-IoT](https://www.microchip.com/en-us/development-tool/ev36w50a): Connect the USB-to-UART converter's TXD & RXD pins to the `RX` & `TX` pins of the mikroBUS Header (`J402`), respectively
+- [WFI32-IoT](https://www.microchip.com/en-us/development-tool/ev36w50a): Connect the USB-to-UART converter's TXD & RXD pins to the `RX` & `TX` pins of the mikroBUS Header (`J402`), respectively (an additional connection to GND may also be required)
 
     <img src=".//media/WFI32-IoT_J402.png"/>
 
-- [PIC32 WFI32E Curiosity](https://www.microchip.com/en-us/development-tool/EV12F11A): Connect the USB-to-UART converter's TXD & RXD pins to to the `U1RX` & `U1TX` pins of the GPIO Header (`J207`), respectively
+- [PIC32 WFI32E Curiosity](https://www.microchip.com/en-us/development-tool/EV12F11A): Connect the USB-to-UART converter's TXD & RXD pins to to the `U1RX` & `U1TX` pins of the GPIO Header (`J207`), respectively (an additional connection to GND may also be required)
 
     <img src=".//media/WFI32-Curiosity_J207.png"/>
 
@@ -90,7 +93,7 @@ Alternatively for MacOS users - the COM_PORT setting may look something like
 COM_PORT = "/dev/tty.usbserial-A51MXHIL"
 ```
 
-#### 1.3 Navigate to the [/certificates](./certificates/) directory. Open the `WFI32_DeviceCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated. In the same directory, repeat this COM port setting in **both** the `WFI32_RootCert.py` and `WFI32_SignerCert.py` scripts. Confirm that all 3 Python scripts have been updated correctly.  
+#### 1.3 Navigate to the [/certificates](./certificates/) directory. Open the `WFI32_ClientCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated. In the same directory, repeat this COM port setting in **both** the `WFI32_RootCert.py` and `WFI32_SignerCert.py` scripts. Confirm that all 3 Python scripts have been updated correctly.  
 
 #### 1.4 Cycle power to the board by disconnecting and reconnecting the USB cable. For good measure, press the `RESET` button on the WFI32-IoT development board (for the WFI32E Curiosity development board, the reset button is the `MCLR` button)
 
@@ -169,7 +172,7 @@ Click on one of the following: [Group](./IoT_Central_Group_Enrollment.md) or [In
 
 The model ID will be announced by the device during the DPS registration process.  If the model has been published in the [Azure Device Model Repository](https://devicemodels.azure.com), IoT Central will automatically download the device model and use it to interact with your device based on the model's characteristics.  You can also create a custom device template in your IoT Central application, which will generate a new model ID that can declared and used with the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) repository on [GitHub](https://github.com) as well.
 
-### Step 6 - Run the AzureAnyCloud Script
+### Step 6 - Run the Main "AzureAnyCloud" Script
 
 Press the reset button on the development board. It is always good practice to press the reset button just before each time a new script operation is invoked. To run the main Azure IoT Central script, navigate to the [/examples/PC_Python](./examples/PC_Python/) directory and execute the following command line:
 
@@ -254,7 +257,7 @@ It will then check if you are already connected to an MQTT broker.  If not, it w
     Event: MQTT broker connected
 
     Event: DPS subscription received notification
-Finally, the script subscribes to the DPS MQTT notification topic, and publishes to a topic that registers the device.  The initial publish to the registration topic includes the model ID as the payload.  The result of this publication will be a JSON message with an "operationID" field, and the status "assigning".  The code then delays 3 seconds, and issues a polling request to a second topic to determine if the registration is complete.  If the status is still "assigning", it will continue to delay 3 seconds and poll the registration status until the response status is "assigned".  Once the status is "assigned", the response will include a "assignedHub" key, with the host name for the Azure IoT Central application.
+Finally, the script subscribes to the DPS MQTT notification topic, and publishes to a topic that registers the device.  The initial publish to the registration topic includes the model ID as the payload.  The result of this publication will be a JSON message with an "operationID" field, and the status "assigning".  The code then delays 3 seconds, and issues a polling request to a second topic to determine if the registration is complete.  If the status is still "assigning", it will continue to delay 3 seconds and poll the registration status until the response status is "assigned".  Once the status is "assigned", the response will include a "assignedHub" key, with the host name corresponding to the IoT Hub which is used by the Azure IoT Central application.
 
     subscribe to DPS result topic
     AT+MQTTSUB="$dps/registrations/res/#",0
@@ -337,13 +340,13 @@ At this point, the DPS process has completed.  The application will disconnect f
     >
 
 
-The application is now ready to connect to IoT Central.  The script will setup the MQTT client with new connection information.  This includes using the host name (`assignedHub`) received from DPS as the MQTT server name.  The clientID remains the `deviceId`.  The user name is updated to a new format.
+The application is now ready to connect to IoT Central.  The script will set up the MQTT client with new connection information.  This includes using the host name (`assignedHub`) received from DPS as the MQTT server name.  The clientID remains the `deviceId`.  The user name is updated to a new format:
 
 MQTT client user name = <`IOTC host name from DPS`>/<`deviceId`>/?`api-version=2021-04-12"`
 
-**Note** The Azure IoT Central documentation will indicate the `api-version` above is recommended but optional, but some behaviors demonstrated later in this script will not work if the `api-version` field is ommited.
+**Note** The Azure IoT Central documentation will indicate the `api-version` above is recommended but optional, but some behaviors demonstrated later in this script will not work if the `api-version` field is ommitted.
 
-The commands executed to connect to connect to IoT Central follow below.  
+The commands executed to connect to IoT Central follow below.  
 
     AT+MQTTC=1,"your_HOST_NAME_ID_FROM_DPS"
     OK
@@ -386,7 +389,7 @@ After the connection is completed, the next behavior is subscribing to the three
     +MQTTSUB:0
     >
 
-Once the topics are subcribed, the script requests the current status of the device twin from IoT Central by publishing to the `$iothub/twin/GET/` topic.  That is met by a response that is every property that has been previously writen by the device, including parameters updated during previous connections.  The script prints out a pretty version of the JSON object received, and grabs the telemetry interval, which will be adopted as the rate periodic telemetry is sent to IOTC later on.
+Once the topics have been subcribed to, the script requests the current status of the device twin from IoT Central by publishing to the `$iothub/twin/GET/` topic.  That is met by a response that is every property that has been previously writen by the device, including parameters updated during previous connections.  The script prints out a "pretty" version of the JSON object received, and grabs the telemetry interval, which will be adopted as the rate periodic telemetry is sent to IOTC later on.
 
     Read current device twin settings from IOTC
 
@@ -488,12 +491,12 @@ IoT Central will publish a message to the property PATCH topic.  The message wil
     Temperature sensor telemetry updating at the new telemetry interval
     Check Raw Data tab to verify
 
-The Plug-n-Play standard requries acknowledging these messages.  The AnyCloud™ response payload is show below.
+The Plug-n-Play standard requries acknowledging these messages.  The AnyCloud™ response payload is shown below.
 
     AT+MQTTPUB=0,0,0,"$iothub/twin/PATCH/properties/reported/?rid=8","{\"telemetryInterval\" : {\"ac\" : 200, \"av\" : 105, \"ad\" : \"telemetryInterval set to: 5\", \"value\" : 5}}"
     OK
     > 
-A pretty version of the response payload follows for readability
+A "pretty" version of the response payload follows for ease of readability
 
     {
         "telemetryInterval": {
@@ -557,9 +560,7 @@ From here, notice two items are expected in the response payload, a "status" str
 
 Two other things are dictated by the IoT Plug-and-Play method response standard.  The response topic published to, includes an status code in the path of the topic, and the the rid value received with the method request.  
 
-The response code is typically 200 for OK, and the rid value is handled much like the version field of property write resopnses. 
-
-So the response topic follows this pattern: "$iothub/methods/res/`Response Code`/?$rid=`Request_RID`"
+The response code is typically 200 for OK, and the request ID value is handled much like the version field of property write responses. So the response topic follows this pattern: "$iothub/methods/res/`response_code`/?$rid=`request_ID`"
 
 Putting it all together for for the example reboot command received above, the response published has the following topic and payload:
 
@@ -658,7 +659,7 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
 
     <img src=".//media/image90.png" width=800 />
 
-16. Click on the **Properties** view. Select "100% Duty Cycle" for the property "RGB LED (**BLUE** PWM Duty Cycle)" and click on the **Save** icon. Observe that the RGB LED on the WBZ451 Curiosity Board emits an extremely bright "true blue" color
+16. Click on the **Properties** view. Select "100% Duty Cycle" for the property "RGB LED (**BLUE** PWM Duty Cycle)" and click on the **Save** icon. Observe that the RGB LED on the WBZ451 Curiosity Board emits an extremely bright "true **blue**" color
 
     <img src=".//media/image91.png" width=350 />
 
