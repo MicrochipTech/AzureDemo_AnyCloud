@@ -56,8 +56,8 @@ static const float resolution_select[ 6 ] = { 100.0, 1000.0, 10000.0,
 
     Application strings and buffers are be defined outside this structure.
  */
-
 APP_MULTIMETER_DATA app_multimeterData;
+
 
 // *****************************************************************************
 // *****************************************************************************
@@ -96,12 +96,14 @@ APP_MULTIMETER_DATA app_multimeterData;
 void APP_MULTIMETER_Initialize(void) {
     /* Place the App state machine in its initial state. */
     app_multimeterData.state = APP_MULTIMETER_STATE_INIT;
-
-
+    app_multimeterData.scan_range = 0;
 
     /* TODO: Initialize your application's state machine and other
      * parameters.
      */
+    MULTIMETER_A_OutputEnable();
+    MULTIMETER_B_OutputEnable();
+    MULTIMETER_C_OutputEnable();
 }
 
 
@@ -112,9 +114,6 @@ void APP_MULTIMETER_Initialize(void) {
   Remarks:
     See prototype in app_multimeter.h.
  */
-uint64_t getTick(void);
-uint64_t time;
-
 float MULTIMETER_getVoltage(void) 
 {
     return (app_multimeterData.voltage);
@@ -158,12 +157,12 @@ float MULTIMETER_readCapacitance (void)
 {
     float value;
 
-    value = ( float ) MULTIMETER_readChannel(MULTIMETER_C_CHANNEL) * 2;
+    value = ( float ) MULTIMETER_readChannel(MULTIMETER_C_CHANNEL) * 2.0;
     if (value == 0)
     {
         return 0;
     }
-    value = (  64285 / value - app_multimeterData.capacitance_cal ) * 2;
+    value = (  64285.0 / value - app_multimeterData.capacitance_cal ) * 2.0;
 
     if ( value < 1 )
     {
@@ -177,8 +176,8 @@ float MULTIMETER_readVoltage (void)
 {
     float value;
 
-    value = ( float ) MULTIMETER_readChannel(MULTIMETER_U_CHANNEL) / 2;
-    value = ( value - app_multimeterData.voltage_cal ) * 33 / 2;
+    value = ( float ) MULTIMETER_readChannel(MULTIMETER_U_CHANNEL) / 2.0;
+    value = ( value - app_multimeterData.voltage_cal ) * 33.0 / 2.0;
 
     return value;
 }
@@ -187,7 +186,7 @@ float MULTIMETER_readCurrent (void)
 {
     float value;
 
-    value = ( float ) MULTIMETER_readChannel(MULTIMETER_I_CHANNEL) / 2;
+    value = ( float ) MULTIMETER_readChannel(MULTIMETER_I_CHANNEL) / 2.0;
     value -= app_multimeterData.current_cal;
 
     return value;
@@ -200,12 +199,7 @@ float MULTIMETER_readResistance (void)
 
     range = MULTIMETER_getResistanceRange(app_multimeterData.scan_range);
 
-    if (range == 0)
-    {
-        return 0;
-    }
-
-    if (app_multimeterData.scan_range >= 5 )
+    if (app_multimeterData.scan_range >= MULTIMETER_MAX_RESRANGE )
     {
         app_multimeterData.scan_range = 0;
     }
@@ -218,7 +212,7 @@ float MULTIMETER_readResistance (void)
         app_multimeterData.scan_range--;
         return value;
     }
-    else if ( (range < 100) && (app_multimeterData.scan_range < 5) )
+    else if ( (range < 100) && (app_multimeterData.scan_range < MULTIMETER_MAX_RESRANGE) )
     {
         app_multimeterData.scan_range++;
     }
@@ -229,25 +223,54 @@ float MULTIMETER_readResistance (void)
     return value;
 }
 
+void delayMSEC_BLOCKING(uint32_t milliseconds)
+{
+    uint64_t end_time;
+    
+    end_time = (getTick() + milliseconds);
+    while (getTick() < end_time);
+}
+
 uint16_t MULTIMETER_getResistanceRange (uint8_t range)
 {
-    if ( range > 5 )
+    if ( range > MULTIMETER_MAX_RESRANGE )
     {
-        range = 5;
+        range = MULTIMETER_MAX_RESRANGE;
     }
 
     MULTIMETER_setResistanceRange(range);
-    //Delay_100ms( );
+    delayMSEC_BLOCKING(MULTIMETER_RESRANGE_DLY);
 
     return MULTIMETER_readChannel(MULTIMETER_R_CHANNEL);
 }
 
 void MULTIMETER_setResistanceRange (uint8_t range)
 {
-    //digital_out_write( &multimeter->a, range & 0x01 );
-    //digital_out_write( &multimeter->b, ( range >> 1 ) & 0x01 );
-    //digital_out_write( &multimeter->c, ( range >> 2 ) & 0x01 );
-    //Delay_100ms( );
+    if (range & 0x01)
+    {
+        MULTIMETER_A_Set();
+    }
+    else
+    {
+        MULTIMETER_A_Clear();        
+    }
+    if ((range >> 1) & 0x01)
+    {
+        MULTIMETER_B_Set();
+    }
+    else
+    {
+        MULTIMETER_B_Clear();        
+    }
+    if ((range >> 2) & 0x01)
+    {
+        MULTIMETER_C_Set();
+    }
+    else
+    {
+        MULTIMETER_C_Clear();        
+    }
+    delayMSEC_BLOCKING(MULTIMETER_RESRANGE_DLY);
 }
 
 void APP_MULTIMETER_Tasks(void)
@@ -335,7 +358,7 @@ void APP_MULTIMETER_Tasks(void)
         }
         case APP_MULTIMETER_STATE_SERVICE_TASKS:
         {
-            time = getTick();
+            app_multimeterData.time = getTick();
             if ((getTick() < delay))
                 break;
             delay = (getTick() + 1000);         
