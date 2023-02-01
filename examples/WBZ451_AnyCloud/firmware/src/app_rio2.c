@@ -805,6 +805,8 @@ const char assign_Remote_IP[] = "\"10.10.0.50\"";
 
 static uint8_t softAPCmdTblIndex;
 #define CONFIG_SOFTAP_INIT_SIZE sizeof (softAPCmdTbl) / sizeof (*softAPCmdTbl)
+
+#ifdef USE_AWS
 static INIT_STRUCT softAPCmdTbl[] = {
     { 0, "AT+WAPC=1,\"%s\"\r\n", "WFI32_WPA2" /*softAPSSID*/}, //BSSID
     {1, "AT+WAPC=2,%s\r\n", "3"/*softAPMode*/}, //Mode 3 is WPA/WPA2
@@ -819,7 +821,7 @@ static INIT_STRUCT softAPCmdTbl[] = {
     { 10, "AT+WAPC=11,%s\r\n", assign_Remote_IP /*softAPDHCPsIP*/} //DHCPs IP Pool Start IP Addr  ex:  Gateway is 192.168.10.1,  Pool could be 192.168.10.100...to 255
 
 };
-
+#endif /* USE_AWS */
 
 /**************************************
  *
@@ -861,14 +863,16 @@ void APP_RIO2_Tasks(void) {
 
     static uint16_t count, byteRcvd;
     static uint8_t connectingToAzure;
+    static uint64_t myDelay, myPUBDelay = -1;
 
+#ifdef USE_AWS
+    static uint64_t openWeatherMapTime = -1;
     static char *webPagePtr;
     static uint16_t webPageIndex, webPageSize;
-
-    static uint64_t myDelay, myPUBDelay = -1, openWeatherMapTime = -1;
     static char sessionSocket[10];
     static char announceSocketID[10];
-
+#endif /* USE_AWS */
+    
     static char mqttRCVMessage[100] = "Default POR Msg";
     //static bool connected2IoTCentral;
 
@@ -1195,7 +1199,7 @@ void APP_RIO2_Tasks(void) {
 
         case APP_RIO2_STATE_AZURE_PUB_DPS_REGISTRATION_PUT:
         {
-            char buffer[150];
+            char buffer[175];
 
             gMQTTPUB = false;
             sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_DPS_PUT"\",\""PUB_REPORTED_PAYLOAD"\"\r\n");

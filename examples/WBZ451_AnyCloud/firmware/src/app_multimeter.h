@@ -57,13 +57,13 @@ uint64_t getTick(void);
 #define MULTIMETER_A_InputEnable()       (GPIOB_REGS->GPIO_TRISSET = (1<<1))
 #define MULTIMETER_A_PIN                  GPIO_PIN_RB1
 /*** Macros for Multimeter 'B' pin ***/
-#define MULTIMETER_B_Set()               (GPIOA_REGS->GPIO_LATSET = (1<<2))
-#define MULTIMETER_B_Clear()             (GPIOA_REGS->GPIO_LATCLR = (1<<2))
-#define MULTIMETER_B_Toggle()            (GPIOA_REGS->GPIO_LATINV= (1<<2))
-#define MULTIMETER_B_Get()               ((GPIOA_REGS->GPIO_PORT >> 2) & 0x1)
-#define MULTIMETER_B_OutputEnable()      (GPIOA_REGS->GPIO_TRISCLR = (1<<2))
-#define MULTIMETER_B_InputEnable()       (GPIOA_REGS->GPIO_TRISSET = (1<<2))
-#define MULTIMETER_B_PIN                  GPIO_PIN_RA2
+#define MULTIMETER_B_Set()               (GPIOB_REGS->GPIO_LATSET = (1<<2))
+#define MULTIMETER_B_Clear()             (GPIOB_REGS->GPIO_LATCLR = (1<<2))
+#define MULTIMETER_B_Toggle()            (GPIOB_REGS->GPIO_LATINV= (1<<2))
+#define MULTIMETER_B_Get()               ((GPIOB_REGS->GPIO_PORT >> 2) & 0x1)
+#define MULTIMETER_B_OutputEnable()      (GPIOB_REGS->GPIO_TRISCLR = (1<<2))
+#define MULTIMETER_B_InputEnable()       (GPIOB_REGS->GPIO_TRISSET = (1<<2))
+#define MULTIMETER_B_PIN                  GPIO_PIN_RB2
 /*** Macros for Multimeter 'C' pin ***/
 #define MULTIMETER_C_Set()               (GPIOA_REGS->GPIO_LATSET = (1<<2))
 #define MULTIMETER_C_Clear()             (GPIOA_REGS->GPIO_LATCLR = (1<<2))
@@ -83,6 +83,7 @@ uint64_t getTick(void);
 #define MULTIMETER_R_CHANNEL   0x02
 #define MULTIMETER_C_CHANNEL   0x03
 
+#define MULTIMETER_MIN_VOLTAGE  100.0
 #define MULTIMETER_MAX_VOLTAGE 4095.0
 
 #define MULTIMETER_MAX_RESRANGE   5

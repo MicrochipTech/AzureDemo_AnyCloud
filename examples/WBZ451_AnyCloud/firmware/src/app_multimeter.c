@@ -199,12 +199,17 @@ float MULTIMETER_readResistance (void)
 
     range = MULTIMETER_getResistanceRange(app_multimeterData.scan_range);
 
+    if ((range < MULTIMETER_MIN_VOLTAGE) && (app_multimeterData.scan_range == MULTIMETER_MAX_RESRANGE))
+    {
+        return 0;
+    }
+
     if (app_multimeterData.scan_range >= MULTIMETER_MAX_RESRANGE )
     {
         app_multimeterData.scan_range = 0;
     }
 
-    if (range > 4090)
+    if (range > ((uint16_t)(MULTIMETER_MAX_VOLTAGE) - MULTIMETER_MAX_RESRANGE))
     {
         value = ( float ) ( ( resolution_select[app_multimeterData.scan_range] *
                               MULTIMETER_MAX_VOLTAGE ) / range ) - 
@@ -212,7 +217,7 @@ float MULTIMETER_readResistance (void)
         app_multimeterData.scan_range--;
         return value;
     }
-    else if ( (range < 100) && (app_multimeterData.scan_range < MULTIMETER_MAX_RESRANGE) )
+    else if ( (range < MULTIMETER_MIN_VOLTAGE) && (app_multimeterData.scan_range < MULTIMETER_MAX_RESRANGE) )
     {
         app_multimeterData.scan_range++;
     }
@@ -246,6 +251,7 @@ uint16_t MULTIMETER_getResistanceRange (uint8_t range)
 
 void MULTIMETER_setResistanceRange (uint8_t range)
 {
+    //printf_DBG("<MULTIMETER> Setting resistance scan range to %d\r\n", app_multimeterData.scan_range);
     if (range & 0x01)
     {
         MULTIMETER_A_Set();
