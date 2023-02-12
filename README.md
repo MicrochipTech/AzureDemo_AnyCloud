@@ -23,7 +23,7 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 1. [Git](https://git-scm.com/)
 2. [Python 3.0](https://www.python.org/download/releases/3.0/)
 3. [Python Serial Port Extension](https://pypi.org/project/pyserial/)
-4. [OpenSSL](https://www.openssl.org)
+4. [OpenSSL](https://wiki.openssl.org/index.php/Binaries)
 5. Any [Terminal Emulator](https://en.wikipedia.org/wiki/List_of_terminal_emulators) program of your choice
 6. Microchip `MPLAB X IDE` tool chain for embedded code development on 32-bit architecture MCU/MPU platforms (made up of 3 major components)
 
@@ -154,7 +154,7 @@ Microsoft has excellent instructions to create an new Azure account and subscrip
 
 #### 3.2 Create an Azure IoT Central Application
 
-Refer to the linked instructions to [create an Azure IoT Central Application](./CreateAnIoTCentralApplication.md).
+[Click here](https://docs.microsoft.com/en-us/azure/iot-central/core/quick-deploy-iot-central) and follow **only** the section titled **"Create an application"**.
 
 ### Step 4 - Enroll Your Device in the Azure IoT Central Application
 
