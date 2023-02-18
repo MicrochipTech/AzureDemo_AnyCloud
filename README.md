@@ -158,9 +158,11 @@ Microsoft has excellent instructions to create an new Azure account and subscrip
 
 ### Step 4 - Enroll Your Device in the Azure IoT Central Application
 
-Click on one of the following enrollment procedures: [Group](./IoT_Central_Group_Enrollment.md) or [Individual](./IoT_Central_Individual_Enrollment.md) enrollment method to register your device with the IoT Central application (creating an enrollment group is recommended as a more practical solution vs. registering each device individually). [Group enrollment](https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service#enrollment-group) allows you to create a group of allowable devices which each have a leaf certificate derived from a common signer or root certificate so that devices do not need to be pre-enrolled on an individual basis. Enrollment groups are used to enroll multiple related devices; [Individual enrollment](https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service#individual-enrollment) is used to enroll a single device. Feel free to review both methods and be sure to complete the procedure for your preferred method before proceeding with the next step.
+Click on one of the following enrollment procedures: [Group](./IoT_Central_Group_Enrollment.md) or [Individual](./IoT_Central_Individual_Enrollment.md) enrollment method to register your device with the IoT Central application (creating an enrollment group is recommended as a more practical solution vs. registering each device individually).
 
-### Step 5 - Configuring the AzureAnyCloud Script
+**For Your Education**: [Group enrollment](https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service#enrollment-group) allows you to create a group of allowable devices which each have a leaf certificate derived from a common signer or root certificate so that devices do not need to be pre-enrolled on an individual basis. Enrollment groups are used to enroll multiple related devices; [Individual enrollment](https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service#individual-enrollment) is used to enroll a single device. Feel free to review both methods and be sure to complete the procedure for your preferred method before proceeding with the next step.
+
+### Step 5 - Configuring the Main "AzureAnyCloud" Script
 
 1. Open the `AzureAnyCloud_<YOURINITIALS>.py` script in a text editor of your choice
 
@@ -174,7 +176,7 @@ The Model ID will be announced by the device during the DPS registration process
 
 ### Step 6 - Run the Main "AzureAnyCloud" Script
 
-Press the reset button on the development board. It is always good practice to press the reset button just before each time a new script operation is invoked. To run the main Azure IoT Central script, launch a Command Prompt, PowerShell, or GitBash window and then navigate to the [/examples/PC_Python](./examples/PC_Python/) directory and execute the following command line (if `python3` is not a recognized command, try `python`):
+Press the reset button on the AnyCloud™ development board. It is always good practice to press the reset button just before each time a new script operation is invoked. To run the main Azure IoT Central script, launch a Command Prompt, PowerShell, or GitBash window and then navigate to the [/examples/PC_Python](./examples/PC_Python/) directory and execute the following command line (if `python3` is not a recognized command, try `python`):
 
     python3 AzureAnyCloud_<YOURINITIALS>.py
 
@@ -192,7 +194,7 @@ Scrolling down to the first two transactions sent after the connection to IoT Ce
 
 <img src="./media/IOTC_Raw_Data.png" alt="The IOTC Raw Data view for Hello World Message" width = 300/>
 
-After these initial values are sent, the script begins publishing spoofed temperature sensor telemetry at the "telemetryInterval" rate.  The telemetry interval defaults to 10 seconds, but this is a writeable property that can be updated from IoT Central.
+After these initial values are sent, the script begins publishing spoofed temperature sensor telemetry at the "telemetryInterval" rate.  The telemetry interval defaults to 10 seconds, but this is a writeble property that can be updated from IoT Central.
 
 <img src="./media/IOTC_Temperature_Telemetry.png" alt="The IOTC Raw Data view of light sensor data" width = 600/>
 
@@ -202,7 +204,7 @@ After these initial values are sent, the script begins publishing spoofed temper
 
 <img src="./media/IOTC_WriteTelemetryInterval.png" alt="The IOTC Raw Data view of light sensor data" width = 400/>
 
-Depending how quickly the write propery response is received, it is possible that IoT Central will show the value as "pending". If the device is offline or doesn't respond to writeable property request, the value can display as pending indefinitely in IoT Central until a valid property update acknowledge has been received.
+Depending how quickly the write propery response is received, it is possible that IoT Central will show the value as "Pending". If the device is offline or doesn't respond to a writable property request, the value can display as pending indefinitely in IoT Central until a valid property update acknowledge has been received.
 
 The last item the script demonstrates is receiving Cloud to Device (C2D) commands, which are referred to as "methods" in the IoT Central documentation. This can be demonstrated directly from IoT Central on the device's **Commands** tab.
 
