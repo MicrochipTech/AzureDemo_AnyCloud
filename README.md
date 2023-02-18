@@ -11,12 +11,14 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 ## Hardware Requirements
 
 * AnyCloud™ Serial Bridge: [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a) **or** [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A)
-    <img src=".//media/WBZ451_Curiosity.png" width=300/>
+
     <img src=".//media/AnyCloud_Boards.png" width=500/>
 
 * [USB-to-UART Serial Adapter/Bridge/Converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter) (for serial interface connection between PC and the AnyCloud™ Serial Bridge board)
 
 * Host MCU Development Board: [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A)
+
+    <img src=".//media/WBZ451_Curiosity.png" width=300/>
 
 ## Software Prerequisites / Tools Installation
 
