@@ -10,13 +10,13 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 
 ## Hardware Requirements
 
-* PC Interface to AnyCloud™ Serial Bridge: [USB-to-UART Serial Adapter/Bridge/Converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter)
-* Host MCU Development Board: [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A)
-
-    <img src=".//media/WBZ451_Curiosity.png" width=300/>
 * AnyCloud™ Serial Bridge: [WFI32-IoT Development Board](https://www.microchip.com/en-us/development-tool/ev36w50a) **or** [PIC32 WFI32E Curiosity Board](https://www.microchip.com/en-us/development-tool/EV12F11A)
-
+    <img src=".//media/WBZ451_Curiosity.png" width=300/>
     <img src=".//media/AnyCloud_Boards.png" width=500/>
+
+* [USB-to-UART Serial Adapter/Bridge/Converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter) (for serial interface connection between PC and the AnyCloud™ Serial Bridge board)
+
+* Host MCU Development Board: [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A)
 
 ## Software Prerequisites / Tools Installation
 
@@ -182,11 +182,11 @@ Press the reset button on the AnyCloud™ development board. It is always good p
 
 If you login to your application on IoT Central, it is now possible to see how the Python script is interacting with the IoT Central application.
 
-Start by looking at the devices currently registered to the application. Click **Devices** on the left naviagation pane, and note that the device shows up with the Common Name (CN) from the X.509 certifcate as its *Device ID*.  Also note the *Device Template* selected is `WBZ451_Curiosity;1`. This device template was configured during the connection to the Device Provisioning Service because it is published in the [IoT Plug and Play Models Repository](https://github.com/Azure/iot-plugandplay-models).
+Start by looking at the devices currently registered to the application. Click **Devices** on the left-side navigation pane, and note that the device shows up with the Common Name (CN) from the X.509 certifcate as its *Device ID*.  Also note the *Device Template* selected is `WBZ451_Curiosity;1`. This device template was configured during the connection to the Device Provisioning Service because it is published in the [IoT Plug and Play Models Repository](https://github.com/Azure/iot-plugandplay-models), and the application was able to find it.
 
 <img src="./media/IOTC_Device_View.png" alt="The IOTC Device list" width = 800/>
 
-If you click the device name shown on the devices screen, IoT Central will show you are currently connected. You will also have the ability to click on a selection of device views that allow you to inspect the device state and data from recent transactions; the **Raw data** view is typically the most convenient place to see all incoming & outgoing messages.
+If you click the device name shown on the **Devices** screen, IoT Central will show you the device is currently connected. You will also have the ability to click on a selection of device views that allow you to inspect the device state and data from recent transactions; the **Raw data** view is typically the most convenient place to see all "Device to Cloud (D2C)" & "Cloud to Device (C2D)" messages.
 
 <img src="./media/IOTC_Individual_Device_View.png" alt="The IOTC Raw Data view" width = 800/>
 
@@ -194,32 +194,32 @@ Scrolling down to the first two transactions sent after the connection to IoT Ce
 
 <img src="./media/IOTC_Raw_Data.png" alt="The IOTC Raw Data view for Hello World Message" width = 300/>
 
-After these initial values are sent, the script begins publishing spoofed temperature sensor telemetry at the "telemetryInterval" rate.  The telemetry interval defaults to 10 seconds, but this is a writeble property that can be updated from IoT Central.
+After these initial values are sent, the script begins publishing spoofed temperature sensor telemetry at the "telemetryInterval" rate (in seconds).  The telemetry interval defaults to 10 seconds, but this is a writeble property that can be updated from IoT Central.
 
 <img src="./media/IOTC_Temperature_Telemetry.png" alt="The IOTC Raw Data view of light sensor data" width = 600/>
 
 ### IMPORTANT! Do not skip the following step for creating a **Properties** view!
 
-[Click here](./DeviceTemplate_CreatingViews.md) to create a "Properties" view that allows you to change any of the Cloud-writable properties. Once this new view has been added to the device template, click on the Properties view and type in a new value for the Telemetry Interval. Click on the **Save** icon to send the property update request to the physical device. You should see the status of the property listed as "Pending" until a confirmation has been received from the physical device that the property was successfully updated. At this point in time, the status of the property should revert back to the "Accepted" state.
+[Click here](./DeviceTemplate_CreatingViews.md) to create an additional "Properties" view that allows you to change any of the Cloud-writable properties. Once this new view has been added to the device template, click on the Properties view and type in a new value for the Telemetry Interval. Click on the **Save** icon to send the property update request to the physical device. You should see the status of the property listed as "Pending" until a confirmation has been received from the physical device that the property was successfully updated. At this point in time, the status of the property should revert back to the "Accepted" state.
 
 <img src="./media/IOTC_WriteTelemetryInterval.png" alt="The IOTC Raw Data view of light sensor data" width = 400/>
 
-Depending how quickly the write propery response is received, it is possible that IoT Central will show the value as "Pending". If the device is offline or doesn't respond to a writable property request, the value can display as pending indefinitely in IoT Central until a valid property update acknowledge has been received.
+Depending how quickly the write property response is received, it is possible that IoT Central will show the value as "Pending". If the device is offline or doesn't respond to a writable property request, the value can display as pending indefinitely in IoT Central until a valid property update acknowledge has been received.
 
 The last item the script demonstrates is receiving Cloud to Device (C2D) commands, which are referred to as "methods" in the IoT Central documentation. This can be demonstrated directly from IoT Central on the device's **Commands** tab.
 
 <img src="./media/IOTC_CommandReboot.png" alt="The IOTC reboot command" width = 400/>
 
-"PT5S" is an [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) period designator, which decodes to 5 seconds following the standard's definition.  The script only supports periods in seconds, but the standard covers durations years, months, days, etc.
+"PT5S" is an [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) period designator, which decodes to 5 seconds following the standard's definition.  The script only supports periods in seconds, but the standard covers durations of years, months, days, etc.
 
     'P'eriod 
     'T'ime 
      5
     'S'econds
 
-After you enter a valid field, the **Run** button can be pressed.
+After you enter a valid field, click on the **Run** button.
 
-When the `WBZ451_Curiosity;1` device twin model interface (DTMI) was originally defined, part of that definition included a response packet for the command.  The device twin structure can be viewed in IoT Central, by selecting "Device Templates" using the left-hand side navigation pane, then the name and version of the device template being used.
+When the `WBZ451_Curiosity;1` device twin model interface (DTMI) was originally defined, part of that definition included a response packet for the command.  The device twin structure can be viewed in IoT Central by selecting "Device Templates" using the left-hand side navigation pane, then the name and version of the device template being used.
 
 <img src="./media/IOTC_Navigate_Device_Template.png" alt="The IOTC reboot command" width = 400/>
 
@@ -227,11 +227,11 @@ When the device template opens, expand the reboot command with the drop down con
 
 <img src="./media/IOTC_Navigate_Command_Objects.png" alt="Navigate to the reboot command in the Device Template" width = 400/>
 
-Notice the command is enabled, and a response is expected.  There are also two objects being defined: one for the command payload, and one for the response payload. Click the Define button for the response payload, to view the object that is expected to be returned by the embedded device when the reboot command is received. 
+Notice the command is enabled, and a response is expected.  There are also two objects being defined: one for the command payload, and one for the response payload. Click the **Define** button for the response payload to view the object that is expected to be returned by the embedded device when the reboot command is received. 
 
 <img src="./media/IOTC_Reboot_Response_Object.png" alt="The reboot command Response Object" width = 400/>
 
-From here, notice two items are expected in the response payload, a "status" string, and a "delay" integer, that should match the reboot delay.  
+From here, notice two items are expected in the response payload - a "status" string and a "delay" integer (that should match the reboot delay).  
 
 **[OPTIONAL] (recommended for a future time)** [Click here](PythonScriptDeepDive.md) for a detailed deep dive into what each operation in the Python script is doing with respect to the AT command set implemented by the AnyCloud™ firmware.
 
@@ -332,7 +332,7 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
 
 17. Try multiple combinations of various settings for each of the blue, green, and red PWM duty cycles and observe the different color states emitted by the powerful RGB LED. In addition, try changing the state of the User LED to switch between the off, on, and blinking modes.
 
-18. Click on the **Commands** view. Type any message in the "String to send" box and click on the **Run** button. To see the response from the device, click on the **command history** link (located just underneath the **Run** button). You should see that the response was received "now" (within the last 60 seconds) and that the correct message was echoed from the device.
+18. Click on the **Commands** view. Type any text message in the "String to send" box and click on the **Run** button. To see the response from the device, click on the **command history** link (located just underneath the **Run** button). You should see that the response was received "now" (i.e. within the last minute) and that the correct message was echoed from the device.
 
     <img src=".//media/image92.png" width=299 />
     <img src=".//media/image93.png" width=250 />
