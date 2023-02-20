@@ -267,7 +267,7 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
 
     <img src=".//media/image18b.png"  />
 
-5. Navigate to the main toolbar's `File` > `Open Project` operation to load the demo project folder (\*.X) located at `\AzureDemo_AnyCloud\firmware\examples\WBZ451_AnyCloud.X`
+5. Navigate to the main toolbar's `File` > `Open Project` operation to load the demo project folder (\*.X) located at `\AzureDemo_AnyCloud\examples\WBZ451_AnyCloud\firmware\WBZ451_AnyCloud.X`
 
     <img src=".//media/image19a.png" width=200 />
     <img src=".//media/image19b.png" width=400 />
