@@ -16,6 +16,8 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 
 * [USB-to-UART Serial Adapter/Bridge/Converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter) (for serial interface connection between PC and the AnyCloud™ Serial Bridge board)
 
+    NOTE: The [USB I2C Click](https://www.mikroe.com/usb-i2c-click) board from [mikroElektronika](https://www.mikroe.com) would work nicely as it connects directly into the mikroBUS™ socket (and make sure the Click board's jumpers are soldered for UART operation)
+
 * Host MCU Development Board: [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A)
 
     <img src=".//media/WBZ451_Curiosity.png" width=300/>
