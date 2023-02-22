@@ -158,7 +158,7 @@ Microsoft has excellent instructions to create an new Azure account and subscrip
 
 #### 3.2 Create an Azure IoT Central Application
 
-[Click here](https://docs.microsoft.com/en-us/azure/iot-central/core/quick-deploy-iot-central) and follow **only** the section titled **"Create an application"**.
+[Click here](CreateAnIoTCentralApplication.md) to create an IoT Central application to be used with this demonstration.
 
 ### Step 4 - Enroll Your Device in the Azure IoT Central Application
 
@@ -173,8 +173,16 @@ Click on one of the following enrollment procedures: [Group](./IoT_Central_Group
     <img src="./media/ScriptConfiguration.png" alt="Script Configuration" width = 400/>
 
 2. Enter your WiFi network's SSID and passphrase as the *WiFi Credentials*
-3. Enter your ID scope and Device ID (Common Name) into the *Azure Application/Device Information* settings.
-4. For the Model ID, there is no need to change it since this example emulates an IoT device based on the device model *[`dtmi:com:Microchip:WBZ451_Curiosity;1`](https://github.com/Azure/iot-plugandplay-models/blob/main/dtmi/com/microchip/wbz451-curiosity-1.json)* (which is published in the [IoT Plug and Play Models Repository](https://github.com/Azure/iot-plugandplay-models)). Just confirm that the Model ID is already set correctly by default.
+
+3. Enter your ID scope into the *Azure Application/Device Information* settings. Look up the ID scope for your IoT Central application by using the left-hand navigation pane [Security -> Permissions -> Device connection groups]
+
+    <img src="./media/ID_Scope_LookUp.png" alt="Script Configuration" width = 400/>
+
+4. Enter your Device ID (Common Name) into the *Azure Application/Device Information* settings. The Common Name was extracted when the Client certificate PEM file was created in a previous step (e.g. Device ID = Common Name = "sn012319AAC99CF42A01")
+
+    <img src="./media/CN_LookUp.png" alt="Script Configuration" width = 400/>
+
+5. For the Model ID, there is no need to change it since this example emulates an IoT device based on the device model *[`dtmi:com:Microchip:WBZ451_Curiosity;1`](https://github.com/Azure/iot-plugandplay-models/blob/main/dtmi/com/microchip/wbz451-curiosity-1.json)* (which is published in the [IoT Plug and Play Models Repository](https://github.com/Azure/iot-plugandplay-models)). Just confirm that the Model ID is already set correctly by default.
 
 The Model ID will be announced by the device during the DPS registration process.  If the model has been published in the [Azure Device Model Repository](https://devicemodels.azure.com), IoT Central will automatically download the device model and use it to interact with your device based on the model's characteristics.  You can also create a custom device template in your IoT Central application, which will generate a new Model ID that can declared and used with the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) repository on [GitHub](https://github.com) as well.
 
