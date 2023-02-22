@@ -16,7 +16,7 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 
 * [USB-to-UART Serial Adapter/Bridge/Converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter) (for serial interface connection between PC and the AnyCloud™ Serial Bridge board)
 
-    NOTE: The [USB I2C Click](https://www.mikroe.com/usb-i2c-click) board from [mikroElektronika](https://www.mikroe.com) would work nicely as it connects directly into the mikroBUS™ socket (and make sure the Click board's jumpers are soldered for UART operation)
+    NOTE: The [USB I2C Click](https://www.mikroe.com/usb-i2c-click) board from [mikroElektronika](https://www.mikroe.com) would work nicely as it connects directly into the mikroBUS™ socket (and make sure the Click board's jumpers are soldered for UART operation; mikroElektronika can accommodate special requests when ordering this board by adding the request to the online order when going through their website)
 
 * Host MCU Development Board: [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A)
 
@@ -27,7 +27,7 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 1. [Git](https://git-scm.com/)
 2. [Python 3.0](https://www.python.org/download/releases/3.0/)
 3. [Python Serial Port Extension](https://pypi.org/project/pyserial/)
-4. [OpenSSL](https://wiki.openssl.org/index.php/Binaries)
+4. [OpenSSL](https://wiki.openssl.org/index.php/Binaries) (Windows users: ensure that the path to the `openssl.exe` program is included in the Windows PATH environment variable)
 5. Any [Terminal Emulator](https://en.wikipedia.org/wiki/List_of_terminal_emulators) program of your choice
 6. Microchip `MPLAB X IDE` tool chain for embedded code development on 32-bit architecture MCU/MPU platforms (made up of 3 major components)
 
@@ -99,19 +99,33 @@ COM_PORT = "/dev/tty.usbserial-A51MXHIL"
 
 #### 1.3 Navigate to the [/certificates](./certificates/) directory. Open the `WFI32_ClientCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated. In the same directory, repeat this COM port setting in **both** the `WFI32_RootCert.py` and `WFI32_SignerCert.py` scripts. Confirm that all 3 Python scripts have been updated correctly.  
 
-#### 1.4 Cycle power to the board by disconnecting and reconnecting the USB cable. For good measure, press the `RESET` button on the WFI32-IoT development board (for the WFI32E Curiosity development board, the reset button is the `MCLR` button)
+#### 1.4 Launch a Command Prompt or PowerShell window (ideally as an Administrator) and execute the following 2 command lines in order to remove any previous installation of the `pyserial` Python package and then reinstall the latest package (if `pip3` is not a recognized command, try `pip`):
+
+```bash
+pip3 uninstall pyserial
+
+pip3 install pyserial
+```
+
+#### 1.5 Cycle power to the board by disconnecting and reconnecting the USB cable. For good measure, press the `RESET` button on the WFI32-IoT development board (for the WFI32E Curiosity development board, the reset button is the `MCLR` button)
 
 ### Step 2 - Read the Root, Signer, & Client Certificates from the Module
 
 The client certificate file will be needed when we create the device in Azure IoT Central using the individual enrollment method. Another option is to use the group enrollment method which requires uploading the signer certificate file (or in some cases, could be the root certificate if the client certificate is chained directly to it) to the Azure IoT Central application, so that any device which presents a leaf certificate that was derived from the signer (or root) certificate will automatically be granted access to registration.
 
-#### 2.1 The **Client** certificate can be read out of the WFI32 module by executing the `WFI32_ClientCert.py` script in the [/certificates](./certificates/) directory. The certificate file will be named based on the device's Common Name (i.e. `<"COMMON_NAME">.PEM`). Execute the following command in a PowerShell or Command Prompt window (if `python3` is not a recognized command, try `python`):
+#### 2.1 Verify that openssl.exe can be executed from a command line. Launch a Command Prompt or PowerShell window and type the following command:
+
+    openssl.exe
+
+If the command gets executed (i.e. can be found) without any issues, proceed to the next step. If the command cannot be found, ensure that the path to the openssl.exe program has been properly added to the Windows PATH environment variable. The openssl.exe program must be able to be found on the command line before executing the next step.
+
+#### 2.2 The **Client** certificate can be read out of the WFI32 module by executing the `WFI32_ClientCert.py` script in the [/certificates](./certificates/) directory. The certificate file will be named based on the device's Common Name (i.e. `<"COMMON_NAME">.PEM`). Execute the following command in a PowerShell or Command Prompt window (if `python3` is not a recognized command, try `python`):
 
     python3 WFI32_ClientCert.py
 
 **Note** If the development board is not responding to the script's commands, kill the python operation, press the reset button on the development board, and re-run the script
 
-#### 2.2 Use OpenSSL to verify that the Common Name used in the client certificate matches the name of the PEM file which was auto-generated by the script. The following command will list certificate details in an easy to read format:
+#### 2.3 Use OpenSSL to verify that the Common Name used in the client certificate matches the name of the PEM file which was auto-generated by the script. The following command will list certificate details in an easy to read format:
     
     openssl x509 -in <"COMMON_NAME">.PEM -text
 
@@ -136,13 +150,13 @@ The output of the command will show all fields, but the common name is what is r
                     8b:4c:e8:ea:60:81:ce:e0:0e:a6:a7:68:3f:e0:de:
                     ....
 
-#### 2.3 The **Root** certificate can be read out of the WFI32 module by executing the `WFI32_RootCert.py` script in the [/certificates](./certificates/) directory. The certificate file will be named `RootCA.PEM`. Execute the following command in a PowerShell or Command Prompt window (if `python3` is not a recognized command, try `python`):
+#### 2.4 The **Root** certificate can be read out of the WFI32 module by executing the `WFI32_RootCert.py` script in the [/certificates](./certificates/) directory. The certificate file will be named `RootCA.PEM`. Execute the following command in a PowerShell or Command Prompt window (if `python3` is not a recognized command, try `python`):
 
     python3 WFI32_RootCert.py
 
 **Note** If the development board is not responding to the script's commands, kill the python operation, press the reset button on the development board, and re-run the script
 
-#### 2.4 The **Signer** certificate can be read out of the WFI32 module by executing the `WFI32_SignerCert.py` script in the [/certificates](./certificates/) directory. The certificate file will be named `SignerCA.PEM`. Execute the following command in a PowerShell or Command Prompt window (if `python3` is not a recognized command, try `python`):
+#### 2.5 The **Signer** certificate can be read out of the WFI32 module by executing the `WFI32_SignerCert.py` script in the [/certificates](./certificates/) directory. The certificate file will be named `SignerCA.PEM`. Execute the following command in a PowerShell or Command Prompt window (if `python3` is not a recognized command, try `python`):
 
     python3 WFI32_SignerCert.py
 
