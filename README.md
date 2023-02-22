@@ -190,11 +190,11 @@ Click on one of the following enrollment procedures: [Group](./IoT_Central_Group
 
 3. Enter your ID scope into the *Azure Application/Device Information* settings. Look up the ID scope for your IoT Central application by using the left-hand navigation pane [Security -> Permissions -> Device connection groups]
 
-    <img src="./media/ID_Scope_LookUp.png" alt="Script Configuration" width = 400/>
+    <img src="./media/ID_Scope_LookUp.png" alt="Script Configuration" width = 500/>
 
-4. Enter your Device ID (Common Name) into the *Azure Application/Device Information* settings. The Common Name was extracted when the Client certificate PEM file was created in a previous step (e.g. Device ID = Common Name = "sn012319AAC99CF42A01")
+4. Enter your Device ID (Common Name) into the *Azure Application/Device Information* settings. The Common Name was extracted when the Client certificate PEM file was created in a previous step. Navigate to the [/certificates](./certificates/) directory and note the name of the client PEM file which was created earlier - the name of the PEM file is the Common Name which needs to be set as the Device ID. For example, in the following screenshot, Device ID = Common Name which should be set to "sn012319AAC99CF42A01"):
 
-    <img src="./media/CN_LookUp.png" alt="Script Configuration" width = 400/>
+    <img src="./media/CN_LookUp.png" alt="Script Configuration" width = 500/>
 
 5. For the Model ID, there is no need to change it since this example emulates an IoT device based on the device model *[`dtmi:com:Microchip:WBZ451_Curiosity;1`](https://github.com/Azure/iot-plugandplay-models/blob/main/dtmi/com/microchip/wbz451-curiosity-1.json)* (which is published in the [IoT Plug and Play Models Repository](https://github.com/Azure/iot-plugandplay-models)). Just confirm that the Model ID is already set correctly by default.
 
