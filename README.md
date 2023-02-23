@@ -174,9 +174,18 @@ Microsoft has excellent instructions to create an new Azure account and subscrip
 
 [Click here](CreateAnIoTCentralApplication.md) to create an IoT Central application to be used with this demonstration.
 
+NOTE: You can access any of your IoT Central applications in the future by accessing the [IoT Central Portal](https://apps.azureiotcentral.com).
+
 ### Step 4 - Enroll Your Device in the Azure IoT Central Application
 
-Click on one of the following enrollment procedures: [Group](./IoT_Central_Group_Enrollment.md) or [Individual](./IoT_Central_Individual_Enrollment.md) enrollment method to register your device with the IoT Central application (creating an enrollment group is recommended as a more practical solution vs. registering each device individually).
+- Access your IoT Central application by signing into the [IoT Central Portal](https://apps.azureiotcentral.com), clicking on `My Apps` in the left-hand side navigation pane, and then clicking on the tile that is labeled with the name of your application.
+
+    <img src="./media/IOTC_MyApps.png" alt="Script Configuration" width = 250/>
+
+- Click on one of the following procedures to pre-register your device with the IoT Central application (creating an enrollment group is strongly recommended as a more practical solution vs. registering each device individually):
+
+    - [Create an Enrollment Group](./IoT_Central_Group_Enrollment.md)
+    - [Create an Individual Enrollment](./IoT_Central_Individual_Enrollment.md)
 
 **For Your Education**: [Group enrollment](https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service#enrollment-group) allows you to create a group of allowable devices which each have a leaf certificate derived from a common signer or root certificate so that devices do not need to be pre-enrolled on an individual basis. Enrollment groups are used to enroll multiple related devices; [Individual enrollment](https://learn.microsoft.com/en-us/azure/iot-dps/concepts-service#individual-enrollment) is used to enroll a single device. Feel free to review both methods and be sure to complete the procedure for your preferred method before proceeding with the next step.
 
@@ -199,6 +208,8 @@ Click on one of the following enrollment procedures: [Group](./IoT_Central_Group
 5. For the Model ID, there is no need to change it since this example emulates an IoT device based on the device model *[`dtmi:com:Microchip:WBZ451_Curiosity;1`](https://github.com/Azure/iot-plugandplay-models/blob/main/dtmi/com/microchip/wbz451-curiosity-1.json)* (which is published in the [IoT Plug and Play Models Repository](https://github.com/Azure/iot-plugandplay-models)). Just confirm that the Model ID is already set correctly by default.
 
 The Model ID will be announced by the device during the DPS registration process.  If the model has been published in the [Azure Device Model Repository](https://devicemodels.azure.com), IoT Central will automatically download the device model and use it to interact with your device based on the model's characteristics.  You can also create a custom device template in your IoT Central application, which will generate a new Model ID that can declared and used with the [AnyCloud™](https://github.com/MicrochipTech/PIC32MZW1_AnyCloud) repository on [GitHub](https://github.com) as well.
+
+NOTE: You can access any of your IoT Central applications in the future by accessing the [IoT Central Portal](https://apps.azureiotcentral.com).
 
 ### Step 6 - Run the Main "AzureAnyCloud" Script
 
@@ -258,6 +269,8 @@ Notice the command is enabled, and a response is expected.  There are also two o
 <img src="./media/IOTC_Reboot_Response_Object.png" alt="The reboot command Response Object" width = 400/>
 
 From here, notice two items are expected in the response payload - a "status" string and a "delay" integer (that should match the reboot delay).  
+
+NOTE: You can access any of your IoT Central applications in the future by accessing the [IoT Central Portal](https://apps.azureiotcentral.com).
 
 **[OPTIONAL] (recommended for a future time)** [Click here](PythonScriptDeepDive.md) for a detailed deep dive into what each operation in the Python script is doing with respect to the AT command set implemented by the AnyCloud™ firmware.
 
@@ -346,22 +359,27 @@ Now that we've successfully run Python scripts on a PC to emulate all of the nec
 
         <img src=".//media/WBZ451_RESET.png" width=400 />
 
-14. Access your IoT Central application and confirm that telemetry messages are being received and that all other IoT Central functions are working like before when the Python script was running on the PC. The WBZ451 Curiosity Board should be interacting with IoT Central just like the main Python script was doing earlier.
 
-15. Using the left-hand navigation pane, click on `Devices` under **Connect**, and then click on your device name
+14. Access your IoT Central application by signing into the [IoT Central Portal](https://apps.azureiotcentral.com), clicking on `My Apps` in the left-hand side navigation pane, and then clicking on the tile that is labeled with the name of your application.
+
+15. Confirm that telemetry messages are being received and that all other IoT Central functions are working like before when the Python script was running on the PC. The WBZ451 Curiosity Board should be interacting with IoT Central just like the main Python script was doing earlier.
+
+16. Using the left-hand navigation pane, click on `Devices` under **Connect**, and then click on your device name
 
     <img src=".//media/image90.png" width=800 />
 
-16. Click on the **Properties** view. Select "100% Duty Cycle" for the property "RGB LED (**BLUE** PWM Duty Cycle)" and click on the **Save** icon. Observe that the RGB LED on the WBZ451 Curiosity Board emits an extremely bright "true **blue**" color
+17. Click on the **Properties** view. Select "100% Duty Cycle" for the property "RGB LED (**BLUE** PWM Duty Cycle)" and click on the **Save** icon. Observe that the RGB LED on the WBZ451 Curiosity Board emits an extremely bright "true **blue**" color
 
     <img src=".//media/image91.png" width=350 />
 
-17. Try multiple combinations of various settings for each of the blue, green, and red PWM duty cycles and observe the different color states emitted by the powerful RGB LED. In addition, try changing the state of the User LED to switch between the off, on, and blinking modes.
+18. Try multiple combinations of various settings for each of the blue, green, and red PWM duty cycles and observe the different color states emitted by the powerful RGB LED. In addition, try changing the state of the User LED to switch between the off, on, and blinking modes.
 
-18. Click on the **Commands** view. Type any text message in the "String to send" box and click on the **Run** button. To see the response from the device, click on the **command history** link (located just underneath the **Run** button). You should see that the response was received "now" (i.e. within the last minute) and that the correct message was echoed from the device.
+19. Click on the **Commands** view. Type any text message in the "String to send" box and click on the **Run** button. To see the response from the device, click on the **command history** link (located just underneath the **Run** button). You should see that the response was received "now" (i.e. within the last minute) and that the correct message was echoed from the device.
 
     <img src=".//media/image92.png" width=299 />
     <img src=".//media/image93.png" width=250 />
+
+NOTE: You can access any of your IoT Central applications in the future by accessing the [IoT Central Portal](https://apps.azureiotcentral.com).
 
 ## Adding Extra Sensors to the Embedded Firmware Example
 

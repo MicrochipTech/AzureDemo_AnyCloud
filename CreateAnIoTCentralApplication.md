@@ -22,4 +22,4 @@ IoT Central allows you to create an application dashboard to monitor the telemet
 
         <img src=".//media/image80d.png">
         
-3. Click the `Create` button (the application will be automatically saved in your [IoT Central Portal](https://apps.azureiotcentral.com))
+3. Click the `Create` button (the application will be automatically saved in your [IoT Central Portal](https://apps.azureiotcentral.com)). You can access the newly-created application (and the rest of your IoT Central applications) in the future by accessing the [link]((https://apps.azureiotcentral.com)) to the IoT Central Portal.
