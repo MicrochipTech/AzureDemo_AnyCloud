@@ -14,9 +14,7 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 
     <img src=".//media/AnyCloud_Boards.png" width=500/>
 
-* [USB-to-UART Serial Adapter/Bridge/Converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter) (for serial interface connection between PC and the AnyCloud™ Serial Bridge board)
-
-    NOTE: The [USB I2C Click](https://www.mikroe.com/usb-i2c-click) board from [mikroElektronika](https://www.mikroe.com) would work nicely as it connects directly into the mikroBUS™ socket (and make sure the Click board's jumpers are soldered for UART operation; mikroElektronika can accommodate special requests when ordering this board by adding the request to the online order when going through their website)
+* [USB-to-UART Serial Adapter/Bridge/Converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter) (for serial interface connection between PC and the AnyCloud™ Serial Bridge board). We recommend using the [USB I2C Click](https://www.mikroe.com/usb-i2c-click) board from [MikroElektronika](https://www.mikroe.com) as it connects directly into the mikroBUS™ socket.
 
 * Host MCU Development Board: [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A)
 
@@ -94,7 +92,7 @@ COM_PORT = "COM4"
 Alternatively for MacOS users - the COM_PORT setting may look something like
 
 ```bash
-COM_PORT = "/dev/tty.usbserial-A51MXHIL"
+COM_PORT = "/dev/tty.usbmodem1433201"
 ```
 
 #### 1.3 Navigate to the [/certificates](./certificates/) directory. Open the `WFI32_ClientCert.py` script and repeat the same process for setting the `COM_PORT` variable. After saving the changes, close the file and then reopen the file to confirm that the COM port was correctly updated. In the same directory, repeat this COM port setting in **both** the `WFI32_RootCert.py` and `WFI32_SignerCert.py` scripts. Confirm that all 3 Python scripts have been updated correctly.  
