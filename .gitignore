@@ -73,3 +73,5 @@ examples/WBZ451_AnyCloud/firmware/WBZ451_AnyCloud_Multimeter.X/.generated_files
 # Backup files
 *.bak
 /examples/WBZ451_AnyCloud/firmware/WBZ451_AnyCloud.X/dist/
+/examples/PIC18F57Q84_AnyCloud/PIC18F57Q84_AnyCloud.X/build/
+/examples/PIC18F57Q84_AnyCloud/PIC18F57Q84_AnyCloud.X/dist/
