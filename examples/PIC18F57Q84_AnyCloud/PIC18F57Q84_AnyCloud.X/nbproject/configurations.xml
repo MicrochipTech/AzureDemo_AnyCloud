@@ -109,7 +109,7 @@
         <platform>4</platform>
       </toolsSet>
       <packs>
-        <pack name="PIC18F-Q_DFP" vendor="Microchip" version="1.14.237"/>
+        <pack name="PIC18F-Q_DFP" vendor="Microchip" version="1.15.360"/>
       </packs>
       <ScriptingSettings>
       </ScriptingSettings>
@@ -248,6 +248,8 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-1ffff"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="/Users/c14166/MicrochipTech/AzureDemo_AnyCloud/examples/PIC18F57Q84_AnyCloud/PIC18F57Q84_AnyCloud.X/debug/default/PIC18F57Q84_AnyCloud_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
@@ -316,8 +318,6 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-1ffff"/>
         <property key="poweroptions.powerenable" value="false"/>
-        <property key="programmerToGoFilePath"
-                  value="/Users/c14166/MicrochipTech/AzureDemo_AnyCloud/examples/PIC18F57Q84_AnyCloud/PIC18F57Q84_AnyCloud.X/debug/default/PIC18F57Q84_AnyCloud_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"

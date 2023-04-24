@@ -16,9 +16,11 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 
 * [USB-to-UART Serial Adapter/Bridge/Converter](https://www.newark.com/c/cable-wire-cable-assemblies/cable-assemblies/usb-adapter-cables?conversion-type=usb-to-uart-converter) (for serial interface connection between PC and the AnyCloud™ Serial Bridge board). We recommend using the [USB I2C Click](https://www.mikroe.com/usb-i2c-click) board from [MikroElektronika](https://www.mikroe.com) as it connects directly into the mikroBUS™ socket.
 
-* Host MCU Development Board: [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A)
+* Host MCU Development Board: [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A) or [PIC18F57Q84 Curiosity Nano Evaluation Kit](https://www.microchip.com/en-us/development-tool/DM182030)
 
     <img src=".//media/WBZ451_Curiosity.png" width=300/>
+
+    <img src=".//media/PIC18F57Q84_CNANO.jpeg" width=300/>
 
 ## Software Prerequisites / Tools Installation
 
@@ -30,6 +32,10 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 6. Microchip `MPLAB X IDE` tool chain for embedded code development on 32-bit architecture MCU/MPU platforms (made up of 3 major components)
 
     - [MPLAB X IDE (minimum v6.05)](https://www.microchip.com/mplab/mplab-x-ide) (when prompted, enable the installation of the [MPLAB IPE](https://www.microchip.com/en-us/tools-resources/production/mplab-integrated-programming-environment) too)
+
+    - [MPLAB XC8 Compiler (minimum v2.41)](https://www.microchip.com/en-us/development-tools-tools-and-software/mplab-xc-compilers#tabs)
+
+        NOTE: This demonstration project was tested successfully with XC8 v2.41, and in general should work with later versions of the compiler as they become available. If you encounter issues building the project with a newer version of the compiler, it is recommended to download XC32 v4.20 from the [MPLAB Development Ecosystem Downloads Archive](https://www.microchip.com/en-us/tools-resources/archives/mplab-ecosystem) (to fall back to the version Microchip successfully tested prior to release). 
 
     - [MPLAB XC32 Compiler (minimum v4.20)](https://www.microchip.com/en-us/development-tools-tools-and-software/mplab-xc-compilers#tabs)
 
@@ -270,13 +276,13 @@ From here, notice two items are expected in the response payload - a "status" st
 
 NOTE: You can access any of your IoT Central applications in the future by accessing the [IoT Central Portal](https://apps.azureiotcentral.com).
 
-**[OPTIONAL] (recommended for a future time)** [Click here](PythonScriptDeepDive.md) for a detailed deep dive into what each operation in the Python script is doing with respect to the AT command set implemented by the AnyCloud™ firmware.
+**[OPTIONAL] (recommended for a future time)** Click [here](PythonScriptDeepDive.md) for a detailed deep dive into what each operation in the Python script is doing with respect to the AT command set implemented by the AnyCloud™ firmware.
 
 ## Setting Up the Actual Embedded Firmware Example
 
-Now that we've successfully run Python scripts on a PC to emulate all of the necessary transactions an IoT device would need to emulate a WBZ451 Curiosity device model, we can now run a "real" embedded firmware example that's programmed onto the actual [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A).
+Now that we've successfully run Python scripts on a PC to emulate all of the necessary transactions an IoT device would need to emulate a WBZ451 Curiosity device model, we can now run a "real" embedded firmware example that's programmed onto the actual [WBZ451 Curiosity Board](https://www.microchip.com/en-us/development-tool/EV96B94A) (if using the [PIC18F57Q84 Curiosity Nano Evaluation Kit](https://www.microchip.com/en-us/development-tool/DM182030) as the Host MCU board, click [here](PIC18F57Q84_CNANO.md)).
 
-1. Press the reset button on the AnyCloud™ serial bridge board
+1. Press the RESET (or MCLR) button on the AnyCloud™ serial bridge board
     - WFI32-IoT Development Board: `RESET`
     - PIC32 WFI32E Curiosity Board: `MCLR`
 
