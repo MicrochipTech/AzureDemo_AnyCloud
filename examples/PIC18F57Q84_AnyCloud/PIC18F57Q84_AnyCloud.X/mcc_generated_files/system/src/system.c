@@ -47,7 +47,8 @@ void SYSTEM_Initialize(void)
     Timer0_Initialize();
     UART1_Initialize();
     UART2_Initialize();
-    ADCC_Initialize();
+    ADC_Initialize();
+    FVR_Initialize();
     INTERRUPT_Initialize();
 }
 

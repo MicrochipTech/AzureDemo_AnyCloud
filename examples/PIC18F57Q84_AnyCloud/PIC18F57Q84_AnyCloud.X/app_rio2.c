@@ -29,6 +29,7 @@
 #include "mcc_generated_files/system/system.h"
 #include "app_rio2_config.h"
 #include "string.h"
+#include "temperature.h"
 #include <stdbool.h>
 //#include "definitions.h"
 //#include "config/default/peripheral/gpio/plib_gpio.h"                // SYS function prototypes
@@ -54,7 +55,7 @@
  Application strings and buffers are be defined outside this structure.
  */
 
-//extern APP_DATA appData;
+extern APP_DATA appData;
 
 // *****************************************************************************
 // *****************************************************************************
@@ -749,6 +750,7 @@ void APP_RIO2_Initialize(void) {
     /* TODO: Initialize your application's state machine and other
      * parameters.
      */
+    TEMPERATURE_init();
 }
 
 /******************************************************************************
@@ -895,29 +897,21 @@ static INIT_STRUCT mqttCmdTbl[] = {
 
 char largeBuffer[500];
 
-void APP_RIO2_Tasks(void) {
-
-
-
-
-
+void APP_RIO2_Tasks(void)
+{
+    char buffer1[50];
+                        
     static uint16_t count, byteRcvd;
-
     static char *jsonPayloadResponse;
-
-
     static uint32_t myDelay, myPUBDelay = -1;
-
-
     static char mqttRCVMessage[100] = "Default POR Msg";
     //static bool connected2IoTCentral;
-
     static char valueIP4[5], valueIP3[5], valueIP2[5], valueIP1[5];
     static uint8_t telemetryInterval = 10;
 
     echoTerminal2RIO();
     /***********   PIC18    ***************/
-    static bool SwLastState;
+    static bool SwLastState, SwPressFlag = false;
     static uint16_t temperatureValue;
     static uint32_t gDelay;
 
@@ -930,23 +924,11 @@ void APP_RIO2_Tasks(void) {
         {
             // We just caught the falling edge
             press_count++;
+            SwPressFlag = true;
         }
     }
 
-    //ADCC_StartConversion(channel_Temp);
-    //while (!ADCC_IsConversionDone());
-    uint8_t offset;
-    uint16_t gain;
-
-    //gain = *(0x2C0024);
-    //offset = *(0x2C0026);
-    FVRCONbits.TSEN = 1;
-    ADCC_GetSingleConversion(channel_Temp);
-    temperatureValue = ADCC_GetConversionResult();
-    temperature = (((temperatureValue * gain) / 256.0) + offset) / 10.0;
     static uint8_t ledState;
-
-
 
     /***********   PIC18   ***************/
 
@@ -1618,8 +1600,8 @@ void APP_RIO2_Tasks(void) {
 
 
 #endif
-#define PUBSTATESNUM_INIT 2
-#define PUBSTATESNUM_TOTAL 6
+#define PUBSTATESNUM_INIT 2 // This should *not* change
+#define PUBSTATESNUM_TOTAL 4 // This can be changed with less/more publish states
 
         case APP_MQTT_STATE_PUBLISH:
         {
@@ -1631,84 +1613,52 @@ void APP_RIO2_Tasks(void) {
             static uint8_t pubState;
 
             switch (pubState) {
-                case 0:
-                {//Get TWIN state   !!!!!!!!
-                    //char buffer1[50];
+                case 0: // Get the Device Twin's information
+                {
                     strcpy(buffer, "AT+MQTTPUB=0,0,0,\"$iothub/twin/GET/?$rid=getTwin\",\"\"\n\r");
-
                     pubState++;
                     break;
                 }
                 case 1:
                 {
                     sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_PROPERTIES"\",\""PUB_PAYLOAD_IP"\"\r\n", valueIP4, valueIP3, valueIP2, valueIP1);
-
                     pubState = PUBSTATESNUM_TOTAL;
                     break;
                 }
-                    /* Each publish state above is only executed once after reset */
-                    /* Start of Telemetry Loop which should get updated on every "telemetryInterval" seconds */
+                /* Each publish state above is only executed once after reset */
+                /* From here, this is the start of telemetry loop which should execute on every "telemetryInterval" seconds */
                 case PUBSTATESNUM_INIT:
                 {
-                    char buffer1[50];
-                    strcpy(buffer, "AT+MQTTPUB=0,0,0,\"$iothub/twin/PATCH/properties/reported/?rid=user_LED\",\"{");
-                    //                    sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "rgb_led_red", RED_LED_Get() == 0 ? 0 : 100);
-                    //                    strcat(buffer, buffer1);
-                    //                    strcat(buffer, ",");
-                    //                    sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "rgb_led_green", GREEN_LED_Get() == 0 ? 0 : 100);
-                    //                    strcat(buffer, buffer1);
-                    //                    strcat(buffer, ",");
-                    //                    sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "rgb_led_blue", BLUE_LED_Get() == 0 ? 0 : 100);
-                    //                    strcat(buffer, buffer1);
-                    //                    strcat(buffer, ",");
-                    extern APP_DATA appData;
-                    sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "led_user", appData.LED_user);
-                    strcat(buffer, buffer1);
-                    strcat(buffer, "}\"\r\n");
-
+                    if (SwPressFlag == true) // If SW0 button was pressed, send button telemetry event
+                    {
+                        sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\"{\\\"button_event\\\":{\\\"button_name\\\":\\\"SW0\\\",\\\"press_count\\\":%d}}\"\r\n", thingID, press_count);
+                        SwPressFlag = false;
+                    }
+                    else // ...otherwise just update the User LED state
+                    {
+                        strcpy(buffer, "AT+MQTTPUB=0,0,0,\"$iothub/twin/PATCH/properties/reported/?rid=user_LED\",\"{");
+                        sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "led_user", appData.LED_user);
+                        strcat(buffer, buffer1);
+                        strcat(buffer, "}\"\r\n");
+                    }
                     pubState++;
                     break;
                 }
-                case (PUBSTATESNUM_TOTAL - 3): /* Only this state (just before the final state) can be empty */
+                case (PUBSTATESNUM_TOTAL - 1): /* Only this state (just before the final state) can do nothing */
                 {
-                    //sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\"{\\\"button_event\\\":%s}\"\r\n", thingID, (SW0) ? "1" : "0");
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\"{\\\"button_event\\\":{\\\"button_name\\\":\\\"SW0\\\",\\\"press_count\\\":%d}}\"\r\n", thingID, press_count);
-
+                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\""PUB_AZURE_PAYLOAD_TELEMETRY_TEMPERATURE"\"\r\n", thingID, (float)TEMPERATURE_readDegC());                  
                     pubState++;
                     break;
                 }
-                case (PUBSTATESNUM_TOTAL - 2):
-                {
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\""PUB_AZURE_PAYLOAD_TELEMETRY_TEMPERATURE"\"\r\n", thingID, temperature);
-                    pubState++;
-                    break;
-                }
-                case (PUBSTATESNUM_TOTAL - 1): /* Only this state (just before the final state) can be empty */
-                {
-#ifdef MULTIMETER_CLICK
-                    float MULTIMETER_getVoltage(void);
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\"{\\\"MULTIMETER_voltage\\\":%f}\"\r\n", thingID, MULTIMETER_getVoltage());
-
-                    pubState++;
-                    break;
-#endif /* MULTIMETER_CLICK */
-                }
-
                 case PUBSTATESNUM_TOTAL:
                 {
                     pubState = PUBSTATESNUM_INIT;
                     sprintf(buffer, "\r\n");
                     app_rio2Data.state = APP_RIO2_STATE_SOCKET_IDLE;
                     myPUBDelay = getTick() + telemetryInterval * SECOND;
-
                     break;
                 }
-
-
-
-
             }
-
 #endif
 #ifdef USE_AWS
 

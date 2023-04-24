@@ -47,7 +47,8 @@
 #include "../timer/tmr0.h"
 #include "../uart/uart1.h"
 #include "../uart/uart2.h"
-#include "../../adcc.h"
+#include "../adc/adc.h"
+#include "../fvr/fvr.h"
 #include "../system/interrupt.h"
 
 /**

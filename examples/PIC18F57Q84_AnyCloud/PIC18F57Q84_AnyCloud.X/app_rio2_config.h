@@ -274,18 +274,9 @@ APP_RIO2_DATA app_rio2Data;
 #define PORT "8883"  //TLS PORT 8886 uses ISRGRootX1.pem from Free CA signer "Let's Encrypt"  https://letsencrypt.org/certificates/
 #define TLSENABLE "1"
 
-#define MY_THING_ID "sn0123CFAD012DAB3401"//"sn0123C2DB36BBC7C501"//"sn0123BF8C8062EBEF01"  F01 is IoT Board, 501 is Curiosity board
+#define MY_THING_ID "sn0123CFAD012DAB3401"
 #define ID_SCOPE "0ne009F1E82"
-
-//#define MULTIMETER_CLICK // Comment out if no Multimeter click is installed
-#ifdef MULTIMETER_CLICK
-#define MODEL_ID "dtmi:com:Microchip:PIC18F57Q84_CNANO_Multimeter;1"
-#else
 #define MODEL_ID "dtmi:com:Microchip:PIC18F57Q84_CNANO;1"
-#endif /* MULTIMETER_CLICK */
-
-//#define MODEL_ID "dtmi:com:Microchip:WBZ451_Curiosity_Multimeter;1"
-//#define MODEL_ID "dtmi:wbz451Wfi32Anycloud:Test_4c;1"
 #define CLIENTID MY_THING_ID
 #define BROKER_USER_NAME ID_SCOPE"/registrations/"CLIENTID"/api-version=2019-03-31"
 
