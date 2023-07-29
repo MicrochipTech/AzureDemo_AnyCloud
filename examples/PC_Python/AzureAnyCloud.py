@@ -4,7 +4,7 @@ import kbhit
 import json
 
 # COM port setting
-COM_PORT = "your_COM_Port"
+COM_PORT = "your_COM_PORT"
 
 # WiFI Credentials
 SSID = "your_SSID"
@@ -15,15 +15,19 @@ ID_SCOPE = "your_ID_SCOPE"
 DEVICE_ID = "your_DEVICE_ID"
 MODEL_ID = "dtmi:com:Microchip:WBZ451_Curiosity;1"
 
+# Server Root Cert File Name
+ROOT_CERT_FILENAME = "DigiCert Global Root G2.pem"
+
 # -----------------------------------------------------------------------------
 # Application States
 APP_STATE_INIT = 0
-APP_STATE_WIFI_CONNECT = 1
-APP_STATE_DPS_REGISTER = 2
-APP_STATE_IOTC_CONNECT = 3
-APP_STATE_IOTC_GET_DEV_TWIN = 4
-APP_STATE_IOTC_HELLO_AZURE = 5
-APP_STATE_IOTC_DEMO = 6
+APP_STATE_ROOT_CERT_UPDATE = 1
+APP_STATE_WIFI_CONNECT = 2
+APP_STATE_DPS_REGISTER = 3
+APP_STATE_IOTC_CONNECT = 4
+APP_STATE_IOTC_GET_DEV_TWIN = 5
+APP_STATE_IOTC_HELLO_AZURE = 6
+APP_STATE_IOTC_DEMO = 7
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
@@ -120,6 +124,9 @@ class AnyCloud:
     self.rid = 0                         # request id field used by some publish commands.
                                          #   incremented between publishing attempts
     self.sub_payload = ""                # application serial buffer used to process received data.
+    
+    # root certificate update variables
+    self.root_cert_state = 0
        
     # wifi connection related variables
     self.wifi_state = 0                  # state variable for wifi initialization
@@ -133,7 +140,7 @@ class AnyCloud:
    
     # IOTC connection variables
     self.iotc_connect_state = 0          # state variable for IOTC connection
-    self.iotc_topic_index = 1;           # tracks how many topics have been subscribed to for
+    self.iotc_topic_index = 1            # tracks how many topics have been subscribed to for
                                          # iotc event call back to adjust the state variable.
                                          
     # IOTC Hello World variables
@@ -232,11 +239,14 @@ class AnyCloud:
     else :
       print("Event: WiFi not connected, initialializing")
   
+  def evt_cert_uploaded(self):
+    self.root_cert_state = 254
+    print("certificate uploaded successfully")
+    
   def evt_dps_broker_connected(self):
-     #self.wifi_state = 254
-     self.dps_state = 7
-     self.broker_connected = True
-     print("Event: MQTT broker connected")
+    self.dps_state = 7
+    self.broker_connected = True
+    print("Event: MQTT broker connected")
   
   def evt_dps_topic_subscribed(self):
     print("\r\nEvent: Subscribed to DPS topics, publish registration request....\r\n")
@@ -318,34 +328,12 @@ class AnyCloud:
   def evt_iotc_property_received(self):
     print("\r\nproperty updated from IoT Central")
     (topic,payload) = self.processTopicNotification(self.sub_payload)
-    
-    #retVal = self.propertyIntResponse("property_3", topic, payload)
-    #if retVal != None :
-    #  print("\r\nNo property_3 feature implemented in script\r\n")
-    
-    #retVal = self.propertyIntResponse("property_4", topic, payload)
-    #if retVal != None :
-    #  print("\r\nNo property_4 feature implemented in script\r\n")
-    
-    #retVal = self.propertyIntResponse("disableTelemetry", topic, payload)
-    #if retVal != None :
-    #  print("\r\nDisable telemetry feature not implemented in script\r\n")
-    
+        
     retVal = self.propertyIntResponse("telemetryInterval", topic, payload)
     if retVal != None :
       self.telemetryInterval = retVal
       print("\r\nTelemetry updating at the new telemetry interval\r\nCheck Raw Data tab to verify\r\n")
     
-#    retVal = self.propertyIntResponse("led_y", topic, payload)
-#   if retVal != None :
-#     if retVal == 1 :
-#       print("yellow LED is ON\r\n")
-#     elif retVal == 2 :
-#       print("yellow LED is OFF\r\n")
-#     elif retVal == 3 :
-#       print("yellow LED is Blinking\r\n")
-#     else :
-#       print("invalid yellow LED setting received\r\n")
     
     retVal = self.propertyIntResponse("led_user", topic, payload)
     if retVal != None :
@@ -397,10 +385,60 @@ class AnyCloud:
     
     self.sub_payload = ""
     
+  def sm_update_root_cert(self):
+      self.delay.delay_time_start()
+      if self.delay.delay_sec_poll(1.0) :
+        # enable serial command echo
+        if self.root_cert_state == 0:
+          self.cmd_issue('ATE1\r\n')
+          self.root_cert_state = self.root_cert_state + 1
+          return self.root_cert_state  
+        if self.root_cert_state == 1:        
+          if ROOT_CERT_FILENAME != "" :
+            try:
+              fRootCert = open(ROOT_CERT_FILENAME, "r")
+            except FileNotFoundError:    
+              print("Certificate file \"" + ROOT_CERT_FILENAME + "\" not found on disk\r\nPlease update ROOT_CERT_FILENAME at the top of the script")
+              exit()
+            self.bufRootCert = fRootCert.read()
+            bufSize = len(self.bufRootCert)
+            print(ROOT_CERT_FILENAME + " certificate file found, " + str(bufSize) + " bytes")
+            print(self.bufRootCert)
+            self.cmd_issue('AT+LOADCERT=' +str(bufSize) + ',\"' + ROOT_CERT_FILENAME +'\"\r\n')
+            self.root_cert_state = self.root_cert_state + 1
+          else:
+            print("No root certificate file specified to load. If an updated root certificate is required\r\n" \
+                + "specify a PEM certificate filename using the ROOT_CERT_FILENAME variable at the top of the script")
+            self.root_cert_state = 254
+          return self.root_cert_state
+        
+        if self.root_cert_state == 2: 
+          print("send cert...")
+          self.cmd_issue(self.bufRootCert)
+          self.root_cert_state = self.root_cert_state + 1
+          return self.root_cert_state
+
+        if self.root_cert_state == 3:
+          self.cmd_issue("AT+READCERT=3\r\n")        
+          self.root_cert_state = self.root_cert_state + 1
+          return self.root_cert_state
+
+        if self.root_cert_state == 4:
+          # wait for +LOADCERT:0 response to continue.  
+          # state will be moved to 254 by serial message processing callback
+          return self.root_cert_state
+        
+        if self.root_cert_state == 254:
+          # wait for +LOADCERT:0 response to continue
+          return self.root_cert_state
+        else:
+          return 255
+
+
   def sm_wifi_init(self):
       # start initialization
       if self.wifi_state == 0:
-        print("\r\nStart Initialization...\r\n.............................\r\n")
+        print("\r\nWiFi Initialization...\r\n.............................\r\n")
         self.wifi_state = 1
       self.delay.delay_time_start()
       if self.delay.delay_sec_poll(0.100) :
@@ -621,11 +659,15 @@ class AnyCloud:
     if ("ATE1" in received) and ("ERROR:" in received) :
       self.evt_handler = self.evt_init_error
       retval = 0 #error state
-    
+     
     if ("AT+WSTAC" in received) and ("ERROR:" in received) :
       self.evt_handler = self.evt_init_error
       retval = 0 #error state
-    
+
+    if ("+LOADCERT:0" in received) :
+      self.evt_handler = self.evt_cert_uploaded
+      retval = 1 #operating state
+      
     if ("+WSTA:1" in received) :
       self.wifi_connected = True
       self.evt_handler = self.evt_wifi_connected
@@ -646,7 +688,7 @@ class AnyCloud:
     
     if ("+MQTTCONN:0" in received) :
       print("\r\nBroker disconnected....\r\n");
-      if self.app_state == 3 :
+      if self.app_state == APP_STATE_IOTC_CONNECT :
         self.iotc_connect_state = 1
       ret_val = 1 #operating state
       
@@ -663,7 +705,6 @@ class AnyCloud:
       elif self.app_state == APP_STATE_IOTC_CONNECT :
         self.evt_handler = self.evt_iotc_topic_subscribed     
       ret_val = 1
-      
     
     if "+MQTTPUB:" in received :
       if TOPIC_DPS_RESULT[:(len(TOPIC_DPS_RESULT)-2)] in received:
@@ -682,8 +723,7 @@ class AnyCloud:
         if self.sub_payload == "" :
           self.sub_payload = received
           self.evt_handler = self.evt_iotc_property_download
-          
-          
+               
           TOPIC_IOTC_PROPERTY_RES
       ret_val = 1 #operating state
   
@@ -745,8 +785,15 @@ class AnyCloud:
       print("Starting the AnyCloud Azure IoT Central Demonstration")
       print("--------------------------------------------------------------------------------\r\n")
       print('\r\nPress ESC to Exit the script')
-      self.app_state = APP_STATE_WIFI_CONNECT
-    
+      # change to APP_STATE_WIFI_CONNECT to skip loading additional root certificate 
+      self.app_state = APP_STATE_ROOT_CERT_UPDATE
+      
+    elif self.app_state == APP_STATE_ROOT_CERT_UPDATE:
+      cert_resp = self.sm_update_root_cert()
+      if cert_resp == 254 :
+        print("\r\nStart WiFi Initialization...\r\n")
+        self.app_state = APP_STATE_WIFI_CONNECT
+      
     elif self.app_state == APP_STATE_WIFI_CONNECT:  # init AnyCloud
       init_resp = self.sm_wifi_init()
       if init_resp == 254 :
@@ -757,6 +804,7 @@ class AnyCloud:
       sub_resp = self.sm_dps_register()
       if sub_resp == 254 :
         print("\r\nRegistration complete, connect to Azure IoT Central\r\n")
+        print(self.iotc_connect_state)
         self.app_state = APP_STATE_IOTC_CONNECT
     
     elif self.app_state == APP_STATE_IOTC_CONNECT:

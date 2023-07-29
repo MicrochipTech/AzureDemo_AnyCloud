@@ -4,8 +4,8 @@ __pycache__/
 *$py.class
 
 # PEM file for module's individual certificate.
-*.PEM
-*.cer
+#*.PEM
+#*.cer
 
 # Prerequisites
 *.d
