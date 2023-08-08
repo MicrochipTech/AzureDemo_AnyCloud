@@ -128,8 +128,8 @@ APP_RIO2_DATA app_rio2Data;
 #define PORT "8883"  //TLS PORT 8886 uses ISRGRootX1.pem from Free CA signer "Let's Encrypt"  https://letsencrypt.org/certificates/
 #define TLSENABLE "1"
 
-#define MY_THING_ID "MY_COMMON_NAME"// e.g. "sn012319AAC99CF42A01"
-#define ID_SCOPE "MY_ID_SCOPE" // e.g. "0ne007F418E"
+#define MY_THING_ID "MY_COMMON_NAME"// e.g. "sn0123BF97C8F333A401"
+#define ID_SCOPE "MY_ID_SCOPE" // e.g. "0ne00A9A15D"
 
 //#define MULTIMETER_CLICK // Comment out if no Multimeter click is installed
 #ifdef MULTIMETER_CLICK

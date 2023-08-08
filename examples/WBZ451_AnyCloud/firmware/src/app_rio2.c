@@ -56,6 +56,31 @@
 
 extern APP_DATA appData;
 
+#define CERT  "-----BEGIN CERTIFICATE-----\n\
+MIIDjjCCAnagAwIBAgIQAzrx5qcRqaC7KGSxHQn65TANBgkqhkiG9w0BAQsFADBh\n\
+MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\n\
+d3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBH\n\
+MjAeFw0xMzA4MDExMjAwMDBaFw0zODAxMTUxMjAwMDBaMGExCzAJBgNVBAYTAlVT\n\
+MRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j\n\
+b20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IEcyMIIBIjANBgkqhkiG\n\
+9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuzfNNNx7a8myaJCtSnX/RrohCgiN9RlUyfuI\n\
+2/Ou8jqJkTx65qsGGmvPrC3oXgkkRLpimn7Wo6h+4FR1IAWsULecYxpsMNzaHxmx\n\
+1x7e/dfgy5SDN67sH0NO3Xss0r0upS/kqbitOtSZpLYl6ZtrAGCSYP9PIUkY92eQ\n\
+q2EGnI/yuum06ZIya7XzV+hdG82MHauVBJVJ8zUtluNJbd134/tJS7SsVQepj5Wz\n\
+tCO7TG1F8PapspUwtP1MVYwnSlcUfIKdzXOS0xZKBgyMUNGPHgm+F6HmIcr9g+UQ\n\
+vIOlCsRnKPZzFBQ9RnbDhxSJITRNrw9FDKZJobq7nMWxM4MphQIDAQABo0IwQDAP\n\
+BgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBhjAdBgNVHQ4EFgQUTiJUIBiV\n\
+5uNu5g/6+rkS7QYXjzkwDQYJKoZIhvcNAQELBQADggEBAGBnKJRvDkhj6zHd6mcY\n\
+1Yl9PMWLSn/pvtsrF9+wX3N3KjITOYFnQoQj8kVnNeyIv/iPsGEMNKSuIEyExtv4\n\
+NeF22d+mQrvHRAiGfzZ0JFrabA0UWTW98kndth/Jsw1HKj2ZL7tcu7XUIOGZX1NG\n\
+Fdtom/DzMNU+MeKNhJ7jitralj41E6Vf8PlwUHBHQRFXGU7Aj64GxJUTFy8bJZ91\n\
+8rGOmaFvE7FBcf6IKshPECBV1/MUReXgRPTqh5Uykw7+U0b6LJ3/iyK5S9kJRaTe\n\
+pLiaWN0bfVKfjllDiIGknibVb63dDcY3fe0Dkhvld1927jyNxF1WW6LZZm6zNTfl\n\
+MrY=\n\
+-----END CERTIFICATE-----\n"
+
+const uint8_t DigiCertGlobalRootG2[] = CERT;
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Application Callback Functions
@@ -133,7 +158,7 @@ uint16_t GetNextLineUntil_CRLF(char *dataBuffer) {
 bool gRDY, gOK, gATE, gGMM, gCFG, gTIME, gSOCKO, gSOCKCL, gWSTALU, gWSTALD, gDNSRESOLV,
 gSOCKIND, gSOCKLST, gSOCKRXT, gSOCKRD, gSOCKRXU, gWSTAAIP, gWAPAIP,
 gMQTTCONN, gMQTTPUB, gMQTTSUB, gMQTTPUBACC, gMQTTPUBCOMP, gMQTTPUBERR,
-gSOCKWR_Error, gSOCKID_Error, gWSCNDONE, gWSCNIND;
+gSOCKWR_Error, gSOCKID_Error, gWSCNDONE, gWSCNIND, gLOADCERT;
 
 char *resultPtrRDY, *resultPtrOK, *resultPtrGMM, *resultPtrCFG,
 *resultPtrTIME, *resultPtrSOCKO, *resultPtrSOCKCL, *resultPtrWSTALU,
@@ -639,6 +664,7 @@ static ATCMD_RESPONSE ATCmdResponseTbl[] = {
     { "+GMM=", &gGMM, atCmdRespHandler, CMD_MODEL, &resultPtrGMM}, //  +GMM:<MODEL_ID>
     { "+CFG:", &gCFG, atCmdRespHandler, CMD_MAC_ADDR_HOST_NAME, &resultPtrCFG}, //  +CFG:<param_id>,<param_val>   1	<MAC_ADDR>	String	The MAC address of the device (Read Only)  2	<DEVICE_NAME>	String	The device name
     { "+TIME:", &gTIME, atCmdRespHandler, CMD_TIME, &resultPtrTIME}, //  +TIME:<TIME_FORMAT>,<TIME>  //<1 - UNIX timestamp>  <2 - NTP time>  <3 - RFC3338 / ISO-8601 string format>
+    { "+LOADCERT:0", &gLOADCERT, NULL, (event_type_enu) NULL, false},
 
     { "+WSTALU:", &gWSTALU, wifi_cb, M2M_WIFI_CONNECTED, &resultPtrWSTALU}, //+WSTALU: <ASSOC_ID>,<BSSID>,<CHANNEL>
     { "+WSTALD:", &gWSTALD, wifi_cb, M2M_WIFI_DISCONNECTED, &resultPtrWSTALD}, //+WSTALD: <ASSOC_ID>
@@ -1122,11 +1148,77 @@ void APP_RIO2_Tasks(void) {
                 printf("IP is => %s.%s.%s.%s\r\n", valueIP4, valueIP3, valueIP2, valueIP1);
 
 
-                app_rio2Data.state = app_rio2Data.state = APP_MQTT_STATE_INIT_MQTT; //APP_RIO2_STATE_OPEN_TCP_SOCKET;
+                app_rio2Data.state = app_rio2Data.state = APP_RIO2_STATE_AZURE_LOADCERT_DIGICERT_GLOBAL_ROOT_2;//APP_MQTT_STATE_INIT_MQTT; //APP_RIO2_STATE_OPEN_TCP_SOCKET;
                 gOK = true; //Force OPEN_TCP_SOCKET
             }
             break;
         }
+/*
+ Adding LOADCERT for new DigiCert Global G2 Root certificate
+ */
+        case APP_RIO2_STATE_AZURE_LOADCERT_DIGICERT_GLOBAL_ROOT_2:
+        {
+            uint8_t buffer[100], byte;
+            if (!gOK)
+                break;
+            gOK = false;
+                
+            
+            sprintf(buffer, "AT+LOADCERT=%d,\"DigiCertGlobalRootG2\"\r\n",strlen(DigiCertGlobalRootG2));
+            SERCOM2_USART_Write((uint8_t*) buffer, strlen(buffer));
+            printf_2RIO(("%s",buffer));
+            do{
+                SERCOM2_USART_Read(&byte,1);
+            }while(byte != '#');
+            printf_FRIO(("#"));
+#if (1)            
+            uint16_t i;
+            uint32_t j;
+            for (i= 0; i < strlen(DigiCertGlobalRootG2); i++)
+            {
+                
+                //WriteAnyCloud(&DigiCertGlobalRootG2[i], 1);
+                //WORKAROUND for '+' ESCAPE character not loading properly
+                //if not adding a delay?
+                if(DigiCertGlobalRootG2[i-1]=='+')
+                {
+                    
+                    j = 10000000;
+                    while((j--)); 
+                }
+                SERCOM2_USART_Write(&DigiCertGlobalRootG2[i],1);  //Write to AnyCloud WFI32
+                SERCOM0_USART_Write(&DigiCertGlobalRootG2[i],1);  //Write to console
+                while (SERCOM0_USART_WriteCountGet());            //Wait for console ready!
+//                j = 100000;
+//                    while((j--)); 
+//                    
+//                    uint8_t byte1;
+//                    byte1 = SERCOM2_USART_Read(buffer,sizeof(buffer));
+//                    SERCOM0_USART_Write(buffer,byte1);
+               
+            
+            }
+#else
+            WriteAnyCloud(DigiCertGlobalRootG2, sizeof(DigiCertGlobalRootG2));
+            printf_2RIO(("%s",DigiCertGlobalRootG2));
+ #endif 
+            app_rio2Data.state = APP_RIO2_STATE_AZURE_LOADCERT_ACK;
+            break;
+
+        }
+        case APP_RIO2_STATE_AZURE_LOADCERT_ACK:
+        {
+            if (!gLOADCERT)
+                break;
+            gLOADCERT = false;
+            app_rio2Data.state = APP_MQTT_STATE_INIT_MQTT;//APP_RIO2_STATE_AZURE_RECONNECT;
+            gOK = true;
+            break;
+        }    
+
+/*
+ Adding LOADCERT for new DigiCert Global G2 Root certificate
+ */
 
         case APP_MQTT_STATE_INIT_MQTT:
         {

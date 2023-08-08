@@ -54,9 +54,33 @@
 
  Application strings and buffers are be defined outside this structure.
  */
+//const uint8_t DigiCertGlobalRootG2[] = {0x2D,0X2D,0X2D,0X2D,0X2D,0X42,0X45,0X47,0X49,0X4E,0X20,0X43,0X45,0X52,0X54,0X49,0X46,0X49,0X43,0X41,0X54,0X45,0X2D,0X2D,0X2D,0X2D,0X2D,0X4D,0X49,0X49,0X43,0X49,0X44,0X43,0X43,0X41,0X63,0X57,0X67,0X41,0X77,0X49,0X42,0X41,0X67,0X49,0X51,0X59,0X30,0X48,0X6F,0X61,0X61,0X30,0X45,0X47,0X43,0X72,0X58,0X34,0X43,0X4A,0X38,0X48,0X57,0X7A,0X57,0X6B,0X7A,0X41,0X4B,0X42,0X67,0X67,0X71,0X68,0X6B,0X6A,0X4F,0X50,0X51,0X51,0X44,0X41,0X6A,0X42,0X50,0X4D,0X53,0X45,0X77,0X48,0X77,0X59,0X44,0X56,0X51,0X51,0X4B,0X44,0X42,0X68,0X4E,0X61,0X57,0X4E,0X79,0X62,0X32,0X4E,0X6F,0X61,0X58,0X41,0X67,0X56,0X47,0X56,0X6A,0X61,0X47,0X35,0X76,0X62,0X47,0X39,0X6E,0X65,0X53,0X42,0X4A,0X62,0X6D,0X4D,0X78,0X4B,0X6A,0X41,0X6F,0X42,0X67,0X4E,0X56,0X42,0X41,0X4D,0X4D,0X49,0X55,0X4E,0X79,0X65,0X58,0X42,0X30,0X0A,0X62,0X79,0X42,0X42,0X64,0X58,0X52,0X6F,0X5A,0X57,0X35,0X30,0X61,0X57,0X4E,0X68,0X64,0X47,0X6C,0X76,0X62,0X69,0X42,0X54,0X61,0X57,0X64,0X75,0X5A,0X58,0X49,0X67,0X4D,0X6B,0X4D,0X79,0X4D,0X44,0X41,0X67,0X46,0X77,0X30,0X79,0X4D,0X44,0X45,0X78,0X4D,0X54,0X45,0X77,0X4D,0X7A,0X41,0X77,0X4D,0X44,0X42,0X61,0X47,0X41,0X38,0X79,0X4D,0X44,0X51,0X34,0X4D,0X54,0X45,0X78,0X4D,0X54,0X41,0X7A,0X4D,0X44,0X41,0X77,0X4D,0X46,0X6F,0X77,0X51,0X6A,0X45,0X68,0X4D,0X42,0X38,0X47,0X41,0X31,0X55,0X45,0X43,0X67,0X77,0X59,0X54,0X57,0X6C,0X6A,0X63,0X6D,0X39,0X6A,0X61,0X47,0X6C,0X77,0X49,0X46,0X52,0X6C,0X59,0X32,0X68,0X75,0X62,0X32,0X78,0X76,0X5A,0X33,0X6B,0X67,0X0A,0X53,0X57,0X35,0X6A,0X4D,0X52,0X30,0X77,0X47,0X77,0X59,0X44,0X56,0X51,0X51,0X44,0X44,0X42,0X52,0X7A,0X62,0X6A,0X41,0X78,0X4D,0X6A,0X4D,0X30,0X51,0X6A,0X6C,0X45,0X52,0X55,0X4D,0X34,0X4E,0X6A,0X64,0X47,0X51,0X6B,0X49,0X77,0X4D,0X54,0X42,0X5A,0X4D,0X42,0X4D,0X47,0X42,0X79,0X71,0X47,0X53,0X4D,0X34,0X39,0X41,0X67,0X45,0X47,0X43,0X43,0X71,0X47,0X53,0X4D,0X34,0X39,0X41,0X77,0X45,0X48,0X41,0X30,0X49,0X41,0X42,0X4E,0X76,0X33,0X57,0X57,0X4C,0X58,0X53,0X67,0X44,0X48,0X66,0X72,0X44,0X4E,0X66,0X6D,0X61,0X78,0X69,0X67,0X53,0X48,0X2B,0X7A,0X38,0X35,0X67,0X30,0X51,0X30,0X6B,0X6D,0X48,0X46,0X63,0X56,0X47,0X4F,0X58,0X32,0X75,0X47,0X30,0X65,0X69,0X6E,0X0A,0X78,0X41,0X78,0X6B,0X31,0X51,0X4C,0X6B,0X6F,0X55,0X57,0X63,0X71,0X37,0X35,0X58,0X51,0X6D,0X61,0X4B,0X59,0X79,0X62,0X4F,0X78,0X34,0X6B,0X30,0X31,0X78,0X68,0X74,0X51,0X66,0X2B,0X75,0X46,0X71,0X47,0X6A,0X67,0X59,0X30,0X77,0X67,0X59,0X6F,0X77,0X4B,0X67,0X59,0X44,0X56,0X52,0X30,0X52,0X42,0X43,0X4D,0X77,0X49,0X61,0X51,0X66,0X4D,0X42,0X30,0X78,0X47,0X7A,0X41,0X5A,0X42,0X67,0X4E,0X56,0X42,0X41,0X55,0X54,0X45,0X6D,0X56,0X31,0X61,0X54,0X51,0X34,0X58,0X30,0X55,0X34,0X52,0X55,0X49,0X78,0X51,0X6A,0X49,0X77,0X4D,0X45,0X4E,0X44,0X4D,0X44,0X41,0X4D,0X42,0X67,0X4E,0X56,0X48,0X52,0X4D,0X42,0X41,0X66,0X38,0X45,0X41,0X6A,0X41,0X41,0X4D,0X41,0X34,0X47,0X0A,0X41,0X31,0X55,0X64,0X44,0X77,0X45,0X42,0X2F,0X77,0X51,0X45,0X41,0X77,0X49,0X44,0X69,0X44,0X41,0X64,0X42,0X67,0X4E,0X56,0X48,0X51,0X34,0X45,0X46,0X67,0X51,0X55,0X72,0X30,0X39,0X78,0X2F,0X66,0X41,0X41,0X53,0X2F,0X4F,0X37,0X6C,0X4C,0X70,0X78,0X4C,0X6A,0X44,0X62,0X65,0X6E,0X52,0X69,0X34,0X54,0X45,0X77,0X48,0X77,0X59,0X44,0X56,0X52,0X30,0X6A,0X42,0X42,0X67,0X77,0X46,0X6F,0X41,0X55,0X34,0X73,0X4C,0X6E,0X37,0X6B,0X68,0X46,0X63,0X35,0X48,0X6E,0X46,0X6A,0X65,0X41,0X42,0X49,0X55,0X79,0X55,0X31,0X52,0X6C,0X6E,0X4C,0X38,0X77,0X43,0X67,0X59,0X49,0X4B,0X6F,0X5A,0X49,0X7A,0X6A,0X30,0X45,0X41,0X77,0X49,0X44,0X53,0X51,0X41,0X77,0X52,0X67,0X49,0X68,0X0A,0X41,0X4C,0X4F,0X47,0X2B,0X77,0X39,0X39,0X76,0X70,0X44,0X5A,0X68,0X4A,0X79,0X7A,0X54,0X48,0X67,0X6C,0X58,0X44,0X35,0X55,0X79,0X37,0X68,0X39,0X67,0X73,0X6C,0X74,0X73,0X43,0X4F,0X4C,0X43,0X4E,0X44,0X2F,0X44,0X50,0X52,0X38,0X41,0X69,0X45,0X41,0X76,0X45,0X66,0X34,0X75,0X62,0X30,0X4D,0X5A,0X64,0X7A,0X33,0X51,0X49,0X39,0X2F,0X67,0X6C,0X39,0X54,0X2F,0X30,0X37,0X72,0X79,0X62,0X32,0X4C,0X51,0X4F,0X7A,0X51,0X51,0X4C,0X62,0X56,0X34,0X34,0X4F,0X52,0X47,0X45,0X6F,0X3D,0X2D,0X2D,0X2D,0X2D,0X2D,0X45,0X4E,0X44,0X20,0X43,0X45,0X52,0X54,0X49,0X46,0X49,0X43,0X41,0X54,0X45,0X2D,0X2D,0X2D,0X2D,0X2D};
+#define CERT  "-----BEGIN CERTIFICATE-----\n\
+MIIDjjCCAnagAwIBAgIQAzrx5qcRqaC7KGSxHQn65TANBgkqhkiG9w0BAQsFADBh\n\
+MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\n\
+d3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBH\n\
+MjAeFw0xMzA4MDExMjAwMDBaFw0zODAxMTUxMjAwMDBaMGExCzAJBgNVBAYTAlVT\n\
+MRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j\n\
+b20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IEcyMIIBIjANBgkqhkiG\n\
+9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuzfNNNx7a8myaJCtSnX/RrohCgiN9RlUyfuI\n\
+2/Ou8jqJkTx65qsGGmvPrC3oXgkkRLpimn7Wo6h+4FR1IAWsULecYxpsMNzaHxmx\n\
+1x7e/dfgy5SDN67sH0NO3Xss0r0upS/kqbitOtSZpLYl6ZtrAGCSYP9PIUkY92eQ\n\
+q2EGnI/yuum06ZIya7XzV+hdG82MHauVBJVJ8zUtluNJbd134/tJS7SsVQepj5Wz\n\
+tCO7TG1F8PapspUwtP1MVYwnSlcUfIKdzXOS0xZKBgyMUNGPHgm+F6HmIcr9g+UQ\n\
+vIOlCsRnKPZzFBQ9RnbDhxSJITRNrw9FDKZJobq7nMWxM4MphQIDAQABo0IwQDAP\n\
+BgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBhjAdBgNVHQ4EFgQUTiJUIBiV\n\
+5uNu5g/6+rkS7QYXjzkwDQYJKoZIhvcNAQELBQADggEBAGBnKJRvDkhj6zHd6mcY\n\
+1Yl9PMWLSn/pvtsrF9+wX3N3KjITOYFnQoQj8kVnNeyIv/iPsGEMNKSuIEyExtv4\n\
+NeF22d+mQrvHRAiGfzZ0JFrabA0UWTW98kndth/Jsw1HKj2ZL7tcu7XUIOGZX1NG\n\
+Fdtom/DzMNU+MeKNhJ7jitralj41E6Vf8PlwUHBHQRFXGU7Aj64GxJUTFy8bJZ91\n\
+8rGOmaFvE7FBcf6IKshPECBV1/MUReXgRPTqh5Uykw7+U0b6LJ3/iyK5S9kJRaTe\n\
+pLiaWN0bfVKfjllDiIGknibVb63dDcY3fe0Dkhvld1927jyNxF1WW6LZZm6zNTfl\n\
+MrY=\n\
+-----END CERTIFICATE-----\n"
+
+const uint8_t DigiCertGlobalRootG2[] = CERT;
 
 extern APP_DATA appData;
-
 // *****************************************************************************
 // *****************************************************************************
 // Section: Application Callback Functions
@@ -158,7 +182,7 @@ uint16_t GetNextLineUntil_CRLF(char *dataBuffer) {
 bool gRDY, gOK, gATE, gGMM, gCFG, gTIME, gSOCKO, gSOCKCL, gWSTALU, gWSTALD, gDNSRESOLV,
 gSOCKIND, gSOCKLST, gSOCKRXT, gSOCKRD, gSOCKRXU, gWSTAAIP, gWAPAIP,
 gMQTTCONN, gMQTTPUB, gMQTTSUB, gMQTTPUBACC, gMQTTPUBCOMP, gMQTTPUBERR,
-gSOCKWR_Error, gSOCKID_Error, gWSCNDONE, gWSCNIND;
+gSOCKWR_Error, gSOCKID_Error, gWSCNDONE, gWSCNIND, gLOADCERT;
 
 char *resultPtrRDY, *resultPtrOK, *resultPtrGMM, *resultPtrCFG,
 *resultPtrTIME, *resultPtrSOCKO, *resultPtrSOCKCL, *resultPtrWSTALU,
@@ -664,7 +688,7 @@ static ATCMD_RESPONSE ATCmdResponseTbl[] = {
     { "+GMM=", &gGMM, atCmdRespHandler, CMD_MODEL, &resultPtrGMM}, //  +GMM:<MODEL_ID>
     { "+CFG:", &gCFG, atCmdRespHandler, CMD_MAC_ADDR_HOST_NAME, &resultPtrCFG}, //  +CFG:<param_id>,<param_val>   1	<MAC_ADDR>	String	The MAC address of the device (Read Only)  2	<DEVICE_NAME>	String	The device name
     { "+TIME:", &gTIME, atCmdRespHandler, CMD_TIME, &resultPtrTIME}, //  +TIME:<TIME_FORMAT>,<TIME>  //<1 - UNIX timestamp>  <2 - NTP time>  <3 - RFC3338 / ISO-8601 string format>
-
+    { "+LOADCERT:0", &gLOADCERT, NULL, (event_type_enu) NULL, false},
     { "+WSTALU:", &gWSTALU, wifi_cb, M2M_WIFI_CONNECTED, &resultPtrWSTALU}, //+WSTALU: <ASSOC_ID>,<BSSID>,<CHANNEL>
     { "+WSTALD:", &gWSTALD, wifi_cb, M2M_WIFI_DISCONNECTED, &resultPtrWSTALD}, //+WSTALD: <ASSOC_ID>
     { "+WSTAAIP:", &gWSTAAIP, wifi_cb, M2M_WIFI_REQ_DHCP_CLIENT, &resultPtrWSTAAIP}, //+WSTAAIP:1,"10.0.0.196"
@@ -897,10 +921,9 @@ static INIT_STRUCT mqttCmdTbl[] = {
 
 char largeBuffer[500];
 
-void APP_RIO2_Tasks(void)
-{
+void APP_RIO2_Tasks(void) {
     char buffer1[50];
-                        
+
     static uint16_t count, byteRcvd;
     static char *jsonPayloadResponse;
     static uint32_t myDelay, myPUBDelay = -1;
@@ -916,12 +939,10 @@ void APP_RIO2_Tasks(void)
     static uint32_t gDelay;
 
     // Detect change in state of the SW0 button
-    if (SW0 != SwLastState)
-    {
+    if (SW0 != SwLastState) {
         SwLastState = SW0;
         myPUBDelay = getTick();
-        if (SW0 == 0)
-        {
+        if (SW0 == 0) {
             // We just caught the falling edge
             press_count++;
             SwPressFlag = true;
@@ -1055,18 +1076,17 @@ void APP_RIO2_Tasks(void)
                     if ((getTick() > buttonTick + (SECOND * 2)) && (!once)) {
                         once = true;
                         once1 = false;
-                        printf_BLACK (("Thing Name %s\r\n",MY_THING_ID));
+                        printf_BLACK(("Thing Name %s\r\n", MY_THING_ID));
                         WriteAnyCloud((uint8_t*) "AT+READCERT=1\r\n", strlen("AT+READCERT=1\r\n"));
                         printf_2RIO(((uint8_t*) "AT+READCERT=1\r\n", strlen("AT+READCERT=1\r\n")));
-                        
+
                     }
                     app_rio2Data.state = APP_RIO2_STATE_WAIT_RST;
                     break;
 
                 } else {
                     buttonPress = false;
-                    if (!once1)
-                    {
+                    if (!once1) {
                         once1 = true;
                         app_rio2Data.state = APP_RIO2_STATE_INIT;
                         break;
@@ -1077,7 +1097,9 @@ void APP_RIO2_Tasks(void)
                 printf_2RIO(((uint8_t*) "ATE0\r\n", strlen("ATE0\r\n")));
 
                 app_rio2Data.state = APP_RIO2_STATE_ECHO_OFF;
-                gOK = false;
+                app_rio2Data.state = APP_RIO2_STATE_LOAD_CA_CERT;
+                
+                gOK = true;//false;
                 gATE = false;
                 myDelay = getTick();
 
@@ -1085,6 +1107,13 @@ void APP_RIO2_Tasks(void)
 
             break;
         }
+        case APP_RIO2_STATE_LOAD_CA_CERT:
+        {
+            //if (SW0 == 1 )
+            //    break;
+            app_rio2Data.state = APP_RIO2_STATE_ECHO_OFF;
+        }
+        break;
 
         case APP_RIO2_STATE_ECHO_OFF:
         {
@@ -1204,9 +1233,9 @@ void APP_RIO2_Tasks(void)
                     }
                 }
                 printf_DBG(("AnyCloud IP is => %s.%s.%s.%s\r\n", valueIP4, valueIP3, valueIP2, valueIP1));
-                
+
 #ifdef MQTTCLIENT
-                app_rio2Data.state = APP_MQTT_STATE_INIT_MQTT;
+                app_rio2Data.state = APP_RIO2_STATE_AZURE_LOADCERT_DIGICERT_GLOBAL_ROOT_2;//APP_MQTT_STATE_INIT_MQTT;
                 gOK = true; //Force START INIT MQTT
 #else
                 // TODO LAB2 STEP2 B.3 Change next SM for APP_RIO2_STATE_UDP_SOCKET_CREATE
@@ -1357,6 +1386,58 @@ void APP_RIO2_Tasks(void)
 
 
 #ifdef MQTTCLIENT
+        case APP_RIO2_STATE_AZURE_LOADCERT_DIGICERT_GLOBAL_ROOT_2:
+        {
+            if (!gOK)
+                break;
+            gOK = false;
+                
+            
+            sprintf(buffer, "AT+LOADCERT=%d,\"DigiCertGlobalRootG2\"\r\n",strlen(DigiCertGlobalRootG2));
+            WriteAnyCloud((uint8_t*) buffer, strlen(buffer));
+            printf_2RIO(("%s",buffer));
+            while (AnyCloud_Read() != '#');
+            printf_FRIO(("#"));
+#if (1)            
+            uint16_t i;
+            uint32_t j;
+            for (i= 0; i < strlen(DigiCertGlobalRootG2); i++)
+            {
+                
+                //WriteAnyCloud(&DigiCertGlobalRootG2[i], 1);
+                //WORKAROUND for '+' ESCAPE character not loading properly
+                //if not adding a delay?
+                if(DigiCertGlobalRootG2[i]=='+')
+                {
+                    
+                    j = 100000;
+                    while((j--)); 
+                }
+                UART2_Write(DigiCertGlobalRootG2[i]);  //Write to AnyCloud WFI32
+                UART1_Write(DigiCertGlobalRootG2[i]);  //Write to console
+                while (!UART1_IsTxReady());            //Wait for console ready!
+                
+               
+            
+            }
+#else
+            WriteAnyCloud(DigiCertGlobalRootG2, sizeof(DigiCertGlobalRootG2));
+            printf_2RIO(("%s",DigiCertGlobalRootG2));
+ #endif 
+            app_rio2Data.state = APP_RIO2_STATE_AZURE_LOADCERT_ACK;
+            break;
+
+        }
+        case APP_RIO2_STATE_AZURE_LOADCERT_ACK:
+        {
+            if (!gLOADCERT)
+                break;
+            gLOADCERT = false;
+            app_rio2Data.state = APP_MQTT_STATE_INIT_MQTT;//APP_RIO2_STATE_AZURE_RECONNECT;
+            gOK = true;
+            break;
+        }    
+       
         case APP_MQTT_STATE_INIT_MQTT:
         {
             if (gOK) {
@@ -1501,6 +1582,7 @@ void APP_RIO2_Tasks(void)
             }
             break;
         }
+             
         case APP_RIO2_STATE_AZURE_RECONNECT:
         {
             if (gOK) {
@@ -1625,16 +1707,15 @@ void APP_RIO2_Tasks(void)
                     pubState = PUBSTATESNUM_TOTAL;
                     break;
                 }
-                /* Each publish state above is only executed once after reset */
-                /* From here, this is the start of telemetry loop which should execute on every "telemetryInterval" seconds */
+                    /* Each publish state above is only executed once after reset */
+                    /* From here, this is the start of telemetry loop which should execute on every "telemetryInterval" seconds */
                 case PUBSTATESNUM_INIT:
                 {
                     if (SwPressFlag == true) // If SW0 button was pressed, send button telemetry event
                     {
                         sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\"{\\\"button_event\\\":{\\\"button_name\\\":\\\"SW0\\\",\\\"press_count\\\":%d}}\"\r\n", thingID, press_count);
                         SwPressFlag = false;
-                    }
-                    else // ...otherwise just update the User LED state
+                    } else // ...otherwise just update the User LED state
                     {
                         strcpy(buffer, "AT+MQTTPUB=0,0,0,\"$iothub/twin/PATCH/properties/reported/?rid=user_LED\",\"{");
                         sprintf(buffer1, PUB_AZURE_DESIRED_VALUE_PAYLOAD, "led_user", appData.LED_user);
@@ -1646,7 +1727,7 @@ void APP_RIO2_Tasks(void)
                 }
                 case (PUBSTATESNUM_TOTAL - 1): /* Only this state (just before the final state) can do nothing */
                 {
-                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\""PUB_AZURE_PAYLOAD_TELEMETRY_TEMPERATURE"\"\r\n", thingID, (float)TEMPERATURE_readDegC());                  
+                    sprintf(buffer, "AT+MQTTPUB=0,0,0,\""PUB_TOPIC_TELEMETRY"\",\""PUB_AZURE_PAYLOAD_TELEMETRY_TEMPERATURE"\"\r\n", thingID, (float) TEMPERATURE_readDegC());
                     pubState++;
                     break;
                 }

@@ -1,4 +1,4 @@
-<config configName="default" projectName="PIC18F57_AnyCLoud" configVersion="1.1" device="PIC18F57Q84" deviceLibraryClass="com.microchip.mcc.melody.Library" coreVersion="5.5.0">
+<config configName="default" projectName="PIC18F57_AnyCLoud" configVersion="1.1" device="PIC18F57Q84" deviceLibraryClass="com.microchip.mcc.melody.Library" coreVersion="5.5.7">
    <usedPackages class="java.util.ArrayList">
       <package packageName="@mchp-mcc/default-peripheral-initializer" version="3.2.4" contentType="MELODY">
          <modules class="java.util.ArrayList"/>

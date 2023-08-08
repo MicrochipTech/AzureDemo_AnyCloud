@@ -24,8 +24,8 @@
 uint8_t dummyFlag, dummyArray[1];
 // TODO  LAB2 STEP2 A.2 Enter you SSID and PASSPHRASE
 
-#define WIFI_SSID "NETGEAR51"/*"mySSID"*/
-#define WIFI_PSWD "melodicship232"/*"myPassPhrase"*/
+#define WIFI_SSID "MY_WIFI_SSID" // e.g. "Home_Broadband_Router"
+#define WIFI_PSWD "MY_WIFI_PSWD" // e.g. "Guess_The_Password???"
 
 
 
@@ -139,6 +139,7 @@ typedef enum {
     /* Application's state machine's initial state. */
     APP_RIO2_STATE_INIT = 0,
     APP_RIO2_STATE_WAIT_RST,
+         APP_RIO2_STATE_LOAD_CA_CERT,  
     APP_RIO2_STATE_ECHO_OFF,
     APP_RIO2_STATE_GET_VERSION,
     APP_RIO2_STATE_CONFIG_AP,
@@ -168,6 +169,8 @@ typedef enum {
     APP_RIO2_STATE_AZURE_PUB_DPS_REGISTRATION_GET,
     APP_RIO2_STATE_AZURE_GET_ASSIGN_HUB_AND_DISCONNECT,
     APP_RIO2_STATE_AZURE_WAIT_DISCONNET,
+            APP_RIO2_STATE_AZURE_LOADCERT_DIGICERT_GLOBAL_ROOT_2,
+            APP_RIO2_STATE_AZURE_LOADCERT_ACK,
     APP_RIO2_STATE_AZURE_RECONNECT,
     APP_RIO2_STATE_AZURE_SUBSCRIBE_1,
     APP_RIO2_STATE_AZURE_SUBSCRIBE_2,
@@ -274,8 +277,8 @@ APP_RIO2_DATA app_rio2Data;
 #define PORT "8883"  //TLS PORT 8886 uses ISRGRootX1.pem from Free CA signer "Let's Encrypt"  https://letsencrypt.org/certificates/
 #define TLSENABLE "1"
 
-#define MY_THING_ID "sn0123CFAD012DAB3401"
-#define ID_SCOPE "0ne009F1E82"
+#define MY_THING_ID "MY_COMMON_NAME"// e.g. "sn012319AAC99CF42A01"
+#define ID_SCOPE "MY_ID_SCOPE" // e.g. "0ne007F418E"
 #define MODEL_ID "dtmi:com:Microchip:PIC18F57Q84_CNANO;1"
 #define CLIENTID MY_THING_ID
 #define BROKER_USER_NAME ID_SCOPE"/registrations/"CLIENTID"/api-version=2019-03-31"
