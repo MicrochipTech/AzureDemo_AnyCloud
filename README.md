@@ -27,7 +27,8 @@ The [WFI32E01PC](https://www.microchip.com/en-us/product/WFI32E01PC) module (whi
 1. [Git](https://git-scm.com/)
 2. [Python 3.0](https://www.python.org/download/releases/3.0/)
 3. [Python Serial Port Extension](https://pypi.org/project/pyserial/)
-4. [OpenSSL](https://wiki.openssl.org/index.php/Binaries) (Windows users: ensure that the path to the `openssl.exe` program is included in the Windows PATH environment variable)
+4. [OpenSSL](https://wiki.openssl.org/index.php/Binaries)
+    - Click [here](https://think.unblog.ch/en/how-to-install-openssl-on-windows-10-11/) for the Windows installation procedure and then ensure that the path to the `openssl.exe` program is included in the Windows PATH environment variable
 5. Any [Terminal Emulator](https://en.wikipedia.org/wiki/List_of_terminal_emulators) program of your choice
 6. Microchip `MPLAB X IDE` tool chain for embedded code development on 32-bit architecture MCU/MPU platforms (made up of 3 major components)
 
